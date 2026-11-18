@@ -6,7 +6,7 @@ import { json, requireDatabase } from './reliability';
 // GET /api/releases/{studio|edge|runtime}?platform=&channel=; the GitHub release
 // listing of the download page keeps /api/releases and /api/releases/vision*.
 export const MANIFEST_PRODUCTS = new Set(['studio', 'edge', 'runtime']);
-const VERSION = /^\d{1,5}(\.\d{1,5}){0,3}$/;
+const VERSION = /^\d{1,5}(?:\.\d{1,10}){0,3}(?:\.[0-9a-f]{7,40})?(?:-[A-Za-z0-9.-]+)?$/;
 const NAME = /^[a-z0-9][a-z0-9-]{0,31}$/;
 const SHA256 = /^[0-9a-f]{64}$/;
 
@@ -20,15 +20,17 @@ interface ManifestRow {
   sha256: string | null;
   notes_url: string | null;
   published_at: string | null;
+  incremental_json?: string | null;
 }
 
 /** SDK ReleaseManifest: optional fields are left out when empty. */
-function manifest(row: ManifestRow): Record<string, string> {
-  const body: Record<string, string> = { product: row.product, platform: row.platform, channel: row.channel,
+function manifest(row: ManifestRow): Record<string, unknown> {
+  const body: Record<string, unknown> = { product: row.product, platform: row.platform, channel: row.channel,
                                          latest: row.latest, min_supported: row.min_supported };
   for (const key of ['url', 'sha256', 'notes_url', 'published_at'] as const) {
     if (row[key]) body[key] = row[key] as string;
   }
+  if (row.incremental_json) body.incremental = JSON.parse(row.incremental_json);
   return body;
 }
 
@@ -50,7 +52,7 @@ export async function handleReleaseManifest(request: Request, env: Env, url: URL
   const channel = url.searchParams.get('channel') || 'stable';
   if (!NAME.test(platform) || !NAME.test(channel)) return json({ error: 'platform is required' }, 400);
   const row = await requireDatabase(env).prepare(
-    'SELECT product, platform, channel, latest, min_supported, url, sha256, notes_url, published_at FROM release_manifests WHERE product = ? AND platform = ? AND channel = ?'
+    'SELECT product, platform, channel, latest, min_supported, url, sha256, notes_url, published_at, incremental_json FROM release_manifests WHERE product = ? AND platform = ? AND channel = ?'
   ).bind(match[1], platform, channel).first<ManifestRow>();
   if (!row) return json({ error: 'No release is published for this platform and channel' }, 404);
   return Response.json(manifest(row), { headers: { 'Cache-Control': 'public, max-age=300' } });
@@ -65,7 +67,7 @@ export async function handleReleaseAdmin(request: Request, env: Env, url: URL): 
   const db = requireDatabase(env);
   if (request.method === 'GET') {
     const { results } = await db.prepare(
-      'SELECT product, platform, channel, latest, min_supported, url, sha256, notes_url, published_at, updated_at, updated_by FROM release_manifests ORDER BY product, platform, channel'
+      'SELECT product, platform, channel, latest, min_supported, url, sha256, notes_url, published_at, updated_at, updated_by, incremental_json FROM release_manifests ORDER BY product, platform, channel'
     ).all();
     return json({ releases: results || [] });
   }
@@ -83,29 +85,42 @@ export async function handleReleaseAdmin(request: Request, env: Env, url: URL): 
   if (!MANIFEST_PRODUCTS.has(product) || !NAME.test(platform) || !NAME.test(channel)) {
     return json({ error: 'product must be studio, edge or runtime; platform and channel are required' }, 400);
   }
-  if (!VERSION.test(latest) || !VERSION.test(minSupported) || compareVersions(minSupported, latest) > 0) {
+  if (!VERSION.test(latest) || latest.length > 64 || !VERSION.test(minSupported) || minSupported.length > 64 || compareVersions(minSupported, latest) > 0) {
     return json({ error: 'latest and min_supported must be versions such as 6.1.0, min_supported not above latest' }, 400);
   }
   if (downloadUrl === undefined || notesUrl === undefined || (sha256 !== null && !SHA256.test(sha256))) {
     return json({ error: 'url and notes_url must be https; sha256 must be 64 hex digits' }, 400);
   }
+  let incrementalJson: string | null = null;
+  if (body.incremental !== undefined && body.incremental !== null) {
+    const item = body.incremental as Record<string, unknown>;
+    const base = String(item.base_version || '');
+    const target = String(item.target_version || '');
+    const artifactUrl = httpsUrl(item.url);
+    const digest = String(item.sha256 || '').toLowerCase();
+    const size = item.size_bytes;
+    if (!VERSION.test(base) || base.length > 64 || !VERSION.test(target) || target.length > 64 || target !== latest || compareVersions(base, target) >= 0
+        || !artifactUrl || !SHA256.test(digest) || typeof size !== 'number' || !Number.isSafeInteger(size)
+        || size <= 0 || size > 2147483648) return json({error: 'Invalid incremental artifact: base/target, https URL, SHA-256 and exact size are required'}, 400);
+    incrementalJson = JSON.stringify({base_version: base, target_version: target, url: artifactUrl, sha256: digest, size_bytes: size});
+  }
   const timestamp = new Date().toISOString();
   const publishedAt = typeof body.published_at === 'string' && body.published_at ? body.published_at.slice(0, 64) : timestamp;
   await db.prepare(
-    `INSERT INTO release_manifests (product, platform, channel, latest, min_supported, url, sha256, notes_url, published_at, updated_at, updated_by)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `INSERT INTO release_manifests (product, platform, channel, latest, min_supported, url, sha256, notes_url, published_at, updated_at, updated_by, incremental_json)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON CONFLICT(product, platform, channel) DO UPDATE SET latest = excluded.latest, min_supported = excluded.min_supported,
        url = excluded.url, sha256 = excluded.sha256, notes_url = excluded.notes_url, published_at = excluded.published_at,
-       updated_at = excluded.updated_at, updated_by = excluded.updated_by`
-  ).bind(product, platform, channel, latest, minSupported, downloadUrl, sha256, notesUrl, publishedAt, timestamp, user.id).run();
+       updated_at = excluded.updated_at, updated_by = excluded.updated_by, incremental_json = excluded.incremental_json`
+  ).bind(product, platform, channel, latest, minSupported, downloadUrl, sha256, notesUrl, publishedAt, timestamp, user.id, incrementalJson).run();
   return json({ release: manifest({ product, platform, channel, latest, min_supported: minSupported, url: downloadUrl,
-                                    sha256, notes_url: notesUrl, published_at: publishedAt }) });
+                                    sha256, notes_url: notesUrl, published_at: publishedAt, incremental_json: incrementalJson }) });
 }
 
 /** "6.1.0" style versions: negative, zero or positive as a is older, equal or newer. */
 export function compareVersions(a: string, b: string): number {
-  const left = a.split('.').map(Number);
-  const right = b.split('.').map(Number);
+  const left = a.split('-')[0].split('.').slice(0, 4).map(Number);
+  const right = b.split('-')[0].split('.').slice(0, 4).map(Number);
   for (let i = 0; i < Math.max(left.length, right.length); i++) {
     const diff = (left[i] || 0) - (right[i] || 0);
     if (diff) return diff;
