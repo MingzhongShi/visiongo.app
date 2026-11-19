@@ -27,6 +27,7 @@ import { Alert, Panel, ui } from '../components/account/ui';
 import { roleLabel, useOrganizations, type OrgChoice } from '../components/account/useOrganizations';
 import { useAuth, type AuthUser } from '../context/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { accountPageText } from '../i18n/text/AccountPage';
 
 interface UserDownloadRecord {
   id: string;
@@ -84,22 +85,20 @@ export const AccountPage: React.FC<AccountPageProps> = ({ onNavigate }) => {
     <div className="min-h-screen bg-zinc-950 pb-24 pt-24 font-sans text-zinc-100">
       <SeoHead
         noindex
-        title={zh ? '我的账户 — VISIONGO' : 'My account — VISIONGO'}
-        description={zh ? '管理 VISIONGO 账号、已登录的电脑、组织成员、云端额度与软件下载。'
-                        : 'Manage your VISIONGO account, signed-in computers, organization members, cloud credits and downloads.'}
+        title={accountPageText(zh).myAccountVisiongo}
+        description={accountPageText(zh).manageYourVisiongo}
         canonicalPath="/my"
       />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {authNotice && !user && (
           <div className="mx-auto mb-6 max-w-xl">
-            <Alert tone="warning">{zh ? '第三方登录未完成或暂不可用。请重新登录，或选择其他可用的登录方式。'
-                                      : 'Third-party sign-in did not complete or is unavailable. Please retry or choose another available sign-in method.'}</Alert>
+            <Alert tone="warning">{accountPageText(zh).thirdPartySign}</Alert>
           </div>
         )}
         {authLoading ? (
           <div role="status" className="flex items-center justify-center py-24">
             <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-emerald-500" />
-            <span className="sr-only">{zh ? '正在加载' : 'Loading'}</span>
+            <span className="sr-only">{accountPageText(zh).loading}</span>
           </div>
         ) : !user ? (
           <SignIn zh={zh} />
@@ -117,10 +116,9 @@ const SignIn: React.FC<{ zh: boolean }> = ({ zh }) => (
       <User className="h-7 w-7" />
     </div>
     <div className="space-y-2">
-      <h1 className="text-xl font-bold text-white">{zh ? '登录 VISIONGO 账户' : 'Sign in to your VISIONGO account'}</h1>
+      <h1 className="text-xl font-bold text-white">{accountPageText(zh).signInTo}</h1>
       <p className="mx-auto max-w-sm text-sm leading-relaxed text-zinc-400">
-        {zh ? '同一个账号用于本网站和 VisionStudio。登录后可管理组织与成员、云端额度、已登录的电脑和软件下载。'
-            : 'One account for this site and VisionStudio. Sign in to manage organizations and members, cloud credits, signed-in computers and downloads.'}
+        {accountPageText(zh).oneAccountFor}
       </p>
     </div>
     <div className="pt-2"><AuthCard /></div>
@@ -158,7 +156,7 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
   const loadSessions = useCallback(() => {
     api('/api/account/desktop-sessions')
       .then(({ ok, status, data }) => { if (!ok) throw new Error(String(status)); setSessions(data.sessions || []); setSessionsError(''); })
-      .catch(() => { setSessions([]); setSessionsError(zh ? '无法读取已登录的电脑。' : 'Could not load the signed-in computers.'); });
+      .catch(() => { setSessions([]); setSessionsError(accountPageText(zh).couldNotLoad); });
   }, [zh]);
   useEffect(loadSessions, [loadSessions]);
   const revoke = async (body: { family_id?: string; all?: boolean }) => {
@@ -168,7 +166,7 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
       const res = await api('/api/account/desktop-sessions/revoke', body);
       if (!res.ok) throw new Error(String(res.status));
     } catch {
-      setSessionsError(zh ? '退出登录失败，请重试。' : 'Signing out failed. Please retry.');
+      setSessionsError(accountPageText(zh).signingOutFailed);
     } finally {
       setSessionsBusy(false);
       loadSessions();
@@ -184,23 +182,23 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
 
   const groups: NavGroup[] = useMemo(() => {
     const list: NavGroup[] = [
-      { label: zh ? '个人' : 'You', items: [
-        { id: 'overview', label: zh ? '概览' : 'Overview', hint: zh ? '账户一览与常用入口' : 'Everything at a glance', icon: LayoutDashboard },
-        { id: 'security', label: zh ? '账号与安全' : 'Sign-in & security', hint: zh ? '个人资料、密码、退出登录' : 'Profile, password, sign out', icon: UserCog },
-        { id: 'devices', label: zh ? '已登录的电脑' : 'Signed-in computers', hint: zh ? 'VisionStudio 登录管理' : 'VisionStudio sign-ins', icon: Monitor },
+      { label: accountPageText(zh).you, items: [
+        { id: 'overview', label: accountPageText(zh).overview, hint: accountPageText(zh).everythingAtA, icon: LayoutDashboard },
+        { id: 'security', label: accountPageText(zh).signInSecurity, hint: accountPageText(zh).profilePasswordSign, icon: UserCog },
+        { id: 'devices', label: accountPageText(zh).signedInComputers, hint: accountPageText(zh).visionstudioSignIns, icon: Monitor },
       ] },
-      { label: zh ? '组织' : 'Organization', items: [
-        { id: 'organization', label: zh ? '组织与成员' : 'Organization & members', hint: zh ? '切换组织、添加成员、AI 数据授权' : 'Switch, add members, AI data', icon: Users },
-        { id: 'credits', label: zh ? '额度与用量' : 'Credits & usage', hint: zh ? '余额、用量、充值消费流水' : 'Balance, usage, ledger', icon: Coins },
+      { label: accountPageText(zh).organization, items: [
+        { id: 'organization', label: accountPageText(zh).organizationMembers, hint: accountPageText(zh).switchAddMembers, icon: Users },
+        { id: 'credits', label: accountPageText(zh).creditsUsage, hint: accountPageText(zh).balanceUsageLedger, icon: Coins },
       ] },
-      { label: zh ? '软件' : 'Software', items: [
-        { id: 'downloads', label: zh ? '下载与授权' : 'Downloads & licensing', hint: zh ? '安装包、下载记录、商用授权' : 'Installers, history, licensing', icon: Download },
+      { label: accountPageText(zh).software, items: [
+        { id: 'downloads', label: accountPageText(zh).downloadsLicensing, hint: accountPageText(zh).installersHistoryLicensing, icon: Download },
       ] },
     ];
-    if (platformAdmin) list.push({ label: zh ? '平台管理' : 'Platform admin', items: [
-      { id: 'admin-accounts', label: zh ? '账号管理' : 'Accounts', hint: zh ? '建账号、重置密码、验证码' : 'Create, reset, codes', icon: UserCog },
-      { id: 'admin-organizations', label: zh ? '组织管理' : 'Organizations', hint: zh ? '创建、停用企业组织' : 'Create, suspend', icon: Building2 },
-      { id: 'admin-releases', label: zh ? '版本发布' : 'Releases', hint: zh ? '桌面软件更新记录' : 'Desktop update records', icon: PackageCheck },
+    if (platformAdmin) list.push({ label: accountPageText(zh).platformAdmin, items: [
+      { id: 'admin-accounts', label: accountPageText(zh).accounts, hint: accountPageText(zh).createResetCodes, icon: UserCog },
+      { id: 'admin-organizations', label: accountPageText(zh).adminOrganizations, hint: accountPageText(zh).createSuspend, icon: Building2 },
+      { id: 'admin-releases', label: accountPageText(zh).releases, hint: accountPageText(zh).desktopUpdateRecords, icon: PackageCheck },
     ] });
     return list;
   }, [zh, platformAdmin]);
@@ -240,7 +238,7 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
             <div className="truncate text-xs text-zinc-500">{user.email}</div>
           </div>
         </div>
-        <nav data-account-nav aria-label={zh ? '账户导航' : 'Account navigation'}
+        <nav data-account-nav aria-label={accountPageText(zh).accountNavigation}
              className="relative -mx-4 mb-6 flex gap-1 overflow-x-auto border-b border-zinc-800 px-4 pb-3 sm:-mx-6 sm:px-6 lg:mx-0 lg:mb-0 lg:block lg:space-y-5 lg:overflow-visible lg:border-0 lg:px-0 lg:pb-0">
           {groups.map(group => (
             <div key={group.label} className="contents lg:block">
@@ -268,7 +266,7 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
         </nav>
         <button type="button" onClick={() => void logout()}
                 className="mt-6 hidden w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-zinc-500 hover:bg-zinc-900 hover:text-white cursor-pointer lg:flex">
-          <LogOut className="h-4 w-4" />{zh ? '退出登录' : 'Sign out'}
+          <LogOut className="h-4 w-4" />{accountPageText(zh).signOut}
         </button>
       </aside>
 
@@ -284,22 +282,22 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
 
         {current.id === 'security' && (
           <>
-            <Panel icon={<User className="h-4 w-4 text-zinc-400" />} title={zh ? '个人资料' : 'Profile'}
-                   actions={<button type="button" onClick={() => void logout()} className={ui.secondary}><LogOut className="h-4 w-4" />{zh ? '退出登录' : 'Sign out'}</button>}>
+            <Panel icon={<User className="h-4 w-4 text-zinc-400" />} title={accountPageText(zh).profile}
+                   actions={<button type="button" onClick={() => void logout()} className={ui.secondary}><LogOut className="h-4 w-4" />{accountPageText(zh).signOut}</button>}>
               <div className="flex items-center gap-4">
                 <Avatar user={user} />
                 <dl className="grid min-w-0 gap-x-6 gap-y-1 text-sm sm:grid-cols-[auto_1fr]">
-                  <dt className="text-zinc-500">{zh ? '名称' : 'Name'}</dt><dd className="truncate text-zinc-100">{name}</dd>
-                  <dt className="text-zinc-500">{zh ? '邮箱' : 'Email'}</dt><dd className="truncate font-mono text-zinc-100">{user.email}</dd>
-                  <dt className="text-zinc-500">{zh ? '注册时间' : 'Member since'}</dt><dd className="text-zinc-100">{formatDate(user.createdAt, zh)}</dd>
-                  <dt className="text-zinc-500">{zh ? '账号 ID' : 'Account ID'}</dt><dd className="truncate font-mono text-xs text-zinc-400">{user.id}</dd>
+                  <dt className="text-zinc-500">{accountPageText(zh).name}</dt><dd className="truncate text-zinc-100">{name}</dd>
+                  <dt className="text-zinc-500">{accountPageText(zh).email}</dt><dd className="truncate font-mono text-zinc-100">{user.email}</dd>
+                  <dt className="text-zinc-500">{accountPageText(zh).memberSince}</dt><dd className="text-zinc-100">{formatDate(user.createdAt, zh)}</dd>
+                  <dt className="text-zinc-500">{accountPageText(zh).accountId}</dt><dd className="truncate font-mono text-xs text-zinc-400">{user.id}</dd>
                 </dl>
               </div>
             </Panel>
             <ChangePasswordPanel zh={zh} />
-            <Panel icon={<Monitor className="h-4 w-4 text-zinc-400" />} title={zh ? '已登录的电脑' : 'Signed-in computers'}
-                   description={zh ? `当前有 ${sessions?.length ?? 0} 台电脑登录了 VisionStudio。` : `${sessions?.length ?? 0} computers are signed in to VisionStudio.`}
-                   actions={<button type="button" onClick={() => go('devices')} className={ui.secondary}>{zh ? '管理' : 'Manage'}<ChevronRight className="h-4 w-4" /></button>} />
+            <Panel icon={<Monitor className="h-4 w-4 text-zinc-400" />} title={accountPageText(zh).signedInComputers}
+                   description={accountPageText(zh).computersAre(sessions?.length ?? 0)}
+                   actions={<button type="button" onClick={() => go('devices')} className={ui.secondary}>{accountPageText(zh).manage}<ChevronRight className="h-4 w-4" /></button>} />
           </>
         )}
 
@@ -310,15 +308,14 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
         {(current.id === 'organization' || current.id === 'credits') && (
           <>
             {orgs.error && <Alert tone="error">{orgs.error}</Alert>}
-            <Panel icon={<Building2 className="h-4 w-4 text-zinc-400" />} title={zh ? '当前组织' : 'Current organization'}
-                   description={zh ? '下面的内容都针对所选组织。在 VisionStudio 登录时也要选择组织；训练数据、模型和云端额度按组织隔离。'
-                                   : 'Everything below applies to the chosen organization. VisionStudio asks for one at sign-in; data, models and credits are kept per organization.'}>
+            <Panel icon={<Building2 className="h-4 w-4 text-zinc-400" />} title={accountPageText(zh).currentOrganization}
+                   description={accountPageText(zh).everythingBelowApplies}>
               <OrganizationPicker zh={zh} orgs={orgs} selected={orgId} onSelect={selectOrg} />
             </Panel>
             {org && current.id === 'organization' && <OrganizationDetail key={org.id} zh={zh} org={org} platformAdmin={orgs.platformAdmin} />}
             {org && current.id === 'credits' && (orgs.creditsAvailable
               ? <CreditsPanel key={org.id} zh={zh} organization={org} cloudAdminUrl={orgs.cloudAdminUrl} />
-              : <Alert>{zh ? '本站尚未开通云端服务，暂无额度与用量。' : 'Cloud services are not available on this site yet.'}</Alert>)}
+              : <Alert>{accountPageText(zh).cloudServicesAre}</Alert>)}
           </>
         )}
 
@@ -331,7 +328,7 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
         {platformAdmin && current.id === 'admin-releases' && <PlatformAdminPanel zh={zh} section="releases" />}
 
         <button type="button" onClick={() => void logout()} className={`${ui.secondary} w-full lg:hidden`}>
-          <LogOut className="h-4 w-4" />{zh ? '退出登录' : 'Sign out'}
+          <LogOut className="h-4 w-4" />{accountPageText(zh).signOut}
         </button>
       </section>
     </div>
@@ -365,41 +362,41 @@ const Overview: React.FC<{
       <div className="flex flex-col gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 sm:flex-row sm:items-center sm:p-6">
         <Avatar user={user} />
         <div className="min-w-0 flex-1">
-          <div className="truncate text-lg font-semibold text-white">{zh ? `你好，${name}` : `Hello, ${name}`}</div>
+          <div className="truncate text-lg font-semibold text-white">{accountPageText(zh).hello(name)}</div>
           <div className="truncate font-mono text-sm text-zinc-400">{user.email}</div>
-          <div className="text-xs text-zinc-500">{zh ? '注册于' : 'Member since'} {formatDate(user.createdAt, zh)}</div>
+          <div className="text-xs text-zinc-500">{accountPageText(zh).memberSinceShort} {formatDate(user.createdAt, zh)}</div>
         </div>
-        <button type="button" onClick={() => go('security')} className={ui.secondary}>{zh ? '账号与安全' : 'Sign-in & security'}</button>
+        <button type="button" onClick={() => go('security')} className={ui.secondary}>{accountPageText(zh).signInSecurity}</button>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {tile('organization', Users, zh ? '组织与成员' : 'Organization & members',
-              org ? org.name : (orgs.loaded ? (zh ? '暂无组织' : 'No organization') : '…'),
-              org ? `${org.type === 'personal' ? (zh ? '个人组织' : 'Personal') : (zh ? '企业组织' : 'Enterprise')} · ${roleLabel(org.role, zh)}${mine.length > 1 ? (zh ? ` · 共 ${mine.length} 个组织` : ` · ${mine.length} organizations`) : ''}`
-                  : (zh ? '查看所在组织、添加同事' : 'See your organizations, add colleagues'))}
-        {tile('credits', Coins, zh ? '额度与用量' : 'Credits & usage',
-              orgs.creditsAvailable ? (zh ? '查看余额' : 'View balance') : (zh ? '暂未开通' : 'Not available'),
-              orgs.creditsAvailable ? (zh ? 'VisionCloud AI 功能的余额、用量与充值流水。个人组织首次使用赠送 100 Credits。' : 'Balance, usage and ledger for VisionCloud AI. Personal organizations get 100 trial Credits.')
-                                    : (zh ? '本站尚未开通云端服务。' : 'Cloud services are not available on this site yet.'))}
-        {tile('devices', Monitor, zh ? '已登录的电脑' : 'Signed-in computers',
-              sessions === null ? '…' : (zh ? `${sessions.length} 台` : `${sessions.length}`),
-              zh ? '登录了 VisionStudio 的电脑，可逐台退出。' : 'Computers signed in to VisionStudio; sign any of them out.')}
-        {tile('downloads', Download, zh ? '下载与授权' : 'Downloads & licensing',
-              downloads === null ? '…' : (zh ? `${downloads.length} 条下载记录` : `${downloads.length} downloads`),
-              zh ? '获取安装包、查看下载记录、申请商用授权。' : 'Get installers, see your downloads, request a license.')}
-        {tile('security', ShieldCheck, zh ? '账号与安全' : 'Sign-in & security', zh ? '密码与资料' : 'Password & profile',
-              zh ? '修改密码、查看账号信息、退出登录。' : 'Change password, see account details, sign out.')}
+        {tile('organization', Users, accountPageText(zh).organizationMembers,
+              org ? org.name : (orgs.loaded ? (accountPageText(zh).noOrganization) : '…'),
+              org ? `${org.type === 'personal' ? (accountPageText(zh).personal) : (accountPageText(zh).enterprise)} · ${roleLabel(org.role, zh)}${mine.length > 1 ? (accountPageText(zh).organizationCountSuffix(mine.length)) : ''}`
+                  : (accountPageText(zh).seeYourOrganizations))}
+        {tile('credits', Coins, accountPageText(zh).creditsUsage,
+              orgs.creditsAvailable ? (accountPageText(zh).viewBalance) : (accountPageText(zh).notAvailable),
+              orgs.creditsAvailable ? (accountPageText(zh).balanceUsageAnd)
+                                    : (accountPageText(zh).cloudServicesAreNot))}
+        {tile('devices', Monitor, accountPageText(zh).signedInComputers,
+              sessions === null ? '…' : (accountPageText(zh).text(sessions.length)),
+              accountPageText(zh).computersSignedIn)}
+        {tile('downloads', Download, accountPageText(zh).downloadsLicensing,
+              downloads === null ? '…' : (accountPageText(zh).downloads(downloads.length)),
+              accountPageText(zh).getInstallersSee)}
+        {tile('security', ShieldCheck, accountPageText(zh).signInSecurity, accountPageText(zh).passwordProfile,
+              accountPageText(zh).changePasswordSee)}
       </div>
 
       {orgs.platformAdmin && (
-        <Panel icon={<ShieldCheck className="h-4 w-4 text-zinc-400" />} title={zh ? '平台管理' : 'Platform admin'}
-               description={zh ? '你是平台管理员。' : 'You are a platform administrator.'}>
+        <Panel icon={<ShieldCheck className="h-4 w-4 text-zinc-400" />} title={accountPageText(zh).platformAdmin}
+               description={accountPageText(zh).youAreA}>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={() => go('admin-accounts')} className={ui.secondary}>{zh ? '账号管理' : 'Accounts'}</button>
+            <button type="button" onClick={() => go('admin-accounts')} className={ui.secondary}>{accountPageText(zh).accounts}</button>
             <button type="button" onClick={() => go('admin-organizations')} className={ui.secondary}>
-              {zh ? `组织管理（${orgs.allOrganizations.length}）` : `Organizations (${orgs.allOrganizations.length})`}
+              {accountPageText(zh).manageOrganizationsCount(orgs.allOrganizations.length)}
             </button>
-            <button type="button" onClick={() => go('admin-releases')} className={ui.secondary}>{zh ? '版本发布' : 'Releases'}</button>
+            <button type="button" onClick={() => go('admin-releases')} className={ui.secondary}>{accountPageText(zh).releases}</button>
           </div>
         </Panel>
       )}
@@ -409,14 +406,14 @@ const Overview: React.FC<{
 
 const Downloads: React.FC<{ zh: boolean; downloads: UserDownloadRecord[] | null; onNavigate: (path: string) => void }> = ({ zh, downloads, onNavigate }) => {
   const products = [
-    { name: 'VisionStudio', detail: zh ? '可视化工程工作台' : 'Engineering workspace', path: '/downloads/visionstudio' },
-    { name: 'VisionRuntime', detail: zh ? '生产执行引擎' : 'Production runtime', path: '/downloads/visionruntime' },
-    { name: 'VisionEdge', detail: zh ? '边缘现场智能网关' : 'On-site intelligence', path: '/downloads/visionedge' },
+    { name: 'VisionStudio', detail: accountPageText(zh).engineeringWorkspace, path: '/downloads/visionstudio' },
+    { name: 'VisionRuntime', detail: accountPageText(zh).productionRuntime, path: '/downloads/visionruntime' },
+    { name: 'VisionEdge', detail: accountPageText(zh).onSiteIntelligence, path: '/downloads/visionedge' },
   ];
   return (
     <div className="space-y-6">
-      <Panel icon={<Download className="h-4 w-4 text-zinc-400" />} title={zh ? '获取安装包' : 'Get installers'}
-             description={zh ? '最新版本和各平台安装包在下载中心。' : 'The latest versions for every platform are in the download center.'}>
+      <Panel icon={<Download className="h-4 w-4 text-zinc-400" />} title={accountPageText(zh).getInstallers}
+             description={accountPageText(zh).theLatestVersions}>
         <div className="grid gap-3 sm:grid-cols-3">
           {products.map(product => (
             <button key={product.name} type="button" onClick={() => onNavigate(product.path)}
@@ -431,10 +428,10 @@ const Downloads: React.FC<{ zh: boolean; downloads: UserDownloadRecord[] | null;
         </div>
       </Panel>
 
-      <Panel icon={<Package className="h-4 w-4 text-zinc-400" />} title={zh ? '我的下载记录' : 'My downloads'}
-             description={zh ? '登录状态下从下载中心下载的安装包会记录在这里。' : 'Installers downloaded while signed in are listed here.'}>
-        {downloads === null ? <p className={ui.muted}>{zh ? '正在读取…' : 'Loading…'}</p>
-          : downloads.length === 0 ? <p className="text-sm text-zinc-400">{zh ? '还没有下载记录。' : 'No downloads yet.'}</p>
+      <Panel icon={<Package className="h-4 w-4 text-zinc-400" />} title={accountPageText(zh).myDownloads}
+             description={accountPageText(zh).installersDownloadedWhile}>
+        {downloads === null ? <p className={ui.muted}>{accountPageText(zh).loadingList}</p>
+          : downloads.length === 0 ? <p className="text-sm text-zinc-400">{accountPageText(zh).noDownloadsYet}</p>
           : (
             <ul className="divide-y divide-zinc-800 rounded-xl border border-zinc-800 bg-zinc-950">
               {downloads.map(record => (
@@ -450,10 +447,9 @@ const Downloads: React.FC<{ zh: boolean; downloads: UserDownloadRecord[] | null;
           )}
       </Panel>
 
-      <Panel icon={<ShieldCheck className="h-4 w-4 text-zinc-400" />} title={zh ? '商用授权与硬件加密狗' : 'Commercial license & dongles'}
-             description={zh ? '在产线工控机上 24 小时连续运行，需要正式授权码或硬件加密狗。'
-                             : 'Running 24/7 on production machines needs a commercial license or hardware dongle.'}
-             actions={<button type="button" onClick={() => onNavigate('/contact')} className={ui.primary}>{zh ? '联系我们申请' : 'Contact us'}<ArrowRight className="h-4 w-4" /></button>} />
+      <Panel icon={<ShieldCheck className="h-4 w-4 text-zinc-400" />} title={accountPageText(zh).commercialLicenseDongles}
+             description={accountPageText(zh).productionLicenseNeeded}
+             actions={<button type="button" onClick={() => onNavigate('/contact')} className={ui.primary}>{accountPageText(zh).contactUs}<ArrowRight className="h-4 w-4" /></button>} />
     </div>
   );
 };

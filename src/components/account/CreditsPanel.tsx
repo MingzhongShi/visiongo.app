@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Coins, ExternalLink, ReceiptText, BarChart3 } from 'lucide-react';
 import { Alert, Panel, api, ui } from './ui';
 import type { OrgChoice } from './useOrganizations';
+import { creditsPanelText } from '../../i18n/text/CreditsPanel';
 
 // Organization credits, ledger and usage kept by VisionCloud (read through /api/orgs/{id}/credits*,
 // SDK credits contract). Administrators see the account; members see their own usage only.
@@ -60,8 +61,8 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
 
   const base = `/api/orgs/${encodeURIComponent(organization.id)}/credits`;
   const failure = (status: number, data: any) => (status === 502 || data.error === 'cloud_unavailable'
-    ? (zh ? '云端服务暂不可用，请稍后重试' : 'The cloud service is unavailable; please try again later')
-    : data.error_description || data.error || (zh ? '读取失败' : 'Could not load'));
+    ? (creditsPanelText(zh).theCloudService)
+    : data.error_description || data.error || (creditsPanelText(zh).couldNotLoad));
 
   const loadTransactions = useCallback(async (after: string | null) => {
     const query = new URLSearchParams({ limit: '50' });
@@ -93,7 +94,7 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
 
   const users = usage?.users || {};
   const typeLabel = (value: string) => ({
-    recharge: zh ? '充值' : 'Recharge', consumption: zh ? '消费' : 'Usage', adjustment: zh ? '调整' : 'Adjustment',
+    recharge: creditsPanelText(zh).recharge, consumption: creditsPanelText(zh).consumption, adjustment: creditsPanelText(zh).adjustment,
   } as Record<string, string>)[value] || value;
   const empty = organization.admin && account && organization.type === 'enterprise' && (!account.opened || account.balance_micros <= 0);
   const stat = (label: string, value: string, tone = 'text-white') => (
@@ -108,44 +109,42 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
       {error && <Alert tone="error">{error}</Alert>}
 
       {organization.admin && (
-        <Panel icon={<Coins className="h-4 w-4 text-zinc-400" />} title={zh ? '额度账户' : 'Credit account'}
-               description={zh ? '组织成员使用 VisionCloud AI 功能时从这里扣费。' : 'Members’ use of VisionCloud AI functions is charged here.'}>
-          {!account ? <p className={ui.muted}>{zh ? '正在读取…' : 'Loading…'}</p> : account.opened ? (
+        <Panel icon={<Coins className="h-4 w-4 text-zinc-400" />} title={creditsPanelText(zh).creditAccount}
+               description={creditsPanelText(zh).membersUseOf}>
+          {!account ? <p className={ui.muted}>{creditsPanelText(zh).loading}</p> : account.opened ? (
             <>
               <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                {stat(zh ? '余额 (Credits)' : 'Balance (Credits)', credits(account.balance_micros), account.balance_micros <= 0 ? 'text-amber-300' : 'text-emerald-300')}
-                {stat(zh ? '累计消耗' : 'Used in total', credits(account.used_micros))}
-                {stat(zh ? '输入 / 输出费率' : 'Input / output price', `${credits(account.input_price_micros_per_1m)} / ${credits(account.output_price_micros_per_1m)}`)}
-                {stat(zh ? '状态' : 'Status', account.status === 'suspended' ? (zh ? '已停用' : 'Suspended') : (zh ? '正常' : 'Active'),
+                {stat(creditsPanelText(zh).balanceCredits, credits(account.balance_micros), account.balance_micros <= 0 ? 'text-amber-300' : 'text-emerald-300')}
+                {stat(creditsPanelText(zh).usedInTotal, credits(account.used_micros))}
+                {stat(creditsPanelText(zh).inputOutputPrice, `${credits(account.input_price_micros_per_1m)} / ${credits(account.output_price_micros_per_1m)}`)}
+                {stat(creditsPanelText(zh).status, account.status === 'suspended' ? (creditsPanelText(zh).suspended) : (creditsPanelText(zh).active),
                       account.status === 'suspended' ? 'text-red-300' : 'text-white')}
               </div>
-              <p className={ui.muted}>{zh ? '费率单位：Credits / 100 万 Token' : 'Prices in Credits per 1M tokens'}</p>
+              <p className={ui.muted}>{creditsPanelText(zh).pricesInCredits}</p>
             </>
           ) : (
             <p className="text-sm text-zinc-400">
               {organization.type === 'personal'
-                ? (zh ? '该组织尚未使用过 VisionCloud，首次使用时自动开立额度账户，并赠送 100 Credits 体验额度。'
-                      : 'This organization has not used VisionCloud yet; its credit account opens on first use with 100 trial Credits.')
-                : (zh ? '该企业组织尚未在 VisionCloud 开户。' : 'This enterprise organization has no VisionCloud account yet.')}
+                ? (creditsPanelText(zh).thisOrganizationHas)
+                : (creditsPanelText(zh).thisEnterpriseOrganization)}
             </p>
           )}
           {empty && (
             <Alert tone="warning">
-              <p>{zh ? '这个企业组织还没有额度，成员使用 AI 功能时会提示“组织额度不足”。'
-                     : 'This enterprise organization has no credits yet; AI functions answer "insufficient credits".'}</p>
+              <p>{creditsPanelText(zh).thisEnterpriseOrganizationHas}</p>
               <p className="text-amber-300/80">
                 {cloudAdminUrl
-                  ? <>{zh ? '平台管理员请到 ' : 'Platform administrators: open the account and recharge at '}
-                      <a href={cloudAdminUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 underline">{zh ? 'VisionCloud 管理后台' : 'VisionCloud admin'}<ExternalLink className="h-3 w-3" /></a>
-                      {zh ? ' 为它开户并充值（首次充值勾选“开户”），组织 ID：' : ' (tick "open account" on the first recharge); organization ID: '}
+                  ? <>{creditsPanelText(zh).platformAdministratorsOpen}
+                      <a href={cloudAdminUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 underline">{creditsPanelText(zh).visioncloudAdmin}<ExternalLink className="h-3 w-3" /></a>
+                      {creditsPanelText(zh).tickOpenAccount}
                       <span className="font-mono">{organization.id}</span></>
-                  : (zh ? '请联系 VISIONGO 开通额度。' : 'Contact VISIONGO to add credits.')}
+                  : (creditsPanelText(zh).contactVisiongoTo)}
               </p>
             </Alert>
           )}
           {account?.notices?.length ? (
             <div className="space-y-2">
-              <div className="text-xs text-zinc-400">{zh ? '平台公告' : 'Notices'}</div>
+              <div className="text-xs text-zinc-400">{creditsPanelText(zh).notices}</div>
               {account.notices.map(notice => (
                 <div key={notice.id} className="rounded-xl border border-zinc-800 bg-zinc-950 p-3 text-sm">
                   <div className="flex justify-between gap-2 text-zinc-200"><span>{notice.title}</span>
@@ -159,23 +158,23 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
       )}
 
       <Panel icon={<BarChart3 className="h-4 w-4 text-zinc-400" />}
-             title={organization.admin ? (zh ? '用量' : 'Usage') : (zh ? '我的用量' : 'My usage')}
-             description={organization.admin ? (zh ? '按成员和功能统计。' : 'By member and by feature.')
-                                              : (zh ? '你在本组织的 AI 用量。组织余额只有管理员能看到。' : 'Your AI usage in this organization. Only administrators see the balance.')}
+             title={organization.admin ? (creditsPanelText(zh).usageTab) : (creditsPanelText(zh).myUsage)}
+             description={organization.admin ? (creditsPanelText(zh).byMemberAnd)
+                                              : (creditsPanelText(zh).yourAiUsage)}
              actions={
-               <select value={days} onChange={event => setDays(Number(event.target.value))} className={ui.input} aria-label={zh ? '统计区间' : 'Period'}>
-                 {[7, 30, 90, 365].map(value => <option key={value} value={value}>{zh ? `最近 ${value} 天` : `Last ${value} days`}</option>)}
+               <select value={days} onChange={event => setDays(Number(event.target.value))} className={ui.input} aria-label={creditsPanelText(zh).period}>
+                 {[7, 30, 90, 365].map(value => <option key={value} value={value}>{creditsPanelText(zh).lastDays(value)}</option>)}
                </select>}>
-        {!usage ? <p className={ui.muted}>{error ? '' : (zh ? '正在读取…' : 'Loading…')}</p> : (
+        {!usage ? <p className={ui.muted}>{error ? '' : (creditsPanelText(zh).loading)}</p> : (
           <div className="space-y-4 text-sm">
             <div className="grid grid-cols-2 gap-3">
-              {stat(zh ? '请求次数' : 'Requests', String(usage.totals.requests))}
-              {stat(zh ? '消耗 Credits' : 'Credits used', credits(usage.totals.cost_micros, 4))}
+              {stat(creditsPanelText(zh).requests, String(usage.totals.requests))}
+              {stat(creditsPanelText(zh).creditsUsed, credits(usage.totals.cost_micros, 4))}
             </div>
             {organization.admin && usage.by_user.length > 0 && (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[420px]">
-                  <thead className="text-xs text-zinc-500"><tr><th className={ui.cell}>{zh ? '成员' : 'Member'}</th><th className={ui.cell}>{zh ? '请求' : 'Requests'}</th>
+                  <thead className="text-xs text-zinc-500"><tr><th className={ui.cell}>{creditsPanelText(zh).member}</th><th className={ui.cell}>{creditsPanelText(zh).requestsColumn}</th>
                     <th className={ui.cell}>Token</th><th className={ui.cell}>Credits</th></tr></thead>
                   <tbody>{usage.by_user.map(row => (
                     <tr key={row.user_id} className="border-t border-zinc-800 text-zinc-300">
@@ -190,7 +189,7 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
             {usage.by_endpoint.length > 0 && (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[320px]">
-                  <thead className="text-xs text-zinc-500"><tr><th className={ui.cell}>{zh ? '功能' : 'Feature'}</th><th className={ui.cell}>{zh ? '请求' : 'Requests'}</th>
+                  <thead className="text-xs text-zinc-500"><tr><th className={ui.cell}>{creditsPanelText(zh).feature}</th><th className={ui.cell}>{creditsPanelText(zh).requestsColumn}</th>
                     <th className={ui.cell}>Credits</th></tr></thead>
                   <tbody>{usage.by_endpoint.map(row => (
                     <tr key={row.endpoint} className="border-t border-zinc-800 text-zinc-300">
@@ -206,17 +205,17 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
       </Panel>
 
       {organization.admin && (
-        <Panel icon={<ReceiptText className="h-4 w-4 text-zinc-400" />} title={zh ? '充值与消费流水' : 'Ledger'}
+        <Panel icon={<ReceiptText className="h-4 w-4 text-zinc-400" />} title={creditsPanelText(zh).ledger}
                actions={
-                 <select value={type} onChange={event => setType(event.target.value)} className={ui.input} aria-label={zh ? '流水类型' : 'Type'}>
-                   <option value="">{zh ? '全部类型' : 'All types'}</option>
+                 <select value={type} onChange={event => setType(event.target.value)} className={ui.input} aria-label={creditsPanelText(zh).transactionType}>
+                   <option value="">{creditsPanelText(zh).allTypes}</option>
                    {['recharge', 'consumption', 'adjustment'].map(value => <option key={value} value={value}>{typeLabel(value)}</option>)}
                  </select>}>
-          {transactions.length === 0 ? <p className={ui.muted}>{zh ? '暂无流水' : 'No entries'}</p> : (
+          {transactions.length === 0 ? <p className={ui.muted}>{creditsPanelText(zh).noEntries}</p> : (
             <div className="overflow-x-auto text-sm">
               <table className="w-full min-w-[560px]">
-                <thead className="text-xs text-zinc-500"><tr><th className={ui.cell}>{zh ? '时间' : 'Time'}</th><th className={ui.cell}>{zh ? '类型' : 'Type'}</th>
-                  <th className={ui.cell}>{zh ? '变动' : 'Amount'}</th><th className={ui.cell}>{zh ? '余额' : 'Balance'}</th><th className={ui.cell}>{zh ? '说明' : 'Description'}</th></tr></thead>
+                <thead className="text-xs text-zinc-500"><tr><th className={ui.cell}>{creditsPanelText(zh).time}</th><th className={ui.cell}>{creditsPanelText(zh).typeColumn}</th>
+                  <th className={ui.cell}>{creditsPanelText(zh).amount}</th><th className={ui.cell}>{creditsPanelText(zh).balance}</th><th className={ui.cell}>{creditsPanelText(zh).description}</th></tr></thead>
                 <tbody>{transactions.map(item => (
                   <tr key={item.id} className="border-t border-zinc-800 text-zinc-300">
                     <td className={`${ui.cell} whitespace-nowrap font-mono text-xs`}>{new Date(item.created_at_unix_ms).toLocaleString(zh ? 'zh-CN' : 'en-US')}</td>
@@ -228,7 +227,7 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
               </table>
             </div>
           )}
-          {cursor && <button type="button" onClick={() => void loadTransactions(cursor)} className={ui.secondary}>{zh ? '加载更多' : 'Load more'}</button>}
+          {cursor && <button type="button" onClick={() => void loadTransactions(cursor)} className={ui.secondary}>{creditsPanelText(zh).loadMore}</button>}
         </Panel>
       )}
     </div>

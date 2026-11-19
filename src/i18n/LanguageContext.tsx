@@ -1,10 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { localizedPath } from '../../shared/routing';
-import { SUPPORTED_LANGUAGES, type SupportedLocale, type LanguageInfo, type TranslationDictionary } from '../types/i18n';
-import { en } from './locales/en';
-import { zh } from './locales/zh';
+import { SUPPORTED_LANGUAGES, type SupportedLocale, type LanguageInfo } from '../types/i18n';
 
-interface LanguageContextType { locale: SupportedLocale; setLocale: (locale: SupportedLocale) => void; t: TranslationDictionary; languages: LanguageInfo[]; isZh: boolean }
+interface LanguageContextType { locale: SupportedLocale; setLocale: (locale: SupportedLocale) => void; languages: LanguageInfo[] }
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 const browserLocale = (): SupportedLocale => window.location.pathname === '/zh' || window.location.pathname.startsWith('/zh/') || new URLSearchParams(window.location.search).get('lang') === 'zh' ? 'zh' : 'en';
 
@@ -25,7 +23,7 @@ export function LanguageProvider({ children, initialLocale }: { children: ReactN
     return () => window.removeEventListener('popstate', update);
   }, []);
   useEffect(() => { document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en'; }, [locale]);
-  return <LanguageContext.Provider value={{ locale, setLocale, t: locale === 'zh' ? zh : en, languages: SUPPORTED_LANGUAGES, isZh: locale === 'zh' }}>{children}</LanguageContext.Provider>;
+  return <LanguageContext.Provider value={{ locale, setLocale, languages: SUPPORTED_LANGUAGES }}>{children}</LanguageContext.Provider>;
 }
 
 export function useLanguage(): LanguageContextType {

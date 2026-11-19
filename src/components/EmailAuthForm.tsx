@@ -4,6 +4,7 @@ import { Mail, Lock, KeyRound, User as UserIcon, Eye, EyeOff, CheckCircle2, Aler
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
 import { passwordProblem, passwordProblemText } from '../../shared/passwordPolicy';
+import { emailAuthFormText } from '../i18n/text/EmailAuthForm';
 
 interface EmailAuthFormProps {
   onSuccess?: () => void;
@@ -56,7 +57,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email.trim())) {
-      setError(locale === 'zh' ? '请输入有效的邮箱地址' : 'Please enter a valid email address');
+      setError(emailAuthFormText(locale).pleaseEnterA);
       return;
     }
 
@@ -66,10 +67,10 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
 
     if (res.success) {
       setCountdown(60);
-      setSuccessMsg(locale === 'zh' ? '验证码已发送，请查收邮箱' : 'Verification code sent to your email');
+      setSuccessMsg(emailAuthFormText(locale).verificationCodeSent);
 
     } else {
-      setError(res.error || (locale === 'zh' ? '验证码发送失败' : 'Failed to send code'));
+      setError(res.error || (emailAuthFormText(locale).failedToSend));
     }
   };
 
@@ -80,12 +81,12 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
 
     const cleanEmail = email.trim();
     if (!cleanEmail) {
-      setError(locale === 'zh' ? '请输入邮箱地址' : 'Email is required');
+      setError(emailAuthFormText(locale).emailIsRequired);
       return;
     }
 
     if (!password) {
-      setError(locale === 'zh' ? '请输入密码' : 'Password is required');
+      setError(emailAuthFormText(locale).passwordIsRequired);
       return;
     }
 
@@ -96,7 +97,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
       return;
     }
     if (needsCode && !code.trim()) {
-      setError(zh ? '请输入收到的邮箱验证码' : 'Verification code is required');
+      setError(emailAuthFormText(zh).verificationCodeIs);
       return;
     }
 
@@ -109,9 +110,9 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
         setMode('login');
         setCode('');
         setPassword('');
-        setSuccessMsg(zh ? '密码已重置，请使用新密码登录' : 'Password reset. Sign in with the new password.');
+        setSuccessMsg(emailAuthFormText(zh).passwordResetSign);
       } else {
-        setError(res.error || (zh ? '重置密码失败' : 'Password reset failed'));
+        setError(res.error || (emailAuthFormText(zh).passwordResetFailed));
       }
       return;
     }
@@ -124,7 +125,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
       if (res.success) {
         onSuccess?.();
       } else {
-        setError(res.error || (locale === 'zh' ? '注册失败，请稍后重试' : 'Registration failed'));
+        setError(res.error || (emailAuthFormText(locale).registrationFailed));
       }
     } else {
       // Login mode
@@ -134,7 +135,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
       if (res.success) {
         onSuccess?.();
       } else {
-        setError(res.error || (locale === 'zh' ? '登录失败，请检查邮箱和密码' : 'Login failed'));
+        setError(res.error || (emailAuthFormText(locale).loginFailed));
       }
     }
   };
@@ -144,9 +145,9 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
       {/* Mode Switch Tabs */}
       {mode === 'reset' ? (
         <div className="flex items-center justify-between text-xs font-mono">
-          <span className="text-emerald-400 font-semibold">{zh ? '找回密码' : 'Reset password'}</span>
+          <span className="text-emerald-400 font-semibold">{emailAuthFormText(zh).resetPassword}</span>
           <button type="button" onClick={() => switchMode('login')} className="text-zinc-400 hover:text-white cursor-pointer">
-            {zh ? '返回登录' : 'Back to sign in'}
+            {emailAuthFormText(zh).backToSign}
           </button>
         </div>
       ) : (
@@ -162,7 +163,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
                   : 'text-zinc-400 hover:text-white'
               }`}
             >
-              {item === 'login' ? (zh ? '邮箱登录' : 'Email Sign In') : (zh ? '邮箱注册' : 'Email Register')}
+              {item === 'login' ? (emailAuthFormText(zh).emailSignIn) : (emailAuthFormText(zh).emailRegister)}
             </button>
           ))}
         </div>
@@ -172,7 +173,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
         {/* Email Field */}
         <div>
           <label className="block text-[11px] font-mono text-zinc-400 mb-1">
-            {locale === 'zh' ? '工作邮箱' : 'Email Address'}
+            {emailAuthFormText(locale).emailAddress}
           </label>
           <div className="relative">
             <Mail className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -191,7 +192,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
         {needsCode && (
           <div>
             <label className="block text-[11px] font-mono text-zinc-400 mb-1">
-              {locale === 'zh' ? '邮箱验证码' : 'Verification Code'}
+              {emailAuthFormText(locale).verificationCode}
             </label>
             <div className="flex gap-2">
               <div className="relative flex-1">
@@ -213,16 +214,15 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
                 className="px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 disabled:bg-zinc-900 border border-zinc-700 disabled:border-zinc-800 text-[11px] font-mono text-emerald-400 disabled:text-zinc-500 transition-colors shrink-0 cursor-pointer disabled:cursor-not-allowed min-w-[96px] text-center"
               >
                 {sendingCode
-                  ? (locale === 'zh' ? '发送中...' : 'Sending...')
+                  ? (emailAuthFormText(locale).sending)
                   : countdown > 0
                   ? `${countdown}s`
-                  : (locale === 'zh' ? '获取验证码' : 'Send Code')}
+                  : (emailAuthFormText(locale).sendCode)}
               </button>
             </div>
             {!emailDelivery && (
               <p className="mt-1.5 text-[11px] text-amber-300">
-                {zh ? '本站暂不能发送邮件。请向管理员索取验证码（24 小时内有效），直接填在上面，不要点“获取验证码”。'
-                    : 'This site cannot send email yet. Ask an administrator for a code and enter it above.'}
+                {emailAuthFormText(zh).thisSiteCannot}
               </p>
             )}
           </div>
@@ -232,7 +232,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
         {mode === 'register' && (
           <div>
             <label className="block text-[11px] font-mono text-zinc-400 mb-1">
-              {locale === 'zh' ? '用户名 / 昵称 (可选)' : 'Display Name (Optional)'}
+              {emailAuthFormText(locale).displayNameOptional}
             </label>
             <div className="relative">
               <UserIcon className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -240,7 +240,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                placeholder={locale === 'zh' ? '工业视觉工程师' : 'Vision Engineer'}
+                placeholder={emailAuthFormText(locale).visionEngineer}
                 className="w-full pl-9 pr-3 py-2 bg-zinc-950/80 border border-zinc-800 rounded-xl text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
@@ -250,7 +250,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
         {/* Password Field */}
         <div>
           <label className="block text-[11px] font-mono text-zinc-400 mb-1">
-            {mode === 'reset' ? (zh ? '新密码' : 'New password') : (zh ? '密码' : 'Password')}
+            {mode === 'reset' ? (emailAuthFormText(zh).newPassword) : (emailAuthFormText(zh).password)}
           </label>
           <div className="relative">
             <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -272,12 +272,12 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
           </div>
           {needsCode ? (
             <p className="text-[10px] text-zinc-500 font-mono mt-1">
-              {zh ? '8–128 位，须同时包含字母和数字' : '8–128 characters with letters and digits'}
+              {emailAuthFormText(zh).charactersWithLetters}
             </p>
           ) : (
             <button type="button" onClick={() => switchMode('reset')}
                     className="text-[11px] text-zinc-500 hover:text-emerald-400 font-mono mt-1 cursor-pointer">
-              {zh ? '忘记密码？' : 'Forgot password?'}
+              {emailAuthFormText(zh).forgotPassword}
             </button>
           )}
         </div>
@@ -309,10 +309,10 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
             <>
               <span>
                 {mode === 'register'
-                  ? (zh ? '验证并完成注册' : 'Verify & Complete Registration')
+                  ? (emailAuthFormText(zh).verifyCompleteRegistration)
                   : mode === 'reset'
-                  ? (zh ? '验证并重置密码' : 'Verify & Reset Password')
-                  : (zh ? '立即登录' : 'Sign In to Account')}
+                  ? (emailAuthFormText(zh).verifyResetPassword)
+                  : (emailAuthFormText(zh).signInTo)}
               </span>
               <ArrowRight className="w-3.5 h-3.5" />
             </>

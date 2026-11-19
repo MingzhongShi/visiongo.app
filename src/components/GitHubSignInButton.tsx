@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { loadAuthConfig } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { gitHubSignInButtonText } from '../i18n/text/GitHubSignInButton';
 
 interface GitHubSignInButtonProps {
   onSuccess?: () => void;
@@ -57,20 +58,14 @@ export const GitHubSignInButton: React.FC<GitHubSignInButtonProps> = ({ classNam
         </svg>
         <span>
           {loading
-            ? locale === 'zh'
-              ? '正在连接 GitHub...'
-              : 'Connecting to GitHub...'
-            : locale === 'zh'
-            ? '使用 GitHub 账号登录'
-            : 'Continue with GitHub'}
+            ? gitHubSignInButtonText(locale).connectingToGithub
+            : gitHubSignInButtonText(locale).continueWithGithub}
         </span>
       </button>
 
       {!isConfigured && (
         <p className="text-[11px] text-amber-500/80 font-mono text-center max-w-[280px]">
-          {locale === 'zh'
-            ? 'GitHub 登录暂不可用，请使用其他登录方式。'
-            : 'GitHub sign-in is unavailable. Please use another sign-in method.'}
+          {gitHubSignInButtonText(locale).githubSignIn}
         </p>
       )}
     </div>

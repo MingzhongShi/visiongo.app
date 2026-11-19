@@ -4,6 +4,7 @@ import { getSolutions } from '../data/solutions';
 import { SectionHeader } from '../components/SectionHeader';
 import { SeoHead } from '../components/SeoHead';
 import { useLanguage } from '../i18n/LanguageContext';
+import { solutionsPageText } from '../i18n/text/SolutionsPage';
 
 interface SolutionsPageProps {
   onNavigate: (path: string) => void;
@@ -11,17 +12,15 @@ interface SolutionsPageProps {
 }
 
 export const SolutionsPage: React.FC<SolutionsPageProps> = ({ onNavigate, onOpenContact }) => {
-  const { t, locale } = useLanguage();
+  const { locale } = useLanguage();
   const solutions = getSolutions(locale);
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans pt-28 pb-24">
       <SeoHead
-        title={t.nav.solutions}
+        title={solutionsPageText(locale).solutions}
         description={
-          locale === 'zh'
-            ? '围绕形状匹配、测量与区域分析组织工业视觉检测流程。'
-            : 'Explore industrial vision workflows for matching, measurement and region analysis.'
+          solutionsPageText(locale).exploreIndustrialVision
         }
         canonicalPath="/solutions"
       />
@@ -29,16 +28,12 @@ export const SolutionsPage: React.FC<SolutionsPageProps> = ({ onNavigate, onOpen
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           as="h1"
-          badge={t.solutionsSection.badge}
+          badge={solutionsPageText(locale).badge}
           title={
-            locale === 'zh'
-              ? '围绕检测任务设计工作流'
-              : 'Workflows for Industrial Inspection'
+            solutionsPageText(locale).workflowsForIndustrial
           }
           description={
-            locale === 'zh'
-              ? '围绕形状匹配、测量与区域分析评估适合项目的检测流程。'
-              : 'Explore matching, measurement and region-analysis workflows for your project.'
+            solutionsPageText(locale).exploreMatchingMeasurement
           }
         />
 
@@ -66,7 +61,7 @@ export const SolutionsPage: React.FC<SolutionsPageProps> = ({ onNavigate, onOpen
 
                   <div className="pt-2">
                     <div className="text-xs font-mono text-zinc-400 uppercase tracking-wider mb-3">
-                      {t.solutionsSection.recommendedStack}
+                      {solutionsPageText(locale).recommendedStack}
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {sol.recommendedStack.map((item, idx) => (
@@ -85,7 +80,7 @@ export const SolutionsPage: React.FC<SolutionsPageProps> = ({ onNavigate, onOpen
 
                 <div className="lg:col-span-5 bg-zinc-950/70 border border-zinc-800 rounded-2xl p-6 space-y-4">
                   <div className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-semibold border-b border-zinc-800/80 pb-3">
-                    {locale === 'zh' ? '工程关注点' : 'Engineering considerations'}
+                    {solutionsPageText(locale).engineeringConsiderations}
                   </div>
 
                   <ul className="space-y-3">
@@ -103,7 +98,7 @@ export const SolutionsPage: React.FC<SolutionsPageProps> = ({ onNavigate, onOpen
                       className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-mono font-bold transition-colors flex items-center justify-center gap-2"
                     >
                       <span>
-                        {t.solutionsSection.inquireAbout} {sol.title}
+                        {solutionsPageText(locale).inquireAbout} {sol.title}
                       </span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>

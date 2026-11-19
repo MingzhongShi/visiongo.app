@@ -5,6 +5,7 @@ import { EmailAuthForm } from './EmailAuthForm';
 import { useLanguage } from '../i18n/LanguageContext';
 import { ShieldCheck, Mail, Globe } from 'lucide-react';
 import { ALL_AUTH_METHODS, loadAuthConfig, type AuthMethod } from '../lib/api';
+import { authCardText } from '../i18n/text/AuthCard';
 
 interface AuthCardProps {
   onSuccess?: () => void;
@@ -49,7 +50,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess, className = '' })
           }`}
         >
           <Globe className="w-3.5 h-3.5" />
-          <span>{locale === 'zh' ? '第三方快捷登录' : 'Fast OAuth Login'}</span>
+          <span>{authCardText(locale).fastOauthLogin}</span>
         </button>
         <button
           type="button"
@@ -61,7 +62,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess, className = '' })
           }`}
         >
           <Mail className="w-3.5 h-3.5" />
-          <span>{locale === 'zh' ? '工作邮箱注册 / 登录' : 'Email Sign In / Register'}</span>
+          <span>{authCardText(locale).emailSignIn}</span>
         </button>
       </div>
       )}
@@ -75,7 +76,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess, className = '' })
             {google && github && (
               <div className="w-full max-w-[280px] flex items-center gap-2 text-zinc-600 my-1">
                 <div className="h-[1px] bg-zinc-800 flex-1" />
-                <span className="text-[10px] font-mono uppercase">{locale === 'zh' ? '或' : 'OR'}</span>
+                <span className="text-[10px] font-mono uppercase">{authCardText(locale).or}</span>
                 <div className="h-[1px] bg-zinc-800 flex-1" />
               </div>
             )}
@@ -91,7 +92,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess, className = '' })
               className="text-xs font-mono text-zinc-500 hover:text-emerald-400 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
             >
               <Mail className="w-3.5 h-3.5" />
-              <span>{locale === 'zh' ? '没有第三方账号？使用邮箱验证码注册' : 'No OAuth account? Register with email'}</span>
+              <span>{authCardText(locale).noOauthAccount}</span>
             </button>
           </div>
           )}
@@ -109,7 +110,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess, className = '' })
       <div className="pt-2 border-t border-zinc-800/80">
         <div className="flex items-center justify-center gap-2 text-[11px] font-mono text-zinc-500">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>{locale === 'zh' ? '端到端加密 • 零明文存储 • 安全合规' : 'End-to-End Encrypted • Safe & Compliant'}</span>
+          <span>{authCardText(locale).endToEnd}</span>
         </div>
       </div>
     </div>

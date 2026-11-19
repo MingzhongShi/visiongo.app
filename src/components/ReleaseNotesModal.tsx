@@ -5,6 +5,7 @@ import { X, Calendar, Download, ShieldCheck, Tag } from 'lucide-react';
 import { ProductRelease } from '../types/downloads';
 import { SafeMarkdown } from './SafeMarkdown';
 import { useLanguage } from '../i18n/LanguageContext';
+import { releaseNotesModalText } from '../i18n/text/ReleaseNotesModal';
 
 interface ReleaseNotesModalProps {
   isOpen: boolean;
@@ -70,7 +71,7 @@ export const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({
                 </span>
               )}
               <h3 id="release-title" className="text-lg font-bold text-white font-sans">
-                {productName} {locale === 'zh' ? '发版日志' : 'Release Notes'}
+                {productName} {releaseNotesModalText(locale).releaseNotes}
               </h3>
             </div>
             <div className="flex items-center gap-4 text-xs font-mono text-zinc-400">
@@ -80,7 +81,7 @@ export const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({
               </span>
               <span className="flex items-center gap-1.5 text-emerald-400/90">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                {locale === 'zh' ? '来自官方发布仓库' : 'Official release repository'}
+                {releaseNotesModalText(locale).officialReleaseRepository}
               </span>
             </div>
           </div>
@@ -99,7 +100,7 @@ export const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({
           <div className="px-6 py-2.5 bg-zinc-950/90 border-b border-zinc-800/80 flex items-center gap-2 overflow-x-auto text-xs font-mono">
             <span className="text-zinc-500 shrink-0 flex items-center gap-1">
               <Tag className="w-3 h-3" />
-              {locale === 'zh' ? '版本切换:' : 'Version:'}
+              {releaseNotesModalText(locale).version}
             </span>
             {allReleases.map((r) => {
               const isSelected = r.version === release.version;
@@ -124,14 +125,14 @@ export const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({
         <div className="p-6 overflow-y-auto space-y-6 flex-1 text-zinc-300">
           {/* Markdown Content */}
           <div className="prose prose-invert max-w-none text-sm">
-            <SafeMarkdown content={release.description || (locale === 'zh' ? '暂无详细发版说明。' : 'No release notes provided for this build.')} />
+            <SafeMarkdown content={release.description || (releaseNotesModalText(locale).noReleaseNotes)} />
           </div>
 
           {/* Release Assets List */}
           {release.assets.length > 0 && (
             <div className="pt-4 border-t border-zinc-800/80 space-y-3">
               <h4 className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-                {locale === 'zh' ? '本版本安装文件与包' : 'Release Packages & Binaries'}
+                {releaseNotesModalText(locale).releasePackagesBinaries}
               </h4>
               <div className="grid grid-cols-1 gap-2">
                 {release.assets.map((asset) => (
@@ -156,7 +157,7 @@ export const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({
                       className="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-medium flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
                     >
                       <Download className="w-3.5 h-3.5" />
-                      <span>{locale === 'zh' ? '下载' : 'Download'}</span>
+                      <span>{releaseNotesModalText(locale).download}</span>
                     </SiteLink>
                   </div>
                 ))}
@@ -167,12 +168,12 @@ export const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({
 
         {/* Footer */}
         <div className="px-6 py-4 border-t border-zinc-800 bg-zinc-950/80 flex items-center justify-between text-xs font-mono text-zinc-500">
-          <span>{locale === 'zh' ? '系统与架构以安装包标注为准' : 'Check package system and architecture'}</span>
+          <span>{releaseNotesModalText(locale).checkPackageSystem}</span>
           <button
             onClick={onClose}
             className="px-4 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors cursor-pointer"
           >
-            {locale === 'zh' ? '关闭' : 'Close'}
+            {releaseNotesModalText(locale).close}
           </button>
         </div>
       </div>

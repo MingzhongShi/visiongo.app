@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Globe, Check, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { SupportedLocale } from '../types/i18n';
+import { languageSwitcherText } from '../i18n/text/LanguageSwitcher';
 
 interface LanguageSwitcherProps {
   className?: string;
@@ -42,7 +43,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
         title="Switch Language / 切换语言"
       >
         <Globe className="w-3.5 h-3.5 text-emerald-400" />
-        <span>{variant === 'compact' ? (locale === 'zh' ? '中' : 'EN') : currentLang.nativeName}</span>
+        <span>{variant === 'compact' ? (languageSwitcherText(locale).shortName) : currentLang.nativeName}</span>
         <ChevronDown
           className={`w-3 h-3 text-zinc-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
         />
