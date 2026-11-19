@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowLeft, ArrowRight, Shield, Cpu, Sliders, Sparkles, Terminal, FileCode2, Package, Layers } from 'lucide-react';
 import { getProduct, getProducts } from '../data/products';
 import { SeoHead } from '../components/SeoHead';
+import { SiteLink } from '../components/SiteLink';
 import { useLanguage } from '../i18n/LanguageContext';
 import { productPageText } from '../i18n/text/ProductPage';
 
@@ -11,7 +12,7 @@ interface ProductPageProps {
   onOpenContact: () => void;
 }
 
-export const ProductPage: React.FC<ProductPageProps> = ({ slug, onNavigate, onOpenContact }) => {
+export const ProductPage: React.FC<ProductPageProps> = ({ slug, onOpenContact }) => {
   const { locale } = useLanguage();
   const product = getProduct(slug, locale);
   const allProducts = getProducts(locale);
@@ -35,203 +36,97 @@ export const ProductPage: React.FC<ProductPageProps> = ({ slug, onNavigate, onOp
     }
   };
 
+  const tx = productPageText(locale);
+  const specs = [
+    [tx.architectureRole, product.architectureRole],
+    [tx.deploymentTarget, product.deploymentTarget],
+    [tx.networkConnectivity, product.connectivityRequirement],
+  ];
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans pt-28 pb-24">
+    <div className="page-shell">
       <SeoHead
         title={`${product.name} — ${product.positioning}`}
         description={`${product.name}: ${product.tagline} ${product.summary}`}
         canonicalPath={`/products/${product.slug}`}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Navigation Breadcrumb */}
-        <div className="mb-8 flex items-center gap-2 text-xs font-mono text-zinc-500">
-          <button
-            onClick={() => onNavigate('/')}
-            className="hover:text-zinc-300 transition-colors flex items-center gap-1"
-          >
-            <ArrowLeft className="w-3 h-3" /> {productPageText(locale).home}
-          </button>
-          <span>/</span>
-          <button
-            onClick={() => onNavigate('/#products')}
-            className="hover:text-zinc-300 transition-colors"
-          >
-            {productPageText(locale).products}
-          </button>
-          <span>/</span>
-          <span className="text-zinc-300">{product.name}</span>
-        </div>
+      <nav aria-label={tx.breadcrumb} className="mb-8 flex items-center gap-2 text-sm text-zinc-500">
+        <SiteLink href="/" className="hover:text-zinc-300">{tx.home}</SiteLink>
+        <span aria-hidden="true">/</span>
+        <SiteLink href="/#products" className="hover:text-zinc-300">{tx.products}</SiteLink>
+        <span aria-hidden="true">/</span>
+        <span className="text-zinc-300">{product.name}</span>
+      </nav>
 
-        {/* Hero Header */}
-        <div className="p-8 sm:p-12 rounded-3xl bg-zinc-900/60 border border-zinc-800 relative overflow-hidden tech-grid mb-12">
-          <div
-            className="absolute top-0 left-0 right-0 h-1.5"
-            style={{ backgroundColor: product.accentColor }}
-          />
-
-          <div className="max-w-3xl space-y-5">
-            <div className="flex flex-wrap items-center gap-3">
-              <span
-                className="text-xs font-mono font-bold px-3 py-1 rounded-md uppercase tracking-wider"
-                style={{
-                  backgroundColor: `${product.accentColor}15`,
-                  color: product.accentColor,
-                  border: `1px solid ${product.accentColor}30`,
-                }}
-              >
-                {product.shortAction} {productPageText(locale).phaseSuffix}
-              </span>
-              <span className="text-xs font-mono text-zinc-400 bg-zinc-800/80 px-2.5 py-1 rounded">
-                {product.positioning}
-              </span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
-              {product.name}
-            </h1>
-
-            <p className="text-xl sm:text-2xl font-medium text-zinc-300 font-mono">
-              {product.tagline}
-            </p>
-
-            <p className="text-base text-zinc-400 leading-relaxed font-normal">
-              {product.description}
-            </p>
-
-            <div className="pt-4 flex flex-wrap gap-4 text-xs font-mono">
-              <button
-                onClick={onOpenContact}
-                className="px-6 py-3 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-bold transition-all flex items-center gap-2"
-              >
-                <span>
-                  {productPageText(locale).requestTrial(product.name)}
-                </span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <button
-                onClick={() => onNavigate('/developers#docs')}
-                className="px-6 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium transition-all"
-              >
-                {productPageText(locale).readDeveloperDocs}
-              </button>
-            </div>
+      <section className="surface-card tech-grid relative mb-12 grid gap-10 overflow-hidden p-8 sm:p-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+        <div className="absolute inset-x-0 top-0 h-1.5" style={{ backgroundColor: product.accentColor }} />
+        <div className="space-y-5">
+          <span className="tag" style={{ color: product.accentColor, borderColor: `${product.accentColor}40` }}>{product.shortAction} {tx.phaseSuffix}</span>
+          <h1 className="page-title">{product.name}</h1>
+          <p className="text-xl font-medium text-zinc-300 sm:text-2xl">{product.tagline}</p>
+          <p className="lead">{product.description}</p>
+          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+            <button type="button" onClick={onOpenContact} className="btn-primary">{tx.requestTrial(product.name)}<ArrowRight className="h-4 w-4" /></button>
+            <SiteLink href="/developers#docs" className="btn-secondary">{tx.readDeveloperDocs}</SiteLink>
           </div>
         </div>
-
-        {/* Technical Specification Matrix */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800">
-            <div className="text-xs font-mono text-zinc-500 uppercase tracking-wider mb-2">
-              {productPageText(locale).architectureRole}
+        <dl className="space-y-5 self-center rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
+          {specs.map(([label, value]) => (
+            <div key={label}>
+              <dt className="text-xs text-zinc-500">{label}</dt>
+              <dd className="mt-1 text-sm leading-relaxed text-zinc-200">{value}</dd>
             </div>
-            <p className="text-sm text-zinc-200 font-medium">{product.architectureRole}</p>
-          </div>
+          ))}
+        </dl>
+      </section>
 
-          <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800">
-            <div className="text-xs font-mono text-zinc-500 uppercase tracking-wider mb-2">
-              {productPageText(locale).deploymentTarget}
-            </div>
-            <p className="text-sm text-zinc-200 font-medium">{product.deploymentTarget}</p>
-          </div>
+      {product.slug === 'visionstudio' && (
+        <figure className="surface-card mb-16 overflow-hidden">
+          <a href="/screenshots/visionstudio-workflow.webp" target="_blank" rel="noopener" className="block overflow-x-auto">
+            <img src="/screenshots/visionstudio-workflow.webp" alt={tx.screenshotAlt} width={1680} height={980} loading="lazy" decoding="async" className="h-auto w-full min-w-[720px] md:min-w-0" />
+          </a>
+          <figcaption className="border-t border-zinc-800 px-4 py-3 text-xs text-zinc-400">{tx.screenshotCaption}</figcaption>
+        </figure>
+      )}
 
-          <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800">
-            <div className="text-xs font-mono text-zinc-500 uppercase tracking-wider mb-2">
-              {productPageText(locale).networkConnectivity}
+      <section className="mb-16">
+        <h2 className="section-title mb-8">{tx.keyCapabilitiesEngineering}</h2>
+        <div className="grid gap-6 md:grid-cols-3">
+          {product.keyCapabilities.map(cap => (
+            <div key={cap.title} className="surface-card p-7">
+              <div className="icon-tile mb-4" style={{ color: product.accentColor, borderColor: `${product.accentColor}30`, backgroundColor: `${product.accentColor}15` }}>{getIcon(cap.icon)}</div>
+              <h3 className="text-lg font-semibold text-white">{cap.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-400">{cap.description}</p>
             </div>
-            <p className="text-sm text-emerald-400 font-medium font-mono">
-              {product.connectivityRequirement}
-            </p>
-          </div>
+          ))}
         </div>
+      </section>
 
-        {/* Key Capabilities */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-            <span>{productPageText(locale).keyCapabilitiesEngineering}</span>
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {product.keyCapabilities.map((cap, idx) => (
-              <div
-                key={idx}
-                className="p-7 rounded-2xl bg-zinc-900/40 border border-zinc-800 hover:border-zinc-700 transition-colors"
-              >
-                <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center mb-4"
-                  style={{
-                    backgroundColor: `${product.accentColor}15`,
-                    color: product.accentColor,
-                    border: `1px solid ${product.accentColor}30`,
-                  }}
-                >
-                  {getIcon(cap.icon)}
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">{cap.title}</h3>
-                <p className="text-sm text-zinc-400 leading-relaxed">{cap.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Sample Code or Configuration Block */}
-        {product.sampleCodeOrConfig && (
-          <div className="mb-16">
-            <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-              <FileCode2 className="w-5 h-5 text-emerald-400" />
-              <span>
-                {productPageText(locale).specificationConfigurationBlueprint}
-              </span>
-            </h2>
-            <p className="text-sm text-zinc-400 mb-6">
-              {productPageText(locale).sampleDeclarativeManifest}
-            </p>
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden shadow-2xl">
-              <div className="px-4 py-3 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between font-mono text-xs text-zinc-400">
-                <span className="flex items-center gap-2">
-                  <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-                  {product.sampleCodeOrConfig.filename}
-                </span>
-                <span className="uppercase text-[10px] text-zinc-500">
-                  {product.sampleCodeOrConfig.language}
-                </span>
-              </div>
-              <pre className="p-6 text-xs text-zinc-300 font-mono overflow-x-auto leading-relaxed">
-                <code>{product.sampleCodeOrConfig.code}</code>
-              </pre>
+      {product.sampleCodeOrConfig && (
+        <section className="mb-16">
+          <h2 className="section-title mb-4 flex items-center gap-2"><FileCode2 className="h-5 w-5 text-emerald-400" />{tx.specificationConfigurationBlueprint}</h2>
+          <p className="mb-6 text-sm text-zinc-400">{tx.sampleDeclarativeManifest}</p>
+          <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950">
+            <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-900 px-4 py-3 font-mono text-xs text-zinc-400">
+              <span className="flex items-center gap-2"><Terminal className="h-3.5 w-3.5 text-emerald-400" />{product.sampleCodeOrConfig.filename}</span>
+              <span className="text-[10px] uppercase text-zinc-500">{product.sampleCodeOrConfig.language}</span>
             </div>
+            <pre className="overflow-x-auto p-6 font-mono text-xs leading-relaxed text-zinc-300"><code>{product.sampleCodeOrConfig.code}</code></pre>
           </div>
-        )}
+        </section>
+      )}
 
-        {/* Bottom Navigation between Products */}
-        <div className="border-t border-zinc-800 pt-10 flex flex-wrap items-center justify-between gap-4">
-          <button
-            onClick={() => onNavigate('/')}
-            className="text-xs font-mono text-zinc-400 hover:text-white transition-colors flex items-center gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />{' '}
-            {productPageText(locale).backToPlatform}
-          </button>
-
-          <div className="flex items-center gap-3">
-            {allProducts.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => onNavigate(`/products/${p.slug}`)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-colors ${
-                  p.slug === product.slug
-                    ? 'bg-zinc-800 text-white font-semibold'
-                    : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900'
-                }`}
-              >
-                {p.name}
-              </button>
-            ))}
-          </div>
+      <nav aria-label={tx.products} className="flex flex-wrap items-center justify-between gap-4 border-t border-zinc-800 pt-10">
+        <SiteLink href="/" className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white"><ArrowLeft className="h-4 w-4" />{tx.backToPlatform}</SiteLink>
+        <div className="flex flex-wrap items-center gap-2">
+          {allProducts.map(p => (
+            <SiteLink key={p.id} href={`/products/${p.slug}`} aria-current={p.slug === product.slug ? 'page' : undefined}
+                      className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${p.slug === product.slug ? 'bg-zinc-800 font-medium text-white' : 'text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300'}`}>
+              {p.name}
+            </SiteLink>
+          ))}
         </div>
-      </div>
+      </nav>
     </div>
   );
 };

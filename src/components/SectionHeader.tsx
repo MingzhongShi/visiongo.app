@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface SectionHeaderProps {
+  /** Short name of the page or section above the title (for example the navigation label). */
   badge: string;
   title: string;
   description?: string;
@@ -9,32 +10,18 @@ interface SectionHeaderProps {
   as?: 'h1' | 'h2';
 }
 
+/** Title block at the top of a page or section: eyebrow, heading and an optional lead paragraph. */
 export const SectionHeader: React.FC<SectionHeaderProps> = ({
   badge,
   title,
   description,
-  align = 'center',
+  align = 'left',
   className = '',
   as: HeadingTag = 'h2',
-}) => {
-  return (
-    <div
-      className={`mb-12 md:mb-16 ${
-        align === 'center' ? 'text-center mx-auto max-w-3xl' : 'text-left max-w-2xl'
-      } ${className}`}
-    >
-      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-medium tracking-wide uppercase bg-zinc-900 border border-zinc-800 text-zinc-400 mb-4">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-        {badge}
-      </div>
-      <HeadingTag className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-4">
-        {title}
-      </HeadingTag>
-      {description && (
-        <p className="text-base md:text-lg text-zinc-400 leading-relaxed font-normal">
-          {description}
-        </p>
-      )}
-    </div>
-  );
-};
+}) => (
+  <div className={`mb-10 md:mb-12 ${align === 'center' ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'} ${className}`}>
+    <p className="eyebrow mb-3">{badge}</p>
+    <HeadingTag className={HeadingTag === 'h1' ? 'page-title' : 'section-title'}>{title}</HeadingTag>
+    {description && <p className="lead mt-4">{description}</p>}
+  </div>
+);

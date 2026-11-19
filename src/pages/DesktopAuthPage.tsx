@@ -208,7 +208,7 @@ export const DesktopAuthPage: React.FC = () => {
                     />
                     <Building2 className="w-4 h-4 text-zinc-500 shrink-0" />
                     <span className="flex-1 truncate text-zinc-200">{tenant.name}</span>
-                    <span className="text-[10px] font-mono text-zinc-500">
+                    <span className="text-[10px] text-zinc-500">
                       {tenant.type === 'personal' ? '个人' : tenant.role === 'org_admin' ? '管理员' : '成员'}
                     </span>
                   </label>

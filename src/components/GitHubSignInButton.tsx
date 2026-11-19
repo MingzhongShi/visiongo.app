@@ -47,7 +47,7 @@ export const GitHubSignInButton: React.FC<GitHubSignInButtonProps> = ({ classNam
       <button
         onClick={handleSignIn}
         disabled={loading || !isConfigured}
-        className="w-full max-w-[280px] py-2.5 px-4 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs font-mono text-zinc-300 hover:text-white flex items-center justify-center gap-2.5 transition-colors cursor-pointer shadow-sm"
+        className="w-full max-w-[280px] py-2.5 px-4 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 hover:text-white flex items-center justify-center gap-2.5 transition-colors cursor-pointer shadow-sm"
       >
         <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
           <path
@@ -64,7 +64,7 @@ export const GitHubSignInButton: React.FC<GitHubSignInButtonProps> = ({ classNam
       </button>
 
       {!isConfigured && (
-        <p className="text-[11px] text-amber-500/80 font-mono text-center max-w-[280px]">
+        <p className="text-[11px] text-amber-500/80 text-center max-w-[280px]">
           {gitHubSignInButtonText(locale).githubSignIn}
         </p>
       )}

@@ -8,7 +8,7 @@ export const solutionsPageText = bilingual({
     engineeringConsiderations: 'Engineering considerations',
     solutions: 'Solutions',
     badge: 'Applications',
-    inquireAbout: 'Inquire About',
+    inquireAbout: 'Discuss this solution',
     recommendedStack: 'Recommended Software Stack',
   },
   zh: {
