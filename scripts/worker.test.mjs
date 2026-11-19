@@ -376,3 +376,18 @@ test('the token-in-URL desktop endpoint is gone and sign-in attempts are limited
   }
   assert.ok(limited >= 1);
 });
+test('session pages: me, logout, download history and URL normalization keep their answers', async () => {
+  const env = environment();
+  const me = await request('/api/auth/me', undefined, env);
+  assert.equal(me.status, 200); assert.equal(me.headers.get('Cache-Control'), 'no-store'); assert.deepEqual(await me.json(), { user: null });
+  const history = await request('/api/user/downloads', undefined, env);
+  assert.equal(history.status, 401); assert.equal((await history.json()).error, 'Unauthorized');
+  const logout = await request('/api/auth/logout', {}, env);
+  assert.equal(logout.status, 200); assert.match(logout.headers.get('Set-Cookie'), /^vg_session=;.*Max-Age=0/);
+  const slash = await request('/downloads/', undefined, env);
+  assert.equal(slash.status, 301); assert.equal(slash.headers.get('Location'), 'https://visiongo.app/downloads');
+  const index = await request('/index.html', undefined, env);
+  assert.equal(index.status, 301); assert.equal(index.headers.get('Location'), 'https://visiongo.app/');
+  const wrongMethod = await request('/api/auth/token', undefined, env);
+  assert.equal(wrongMethod.status, 404);
+});
