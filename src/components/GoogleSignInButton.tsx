@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { loadAuthConfig } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -55,16 +56,10 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
   // Fetch client ID from server config if not defined in Vite env
   useEffect(() => {
     if (!clientId || isDummyId) {
-      fetch('/api/auth/config')
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data: { googleClientId?: string } | null) => {
-          if (data?.googleClientId && !data.googleClientId.includes('your_google_client_id')) {
-            setClientId(data.googleClientId);
-          }
-        })
-        .catch(() => {
-          // Ignore network errors on config fetch
-        });
+      void loadAuthConfig().then(config => {
+        const id = config?.googleClientId;
+        if (id && !id.includes('your_google_client_id')) setClientId(id);
+      });
     }
   }, [clientId, isDummyId]);
 

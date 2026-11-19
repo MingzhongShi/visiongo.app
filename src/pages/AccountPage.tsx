@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { api } from '../lib/api';
 import {
   ArrowRight,
   Building2,
@@ -155,9 +156,8 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
   const [sessionsError, setSessionsError] = useState('');
   const [sessionsBusy, setSessionsBusy] = useState(false);
   const loadSessions = useCallback(() => {
-    fetch('/api/account/desktop-sessions')
-      .then(res => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
-      .then(data => { setSessions(data.sessions || []); setSessionsError(''); })
+    api('/api/account/desktop-sessions')
+      .then(({ ok, status, data }) => { if (!ok) throw new Error(String(status)); setSessions(data.sessions || []); setSessionsError(''); })
       .catch(() => { setSessions([]); setSessionsError(zh ? '无法读取已登录的电脑。' : 'Could not load the signed-in computers.'); });
   }, [zh]);
   useEffect(loadSessions, [loadSessions]);
@@ -165,8 +165,7 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
     setSessionsBusy(true);
     setSessionsError('');
     try {
-      const res = await fetch('/api/account/desktop-sessions/revoke', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const res = await api('/api/account/desktop-sessions/revoke', body);
       if (!res.ok) throw new Error(String(res.status));
     } catch {
       setSessionsError(zh ? '退出登录失败，请重试。' : 'Signing out failed. Please retry.');
@@ -178,9 +177,8 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
 
   const [downloads, setDownloads] = useState<UserDownloadRecord[] | null>(null);
   useEffect(() => {
-    fetch('/api/user/downloads')
-      .then(res => (res.ok ? res.json() : { downloads: [] }))
-      .then(data => setDownloads(data.downloads || []))
+    api('/api/user/downloads')
+      .then(({ ok, data }) => setDownloads((ok && data.downloads) || []))
       .catch(() => setDownloads([]));
   }, []);
 

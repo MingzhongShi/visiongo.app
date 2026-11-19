@@ -1,4 +1,5 @@
 import { SiteLink } from '../components/SiteLink';
+import { api } from '../lib/api';
 import { useEffect, useState } from 'react';
 import { ReleaseCard } from '../components/ReleaseCard';
 import { ReleaseNotesModal } from '../components/ReleaseNotesModal';
@@ -29,9 +30,8 @@ export function DownloadsPage({ initialProduct, initialVersion }: { initialProdu
     setMissingVersion(false);
     void (async () => {
       try {
-        const response = await fetch(`/api/releases?includePrereleases=${includePrereleases}`, { signal: controller.signal });
-        if (!response.ok) throw new Error('Release service unavailable');
-        const data = await response.json();
+        const { ok, data } = await api(`/api/releases?includePrereleases=${includePrereleases}`, undefined, { signal: controller.signal });
+        if (!ok) throw new Error('Release service unavailable');
         if (!data.releases || PRODUCTS.some(product => !Array.isArray(data.releases[product]))) throw new Error('Invalid releases response');
         if (controller.signal.aborted) return;
         setReleases(data.releases);

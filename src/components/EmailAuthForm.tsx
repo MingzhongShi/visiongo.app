@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { loadAuthConfig } from '../lib/api';
 import { Mail, Lock, KeyRound, User as UserIcon, Eye, EyeOff, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -32,10 +33,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
   // False while the site cannot send email: codes then come from a platform administrator.
   const [emailDelivery, setEmailDelivery] = useState(true);
   useEffect(() => {
-    fetch('/api/auth/config')
-      .then(response => (response.ok ? response.json() : null))
-      .then(data => { if (data && data.emailDelivery === false) setEmailDelivery(false); })
-      .catch(() => undefined);
+    void loadAuthConfig().then(config => { if (config?.emailDelivery === false) setEmailDelivery(false); });
   }, []);
 
   // 60-second countdown for code resend

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { loadAuthConfig } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -17,14 +18,10 @@ export const GitHubSignInButton: React.FC<GitHubSignInButtonProps> = ({ classNam
 
   useEffect(() => {
     if (!githubClientId) {
-      fetch('/api/auth/config')
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data: { githubClientId?: string } | null) => {
-          if (data?.githubClientId && !data.githubClientId.includes('your_github_client_id')) {
-            setGithubClientId(data.githubClientId);
-          }
-        })
-        .catch(() => {});
+      void loadAuthConfig().then(config => {
+        const id = config?.githubClientId;
+        if (id && !id.includes('your_github_client_id')) setGithubClientId(id);
+      });
     }
   }, [githubClientId]);
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { api, loadAuthConfig } from '../lib/api';
 import { CheckCircle2, ArrowRight, Building2, Laptop, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -34,9 +35,9 @@ export const DesktopAuthPage: React.FC = () => {
 
   useEffect(() => {
     if (!user) return;
-    fetch('/api/orgs')
-      .then(response => (response.ok ? response.json() : Promise.reject(new Error('organizations'))))
-      .then((data: { tenants?: DesktopTenant[]; current_tenant_id?: string | null }) => {
+    api<{ tenants?: DesktopTenant[]; current_tenant_id?: string | null }>('/api/orgs')
+      .then(({ ok, data }) => {
+        if (!ok) throw new Error('organizations');
         const list = data.tenants || [];
         setTenants(list);
         setTenantId(data.current_tenant_id || list[0]?.tenant_id || '');
@@ -61,9 +62,9 @@ export const DesktopAuthPage: React.FC = () => {
     }
     // Web pages receive only an authorization code, so they must use PKCE (S256)
     // and be listed exactly in the server's PORTAL_REDIRECT_URIS.
-    fetch('/api/auth/config')
-      .then(response => (response.ok ? response.json() : Promise.reject(new Error('config'))))
-      .then((config: { portalRedirectUris?: string[] }) => {
+    loadAuthConfig()
+      .then(config => {
+        if (!config) throw new Error('config');
         if (!(config.portalRedirectUris || []).includes(redirectUri)) {
           setErrorMsg('非法的重定向地址：必须为本机桌面客户端回环端口，或本站登记的管理后台地址。');
         } else if (!codeChallenge || codeChallengeMethod !== 'S256' || !state) {
@@ -84,18 +85,14 @@ export const DesktopAuthPage: React.FC = () => {
 
       if (params.codeChallenge) {
         // Modern PKCE flow: fetch short-lived authorization code without leaking JWT into URL
-        const response = await fetch('/api/auth/desktop-code', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            code_challenge: params.codeChallenge,
-            code_challenge_method: params.codeChallengeMethod || 'S256',
-            ...(tenantId ? { tenant_id: tenantId } : {}),
-            // Five minutes, the lifetime of the code itself.
-            ...(params.reauth ? { max_age: 300 } : {}),
-          }),
+        const response = await api<{ code?: string; error?: string }>('/api/auth/desktop-code', {
+          code_challenge: params.codeChallenge,
+          code_challenge_method: params.codeChallengeMethod || 'S256',
+          ...(tenantId ? { tenant_id: tenantId } : {}),
+          // Five minutes, the lifetime of the code itself.
+          ...(params.reauth ? { max_age: 300 } : {}),
         });
-        const body = (await response.json()) as { code?: string; error?: string };
+        const body = response.data;
         if (response.status === 401 && body.error === 'login_required') {
           setNeedsSignIn(true);
           return;

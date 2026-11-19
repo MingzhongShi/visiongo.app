@@ -1,4 +1,5 @@
 import { SiteLink } from './SiteLink';
+import { api } from '../lib/api';
 import { useRef, useState } from 'react';
 import { AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -24,12 +25,9 @@ export function ContactForm() {
     setError('');
     submissionId.current ??= crypto.randomUUID();
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(20000),
-        body: JSON.stringify({ ...form, locale, source: window.location.pathname, submissionId: submissionId.current }),
-      });
-      const data = await response.json();
-      if (!response.ok || !data.success || typeof data.referenceId !== 'string') throw new Error(data.error || (zh ? '提交失败，请稍后重试。' : 'Submission failed. Please retry.'));
+      const { ok, data } = await api('/api/contact', { ...form, locale, source: window.location.pathname, submissionId: submissionId.current },
+                                    { signal: AbortSignal.timeout(20000) });
+      if (!ok || !data.success || typeof data.referenceId !== 'string') throw new Error(data.error || (zh ? '提交失败，请稍后重试。' : 'Submission failed. Please retry.'));
       setReference(data.referenceId);
       setStatus('success');
     } catch (failure) {

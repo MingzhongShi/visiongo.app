@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { api } from '../../lib/api';
 import { KeyRound } from 'lucide-react';
 import { passwordProblem, passwordProblemText } from '../../../shared/passwordPolicy';
 
@@ -18,10 +19,9 @@ export const ChangePasswordPanel: React.FC<{ zh: boolean }> = ({ zh }) => {
   const [done, setDone] = useState('');
 
   useEffect(() => {
-    fetch('/api/account/password')
-      .then(response => (response.ok ? response.json() : null))
-      .then(data => {
-        if (!data) return;
+    api('/api/account/password')
+      .then(({ ok, data }) => {
+        if (!ok) return;
         setHasPassword(!!data.has_password);
         setEmailSignIn(data.email_sign_in !== false);
       })
@@ -39,13 +39,8 @@ export const ChangePasswordPanel: React.FC<{ zh: boolean }> = ({ zh }) => {
     if (next !== repeat) { setError(zh ? '两次输入的新密码不一致' : 'The new passwords do not match'); return; }
     setBusy(true);
     try {
-      const response = await fetch('/api/account/password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ current_password: current, new_password: next }),
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) { setError(data.error || (zh ? '修改失败' : 'Could not change the password')); return; }
+      const { ok, data } = await api('/api/account/password', { current_password: current, new_password: next });
+      if (!ok) { setError(data.error || (zh ? '修改失败' : 'Could not change the password')); return; }
       setCurrent(''); setNext(''); setRepeat('');
       setHasPassword(true);
       setDone(zh ? '密码已修改。其他浏览器需要重新登录，已登录的 VisionStudio 不受影响。'
