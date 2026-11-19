@@ -10,7 +10,7 @@ export const TermsOfUsePage: React.FC = () => {
   const { locale } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans pt-28 pb-24">
+    <div className="page-shell">
       <SeoHead
         title={termsOfUsePageText(locale).pageTitle}
         description={
@@ -19,7 +19,7 @@ export const TermsOfUsePage: React.FC = () => {
         canonicalPath="/terms"
       />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl">
         <SectionHeader
           as="h1"
           badge={termsOfUsePageText(locale).legalTerms}
@@ -32,7 +32,7 @@ export const TermsOfUsePage: React.FC = () => {
         <div className="prose prose-invert max-w-none text-sm text-zinc-300 space-y-10 leading-relaxed">
           {/* Section 1: Acceptance */}
           <div className="space-y-3">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 font-mono">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Scale className="w-4 h-4 text-emerald-400" />
               <span>{termsOfUsePageText(locale).acceptanceOfTerms}</span>
             </h3>
@@ -43,7 +43,7 @@ export const TermsOfUsePage: React.FC = () => {
 
           {/* Section 2: CRITICAL SOFTWARE LICENSING CLAUSE */}
           <div className="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/25 space-y-4">
-            <div className="flex items-center gap-2 text-amber-400 font-mono text-xs font-bold">
+            <div className="flex items-center gap-2 text-amber-400 text-xs font-bold">
               <AlertTriangle className="w-4 h-4" />
               <span>
                 {termsOfUsePageText(locale).importantNoticeSoftware}
@@ -59,7 +59,7 @@ export const TermsOfUsePage: React.FC = () => {
 
           {/* Section 3: Intellectual Property */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 font-mono">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>{termsOfUsePageText(locale).intellectualPropertyRights}</span>
             </h3>
@@ -70,7 +70,7 @@ export const TermsOfUsePage: React.FC = () => {
 
           {/* Section 4: Acceptable Use */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 font-mono">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Cpu className="w-4 h-4 text-emerald-400" />
               <span>{termsOfUsePageText(locale).acceptableUseOf}</span>
             </h3>
@@ -86,7 +86,7 @@ export const TermsOfUsePage: React.FC = () => {
 
           {/* Section 5: Disclaimers & Limitation of Liability */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 font-mono">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <FileText className="w-4 h-4 text-emerald-400" />
               <span>{termsOfUsePageText(locale).disclaimersLimitationOf}</span>
             </h3>
@@ -104,7 +104,7 @@ export const TermsOfUsePage: React.FC = () => {
             <p className="text-xs text-zinc-400">
               {termsOfUsePageText(locale).forCommercialProduction}
             </p>
-            <div className="pt-2 text-xs font-mono text-emerald-400">
+            <div className="pt-2 text-xs text-emerald-400">
               <SiteLink href="mailto:sales@visiongo.app" className="hover:underline">
                 sales@visiongo.app
               </SiteLink>{' '}

@@ -37,42 +37,47 @@ body {
   background: #3f3f46;
 }
 
-/* Technical grid and subtle dot patterns */
+/* Faint engineering grid behind hero panels */
 .tech-grid {
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
-.tech-dots {
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* Subtle glow effects - restrained and professional */
-.card-subtle {
-  background: #121215;
-  border: 1px solid #27272a;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card-subtle:hover {
-  border-color: #3f3f46;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-}
-
-/* Mono code tags */
 code, pre {
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
+/*
+ * The site's shared look. Pages compose these instead of repeating long class lists:
+ * layout (container, page-shell, section), type (eyebrow, page-title, section-title, lead),
+ * actions (btn-primary, btn-secondary, btn-sm, text-link), surfaces (surface-card, card-link,
+ * icon-tile, tag) and forms (form-label, form-input). Monospace is for code and versions only.
+ */
 @layer components {
-  .btn-primary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-400 px-5 py-3 text-sm font-semibold text-zinc-950 transition-colors hover:bg-emerald-300 disabled:cursor-wait disabled:opacity-60; }
-  .btn-secondary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900 px-5 py-3 text-sm font-medium text-zinc-200 transition-colors hover:bg-zinc-800; }
+  .site-container { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+  .page-shell { @apply site-container min-h-screen pb-20 pt-28 text-zinc-100; }
+  .section { @apply py-16 sm:py-20; }
+  .section-band { @apply border-y border-zinc-800 bg-zinc-900/20; }
+
+  .eyebrow { @apply text-sm font-medium text-emerald-400; }
+  .page-title { @apply text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl; }
+  .section-title { @apply text-2xl font-semibold tracking-tight text-white sm:text-3xl; }
+  .lead { @apply text-base leading-relaxed text-zinc-400 sm:text-lg; }
+
+  .btn { @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm transition-colors disabled:cursor-wait disabled:opacity-60; }
+  .btn-primary { @apply btn bg-emerald-400 font-semibold text-zinc-950 hover:bg-emerald-300; }
+  .btn-secondary { @apply btn border border-zinc-700 bg-zinc-900 font-medium text-zinc-200 hover:bg-zinc-800; }
+  .btn-sm { @apply min-h-10 gap-1.5 px-4 py-2; }
+  .text-link { @apply inline-flex items-center gap-1.5 text-sm font-medium text-emerald-400 transition-colors hover:text-emerald-300; }
+
   .surface-card { @apply rounded-2xl border border-zinc-800 bg-zinc-900/50; }
-  .page-shell { @apply mx-auto min-h-screen max-w-7xl px-4 pb-20 pt-28 text-zinc-100 sm:px-6 lg:px-8; }
+  .card-link { @apply surface-card transition-colors hover:border-zinc-700 hover:bg-zinc-900; }
+  .icon-tile { @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10 text-emerald-400; }
+  .tag { @apply inline-flex items-center gap-1.5 rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-xs text-zinc-300; }
+
   .form-label { @apply block space-y-2 text-sm font-medium text-zinc-300; }
-  .form-input { @apply mt-2 block min-h-11 w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm font-normal text-white placeholder:text-zinc-500 disabled:opacity-60; }
+  .form-input { @apply mt-2 block min-h-11 w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm font-normal text-white placeholder:text-zinc-500 focus:border-emerald-500/60 focus:outline-none disabled:opacity-60; }
 }
 :focus-visible { outline: 2px solid #34d399; outline-offset: 3px; }
 [id] { scroll-margin-top: 6rem; }

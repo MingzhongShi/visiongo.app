@@ -144,14 +144,14 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
     <div className={`w-full max-w-sm mx-auto space-y-4 ${className}`}>
       {/* Mode Switch Tabs */}
       {mode === 'reset' ? (
-        <div className="flex items-center justify-between text-xs font-mono">
+        <div className="flex items-center justify-between text-xs">
           <span className="text-emerald-400 font-semibold">{emailAuthFormText(zh).resetPassword}</span>
           <button type="button" onClick={() => switchMode('login')} className="text-zinc-400 hover:text-white cursor-pointer">
             {emailAuthFormText(zh).backToSign}
           </button>
         </div>
       ) : (
-        <div className="flex rounded-xl bg-zinc-950 p-1 border border-zinc-800 text-xs font-mono">
+        <div className="flex rounded-xl bg-zinc-950 p-1 border border-zinc-800 text-xs">
           {(['login', 'register'] as const).map(item => (
             <button
               key={item}
@@ -172,7 +172,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
       <form onSubmit={handleSubmit} className="space-y-3 text-left">
         {/* Email Field */}
         <div>
-          <label className="block text-[11px] font-mono text-zinc-400 mb-1">
+          <label className="block text-[11px] text-zinc-400 mb-1">
             {emailAuthFormText(locale).emailAddress}
           </label>
           <div className="relative">
@@ -191,7 +191,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
         {/* Verification Code Field (sign-up and password reset) */}
         {needsCode && (
           <div>
-            <label className="block text-[11px] font-mono text-zinc-400 mb-1">
+            <label className="block text-[11px] text-zinc-400 mb-1">
               {emailAuthFormText(locale).verificationCode}
             </label>
             <div className="flex gap-2">
@@ -211,7 +211,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
                 type="button"
                 onClick={handleSendCode}
                 disabled={sendingCode || countdown > 0}
-                className="px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 disabled:bg-zinc-900 border border-zinc-700 disabled:border-zinc-800 text-[11px] font-mono text-emerald-400 disabled:text-zinc-500 transition-colors shrink-0 cursor-pointer disabled:cursor-not-allowed min-w-[96px] text-center"
+                className="px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 disabled:bg-zinc-900 border border-zinc-700 disabled:border-zinc-800 text-[11px] text-emerald-400 disabled:text-zinc-500 transition-colors shrink-0 cursor-pointer disabled:cursor-not-allowed min-w-[96px] text-center"
               >
                 {sendingCode
                   ? (emailAuthFormText(locale).sending)
@@ -231,7 +231,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
         {/* Optional Display Name (Only for Register) */}
         {mode === 'register' && (
           <div>
-            <label className="block text-[11px] font-mono text-zinc-400 mb-1">
+            <label className="block text-[11px] text-zinc-400 mb-1">
               {emailAuthFormText(locale).displayNameOptional}
             </label>
             <div className="relative">
@@ -249,7 +249,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
 
         {/* Password Field */}
         <div>
-          <label className="block text-[11px] font-mono text-zinc-400 mb-1">
+          <label className="block text-[11px] text-zinc-400 mb-1">
             {mode === 'reset' ? (emailAuthFormText(zh).newPassword) : (emailAuthFormText(zh).password)}
           </label>
           <div className="relative">
@@ -271,12 +271,12 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
             </button>
           </div>
           {needsCode ? (
-            <p className="text-[10px] text-zinc-500 font-mono mt-1">
+            <p className="text-[10px] text-zinc-500 mt-1">
               {emailAuthFormText(zh).charactersWithLetters}
             </p>
           ) : (
             <button type="button" onClick={() => switchMode('reset')}
-                    className="text-[11px] text-zinc-500 hover:text-emerald-400 font-mono mt-1 cursor-pointer">
+                    className="text-[11px] text-zinc-500 hover:text-emerald-400 mt-1 cursor-pointer">
               {emailAuthFormText(zh).forgotPassword}
             </button>
           )}
@@ -301,7 +301,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:bg-emerald-900/60 text-zinc-950 font-bold text-xs font-mono flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:cursor-not-allowed shadow-lg shadow-emerald-500/20"
+          className="btn-primary btn-sm w-full"
         >
           {loading ? (
             <div className="w-4 h-4 border-2 border-zinc-950 border-t-transparent rounded-full animate-spin" />

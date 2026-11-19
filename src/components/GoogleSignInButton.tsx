@@ -149,7 +149,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
           <button
             onClick={handleSimulatedSignIn}
             disabled={loading}
-            className="w-full max-w-[280px] py-2.5 px-4 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs font-mono text-zinc-300 hover:text-white flex items-center justify-center gap-2.5 transition-colors cursor-pointer"
+            className="w-full max-w-[280px] py-2.5 px-4 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 hover:text-white flex items-center justify-center gap-2.5 transition-colors cursor-pointer"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -172,14 +172,14 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
             <span>{loading ? (googleSignInButtonText(locale).connecting) : (googleSignInButtonText(locale).continueWithDemo)}</span>
           </button>
           {isDummyId && (
-            <p className="text-[11px] text-amber-500/80 font-mono text-center max-w-[280px]">
+            <p className="text-[11px] text-amber-500/80 text-center max-w-[280px]">
               {googleSignInButtonText(locale).noteValidGoogle}
             </p>
           )}
         </div>
       )}
 
-      {error && <p className="text-[11px] font-mono text-red-400">{error}</p>}
+      {error && <p className="text-[11px] text-red-400">{error}</p>}
     </div>
   );
 };

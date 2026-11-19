@@ -34,6 +34,7 @@ export const homePageText = bilingual({
     chooseARelease: 'Choose a release, read the quickstart and validate your workflow with project samples.',
     getTheSoftware: 'Get the software',
     readTheQuickstart: 'Read the quickstart',
+    openFullSize: 'Open full size',
   },
   zh: {
     industrialVisionIntelligence: '工业视觉工作流',
@@ -68,5 +69,6 @@ export const homePageText = bilingual({
     chooseARelease: '选择发行包，阅读快速开始，再使用项目样本验证流程。',
     getTheSoftware: '前往下载',
     readTheQuickstart: '阅读快速开始',
+    openFullSize: '查看原图',
   },
 });

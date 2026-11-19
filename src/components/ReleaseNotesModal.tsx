@@ -74,7 +74,7 @@ export const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({
                 {productName} {releaseNotesModalText(locale).releaseNotes}
               </h3>
             </div>
-            <div className="flex items-center gap-4 text-xs font-mono text-zinc-400">
+            <div className="flex items-center gap-4 text-xs text-zinc-400">
               <span className="flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5 text-zinc-500" />
                 {formatDate(release.publishedAt)}
@@ -131,7 +131,7 @@ export const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({
           {/* Release Assets List */}
           {release.assets.length > 0 && (
             <div className="pt-4 border-t border-zinc-800/80 space-y-3">
-              <h4 className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-semibold">
+              <h4 className="text-xs uppercase tracking-wider text-zinc-400 font-semibold">
                 {releaseNotesModalText(locale).releasePackagesBinaries}
               </h4>
               <div className="grid grid-cols-1 gap-2">
@@ -142,7 +142,7 @@ export const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({
                   >
                     <div className="min-w-0">
                       <p className="text-xs font-mono text-zinc-200 truncate">{asset.name}</p>
-                      <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-500 mt-0.5">
+                      <div className="flex items-center gap-3 text-[11px] text-zinc-500 mt-0.5">
                         <span className="uppercase text-zinc-400">{asset.platform}</span>
                         <span>•</span>
                         <span>{asset.arch}</span>
@@ -154,7 +154,7 @@ export const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({
                     <SiteLink
                       href={asset.downloadUrl}
                       download
-                      className="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-medium flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                      className="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>{releaseNotesModalText(locale).download}</span>
@@ -167,7 +167,7 @@ export const ReleaseNotesModal: React.FC<ReleaseNotesModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-zinc-800 bg-zinc-950/80 flex items-center justify-between text-xs font-mono text-zinc-500">
+        <div className="px-6 py-4 border-t border-zinc-800 bg-zinc-950/80 flex items-center justify-between text-xs text-zinc-500">
           <span>{releaseNotesModalText(locale).checkPackageSystem}</span>
           <button
             onClick={onClose}

@@ -10,7 +10,7 @@ export const PrivacyPolicyPage: React.FC = () => {
   const { locale } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans pt-28 pb-24">
+    <div className="page-shell">
       <SeoHead
         title={privacyPolicyPageText(locale).privacyPolicyVisiongo}
         description={
@@ -19,7 +19,7 @@ export const PrivacyPolicyPage: React.FC = () => {
         canonicalPath="/privacy"
       />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl">
         <SectionHeader
           as="h1"
           badge={privacyPolicyPageText(locale).transparencyPrivacy}
@@ -32,7 +32,7 @@ export const PrivacyPolicyPage: React.FC = () => {
         <div className="prose prose-invert max-w-none text-sm text-zinc-300 space-y-10 leading-relaxed">
           {/* Section 1: Overview & Philosophy */}
           <div className="p-6 rounded-2xl bg-zinc-900/60 border border-zinc-800 space-y-3">
-            <div className="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold">
+            <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold">
               <Shield className="w-4 h-4" />
               <span>{privacyPolicyPageText(locale).corePrivacyPhilosophy}</span>
             </div>
@@ -43,7 +43,7 @@ export const PrivacyPolicyPage: React.FC = () => {
 
           {/* Section 2: Anonymous Downloads & Telemetry */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 font-mono">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Server className="w-4 h-4 text-emerald-400" />
               <span>{privacyPolicyPageText(locale).softwareDownloadsAnonymous}</span>
             </h3>
@@ -68,7 +68,7 @@ export const PrivacyPolicyPage: React.FC = () => {
 
           {/* Section 3: Google Authentication */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 font-mono">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Lock className="w-4 h-4 text-emerald-400" />
               <span>{privacyPolicyPageText(locale).googleAuthenticationAccount}</span>
             </h3>
@@ -94,7 +94,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           <div className="space-y-3"><h3 className="text-lg font-semibold text-white">{privacyPolicyPageText(locale).githubAndEmail}</h3><p>{privacyPolicyPageText(locale).githubSignIn}</p><p>{privacyPolicyPageText(locale).abuseLimitsUse}</p></div>
           {/* Section 4: Contact Form */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 font-mono">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Mail className="w-4 h-4 text-emerald-400" />
               <span>{privacyPolicyPageText(locale).contactInquiriesPilots}</span>
             </h3>
@@ -105,7 +105,7 @@ export const PrivacyPolicyPage: React.FC = () => {
 
           {/* Section 5: Cookies */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2 font-mono">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Eye className="w-4 h-4 text-emerald-400" />
               <span>{privacyPolicyPageText(locale).cookiesSessions}</span>
             </h3>
@@ -125,7 +125,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             <p className="text-xs text-zinc-400">
               {privacyPolicyPageText(locale).toRequestAccess}
             </p>
-            <div className="pt-2 text-xs font-mono text-emerald-400">
+            <div className="pt-2 text-xs text-emerald-400">
               <SiteLink href="mailto:contact@visiongo.app" className="hover:underline">
                 contact@visiongo.app
               </SiteLink>

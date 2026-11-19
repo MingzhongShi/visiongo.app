@@ -4,10 +4,10 @@ import React from 'react';
 // explanation and optional actions on the right.
 
 export const ui = {
-  card: 'rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 sm:p-6 space-y-4',
+  card: 'surface-card space-y-4 p-5 sm:p-6',
   input: 'min-h-10 min-w-0 rounded-xl border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-emerald-500/60 focus:outline-none disabled:opacity-60',
-  primary: 'inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-950 transition-colors hover:bg-emerald-300 disabled:cursor-wait disabled:opacity-60 cursor-pointer',
-  secondary: 'inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-200 transition-colors hover:bg-zinc-800 disabled:opacity-60 cursor-pointer',
+  primary: 'btn-primary btn-sm',
+  secondary: 'btn-secondary btn-sm',
   small: 'inline-flex items-center gap-1 rounded-lg border border-zinc-700 px-2.5 py-1.5 text-xs text-zinc-300 hover:bg-zinc-800 disabled:opacity-50 cursor-pointer',
   danger: 'inline-flex items-center gap-1 rounded-lg border border-red-500/40 px-2.5 py-1.5 text-xs text-red-300 hover:bg-red-500/10 disabled:opacity-50 cursor-pointer',
   row: 'flex flex-wrap items-center justify-between gap-3 rounded-xl border border-zinc-800 bg-zinc-950 p-3 text-sm',
