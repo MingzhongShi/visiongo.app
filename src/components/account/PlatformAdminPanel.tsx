@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Copy, KeyRound, Search, Upload, UserPlus } from 'lucide-react';
+import { Copy, KeyRound, PackageCheck, Search, Upload, UserPlus, Users } from 'lucide-react';
+import { Alert, Panel, ui } from './ui';
 
 interface AdminUser {
   id: string;
@@ -31,12 +32,10 @@ interface Handover {
   message: string;
 }
 
-const card = 'p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800 space-y-4';
-const heading = 'text-xs font-mono uppercase tracking-wider text-zinc-400 font-semibold';
-const input = 'flex-1 basis-48 min-w-0 px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500/50';
-const button = 'px-3 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono flex items-center gap-1.5 cursor-pointer disabled:opacity-50';
-const smallButton = 'px-2 py-1 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 cursor-pointer font-mono disabled:opacity-50';
-const badge = 'text-[10px] font-mono px-2 py-0.5 rounded border';
+const input = `${ui.input} flex-1 basis-48`;
+const button = ui.primary;
+const smallButton = ui.small;
+const badge = ui.badge;
 
 async function call(path: string, body?: unknown): Promise<{ ok: boolean; data: any }> {
   const response = await fetch(path, body === undefined ? undefined : {
@@ -48,8 +47,7 @@ async function call(path: string, body?: unknown): Promise<{ ok: boolean; data: 
 }
 
 /** Platform administrators: accounts without email delivery, and release manifests. */
-export const PlatformAdminPanel: React.FC<{ locale: string }> = ({ locale }) => {
-  const zh = locale === 'zh';
+export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | 'releases' }> = ({ zh, section }) => {
   const signInUrl = typeof window !== 'undefined' ? `${window.location.origin}${zh ? '/zh/my' : '/my'}` : '';
   const [query, setQuery] = useState('');
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -99,8 +97,8 @@ export const PlatformAdminPanel: React.FC<{ locale: string }> = ({ locale }) => 
   const passwordHandover = (email: string, password: string, created: boolean) => setHandover({
     title: created ? (zh ? '账号已创建' : 'Account created') : (zh ? '密码已重置' : 'Password reset'),
     message: zh
-      ? `VISIONGO 账号：${email}\n临时密码：${password}\n请在 ${signInUrl} 登录后，到“个人中心 → 修改密码”换成自己的密码。VisionStudio 用同一账号登录。`
-      : `VISIONGO account: ${email}\nTemporary password: ${password}\nSign in at ${signInUrl} and change it under Profile → Change password. Use the same account in VisionStudio.`,
+      ? `VISIONGO 账号：${email}\n临时密码：${password}\n请在 ${signInUrl} 登录后，到“我的账户 → 账号与安全 → 修改密码”换成自己的密码。VisionStudio 用同一账号登录。`
+      : `VISIONGO account: ${email}\nTemporary password: ${password}\nSign in at ${signInUrl} and change it under My account → Sign-in & security → Change password. Use the same account in VisionStudio.`,
   });
 
   const codeHandover = (email: string, code: string, purpose: string) => setHandover({
@@ -137,18 +135,19 @@ export const PlatformAdminPanel: React.FC<{ locale: string }> = ({ locale }) => 
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {error && <p role="alert" className="rounded-xl border border-red-800 bg-red-950/40 p-3 text-xs text-red-300">{error}</p>}
+      {error && <Alert tone="error">{error}</Alert>}
 
-      <div className={card}>
-        <h4 className={heading}>{zh ? '账号管理' : 'Accounts'}</h4>
+      {section === 'accounts' && (
+      <Panel icon={<Users className="h-4 w-4 text-zinc-400" />} title={zh ? '账号管理' : 'Accounts'}
+             description={zh ? '查找账号；为收不到邮件的用户创建账号、重置密码或生成验证码。' : 'Find accounts; create accounts, reset passwords or issue codes for people without email.'}>
         {!emailDelivery && emailSignIn && (
-          <p className="p-3 rounded-xl border border-amber-500/30 bg-amber-500/5 text-xs text-amber-200">
+          <p className="p-3 rounded-xl border border-amber-500/30 bg-amber-500/5 text-sm text-amber-200">
             {zh ? '本站暂未开通邮件发送，用户收不到验证码。可以在这里直接创建账号（给出临时密码），或生成验证码转发给对方。'
                 : 'This site cannot send email yet. Create accounts here (with a temporary password) or issue codes to pass on.'}
           </p>
         )}
         {!emailSignIn && (
-          <p className="text-xs text-zinc-500">
+          <p className="text-sm text-zinc-500">
             {zh ? '本站使用第三方登录，不能在这里创建账号或设置密码；用户首次登录后即出现在列表中。'
                 : 'This site signs in with Google or GitHub; accounts appear here after their first sign-in.'}
           </p>
@@ -184,12 +183,12 @@ export const PlatformAdminPanel: React.FC<{ locale: string }> = ({ locale }) => 
         {handover && (
           <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-xs font-semibold text-emerald-300">{handover.title}</span>
+              <span className="text-sm font-semibold text-emerald-300">{handover.title}</span>
               <button type="button" onClick={() => void copy()} className={smallButton}>
-                <span className="inline-flex items-center gap-1 text-xs"><Copy className="w-3 h-3" />{copied ? (zh ? '已复制' : 'Copied') : (zh ? '复制' : 'Copy')}</span>
+                <span className="inline-flex items-center gap-1 text-sm"><Copy className="w-3 h-3" />{copied ? (zh ? '已复制' : 'Copied') : (zh ? '复制' : 'Copy')}</span>
               </button>
             </div>
-            <pre className="whitespace-pre-wrap break-all text-xs text-zinc-200 font-mono">{handover.message}</pre>
+            <pre className="whitespace-pre-wrap break-all text-sm text-zinc-200 font-mono">{handover.message}</pre>
             <p className="text-[11px] text-zinc-500">
               {zh ? '这段内容只显示这一次，离开页面后无法再查看。请通过微信或电话发给本人。'
                   : 'Shown only this once. Pass it to the person directly.'}
@@ -203,9 +202,9 @@ export const PlatformAdminPanel: React.FC<{ locale: string }> = ({ locale }) => 
           <button type="submit" className={button}><Search className="w-3.5 h-3.5" /><span>{zh ? '搜索' : 'Search'}</span></button>
         </form>
         <div className="space-y-2">
-          {users.length === 0 && <p className="text-xs text-zinc-500">{zh ? '没有找到账号。' : 'No accounts found.'}</p>}
+          {users.length === 0 && <p className="text-sm text-zinc-500">{zh ? '没有找到账号。' : 'No accounts found.'}</p>}
           {users.map(account => (
-            <div key={account.id} className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs">
+            <div key={account.id} className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-sm">
               <div className="min-w-0">
                 <div className="text-zinc-200 truncate">
                   {account.display_name || account.email}
@@ -232,21 +231,20 @@ export const PlatformAdminPanel: React.FC<{ locale: string }> = ({ locale }) => 
             </div>
           ))}
         </div>
-      </div>
+      </Panel>
+      )}
 
-      <div className={card}>
-        <h4 className={heading}>{zh ? '软件版本发布' : 'Software releases'}</h4>
-        <p className="text-xs text-zinc-500">
-          {zh ? 'VisionStudio 和 VisionEdge 检查更新时读取这里的记录；某个产品、平台、通道没有记录时，检查更新会返回“没有发布的版本”（404）。'
-              : 'VisionStudio and VisionEdge read these records when checking for updates; without a record the check returns 404.'}
-        </p>
+      {section === 'releases' && (
+      <Panel icon={<PackageCheck className="h-4 w-4 text-zinc-400" />} title={zh ? '软件版本发布' : 'Software releases'}
+             description={zh ? 'VisionStudio 和 VisionEdge 检查更新时读取这里的记录；某个产品、平台、通道没有记录时，检查更新会返回“没有发布的版本”（404）。点一条记录可载入下方表单修改。'
+                             : 'VisionStudio and VisionEdge read these records when checking for updates; without a record the check returns 404. Click a record to edit it below.'}>
         <div className="space-y-2">
-          {releases.length === 0 && <p className="text-xs text-amber-300">{zh ? '还没有发布任何版本。' : 'Nothing published yet.'}</p>}
+          {releases.length === 0 && <p className="text-sm text-amber-300">{zh ? '还没有发布任何版本。' : 'Nothing published yet.'}</p>}
           {releases.map(row => (
             <button type="button" key={`${row.product}-${row.platform}-${row.channel}`}
                     onClick={() => setRelease({ product: row.product, platform: row.platform, channel: row.channel, latest: row.latest,
                                                 min_supported: row.min_supported, url: row.url || '', sha256: row.sha256 || '', notes_url: row.notes_url || '' })}
-                    className="w-full text-left p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs hover:border-zinc-700 cursor-pointer">
+                    className="w-full text-left p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-sm hover:border-zinc-700 cursor-pointer">
               <div className="text-zinc-200 font-mono">{row.product} · {row.platform} · {row.channel}</div>
               <div className="text-zinc-500 font-mono break-all">
                 {zh ? '最新' : 'latest'} {row.latest} · {zh ? '最低' : 'min'} {row.min_supported}{row.url ? ` · ${row.url}` : ''}
@@ -274,13 +272,14 @@ export const PlatformAdminPanel: React.FC<{ locale: string }> = ({ locale }) => 
             {field('sha256', zh ? '安装包 SHA-256（可选）' : 'Installer SHA-256 (optional)')}
             {field('notes_url', zh ? '更新说明地址（https，可选）' : 'Release notes URL (https, optional)')}
           </div>
-          {releaseNotice && <p className="text-xs text-zinc-300">{releaseNotice}</p>}
+          {releaseNotice && <p className="text-sm text-zinc-300">{releaseNotice}</p>}
           <button type="submit" disabled={busy} className={button}>
             <Upload className="w-3.5 h-3.5" />
             <span>{zh ? '发布' : 'Publish'}</span>
           </button>
         </form>
-      </div>
+      </Panel>
+      )}
     </div>
   );
 };
