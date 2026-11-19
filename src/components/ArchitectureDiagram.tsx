@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { ArrowDown, ArrowRight, ArrowUpDown, Shield, Cpu, Sparkles, Sliders, CheckCircle2, Lock } from 'lucide-react';
 import { getProduct } from '../data/products';
 import { useLanguage } from '../i18n/LanguageContext';
+import { architectureDiagramText } from '../i18n/text/ArchitectureDiagram';
 
 interface ArchitectureDiagramProps {
   onNavigateProduct: (slug: string) => void;
 }
 
 export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavigateProduct }) => {
-  const { t, locale } = useLanguage();
+  const { locale } = useLanguage();
   const [activeNode, setActiveNode] = useState<string>('runtime');
 
   const studio = getProduct('visionstudio', locale);
@@ -41,20 +42,20 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavi
           </div>
           <div>
             <div className="text-sm font-semibold text-white flex items-center gap-2">
-              <span>{t.architectureSection.independenceTitle}</span>
+              <span>{architectureDiagramText(locale).independenceTitle}</span>
               <span className="text-[10px] font-mono bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-bold">
-                {t.architectureSection.independenceBadge}
+                {architectureDiagramText(locale).independenceBadge}
               </span>
             </div>
             <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">
-              {t.architectureSection.independenceDesc}
+              {architectureDiagramText(locale).independenceDesc}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 shrink-0 text-xs font-mono text-zinc-400 bg-zinc-950/60 px-3 py-1.5 rounded-lg border border-zinc-800">
           <Lock className="w-3.5 h-3.5 text-zinc-400" />
-          {t.architectureSection.zeroTelemetry}
+          {architectureDiagramText(locale).zeroTelemetry}
         </div>
       </div>
 
@@ -91,7 +92,7 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavi
                   </div>
                 </div>
                 <div className="text-xs font-mono text-cyan-400 hidden sm:block">
-                  {locale === 'zh' ? '输出配方与管线包 →' : 'Recipe & Pipeline Bundles →'}
+                  {architectureDiagramText(locale).recipePipelineBundles}
                 </div>
               </div>
             </div>
@@ -100,7 +101,7 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavi
             <div className="flex justify-center my-3 text-zinc-600">
               <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 bg-zinc-900/80 px-3 py-1 rounded-full border border-zinc-800">
                 <ArrowDown className="w-3.5 h-3.5 text-emerald-400" />
-                <span>{t.architectureSection.recipeExportDesc}</span>
+                <span>{architectureDiagramText(locale).recipeExportDesc}</span>
               </div>
             </div>
           </div>
@@ -108,7 +109,7 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavi
           {/* Level 2: Factory Floor Core (Runtime & Edge) */}
           <div className="border border-emerald-500/30 rounded-2xl p-5 bg-emerald-950/10 relative">
             <div className="absolute -top-3 left-6 px-2.5 py-0.5 bg-zinc-900 text-[10px] font-mono font-semibold uppercase tracking-wider text-emerald-400 border border-emerald-500/30 rounded">
-              {t.architectureSection.factoryBoundaryTitle}
+              {architectureDiagramText(locale).factoryBoundaryTitle}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-11 gap-4 items-center pt-2">
@@ -141,7 +142,7 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavi
                 <p className="text-xs text-zinc-300 leading-relaxed mb-3">{runtime.summary}</p>
                 <div className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
                   <CheckCircle2 className="w-3 h-3" />{' '}
-                  {locale === 'zh' ? '亚毫秒硬实时控制闭环' : 'Sub-millisecond hard real-time'}
+                  {architectureDiagramText(locale).subMillisecondHard}
                 </div>
               </div>
 
@@ -149,7 +150,7 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavi
               <div className="md:col-span-1 flex flex-col items-center justify-center text-zinc-500 py-2">
                 <ArrowUpDown className="w-5 h-5 text-violet-400 rotate-90 md:rotate-0" />
                 <span className="text-[9px] font-mono text-zinc-400 mt-1 uppercase tracking-tight text-center">
-                  {t.architectureSection.localLoopDesc}
+                  {architectureDiagramText(locale).localLoopDesc}
                 </span>
               </div>
 
@@ -182,7 +183,7 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavi
                 <p className="text-xs text-zinc-300 leading-relaxed mb-3">{edge.summary}</p>
                 <div className="text-[10px] font-mono text-violet-400 flex items-center gap-1">
                   <CheckCircle2 className="w-3 h-3" />{' '}
-                  {locale === 'zh' ? '100% 离线本地边缘智能' : '100% Offline local intelligence'}
+                  {architectureDiagramText(locale).offlineLocalIntelligence}
                 </div>
               </div>
             </div>
@@ -193,7 +194,7 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavi
             <div className="flex justify-center mb-3 text-zinc-600">
               <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 bg-zinc-900/80 px-3 py-1 rounded-full border border-dashed border-zinc-700">
                 <ArrowDown className="w-3.5 h-3.5 text-amber-400" />
-                <span>{t.architectureSection.cloudSyncDesc}</span>
+                <span>{architectureDiagramText(locale).cloudSyncDesc}</span>
               </div>
             </div>
 
@@ -220,14 +221,14 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavi
                         {cloud.shortAction}
                       </span>
                       <span className="text-[10px] font-mono bg-zinc-800 text-zinc-400 px-1.5 py-0.5 rounded">
-                        {t.architectureSection.optionalLayer}
+                        {architectureDiagramText(locale).optionalLayer}
                       </span>
                     </div>
                     <p className="text-xs text-zinc-400 mt-0.5">{cloud.summary}</p>
                   </div>
                 </div>
                 <div className="text-xs font-mono text-amber-400/80 hidden sm:block">
-                  {locale === 'zh' ? '企业级知识沉淀' : 'Enterprise Aggregation'}
+                  {architectureDiagramText(locale).enterpriseAggregation}
                 </div>
               </div>
             </div>
@@ -238,8 +239,8 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavi
         <div className="lg:col-span-4 bg-zinc-900/90 border border-zinc-800 rounded-xl p-6 self-stretch flex flex-col justify-between">
           <div>
             <div className="text-[11px] uppercase font-mono tracking-wider text-zinc-400 mb-3 flex items-center justify-between">
-              <span>{locale === 'zh' ? '架构节点参数规格' : 'Architecture Spec'}</span>
-              <span className="text-emerald-400">{t.architectureSection.specActive}</span>
+              <span>{architectureDiagramText(locale).architectureSpec}</span>
+              <span className="text-emerald-400">{architectureDiagramText(locale).specActive}</span>
             </div>
 
             <div className="space-y-3">
@@ -249,15 +250,15 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavi
               </p>
               <div className="space-y-1.5 text-xs font-mono pt-3 border-t border-zinc-800 text-zinc-400">
                 <p>
-                  <span className="text-zinc-500">{locale === 'zh' ? '部署环境:' : 'Target:'}</span>{' '}
+                  <span className="text-zinc-500">{architectureDiagramText(locale).target}</span>{' '}
                   {activeProduct.deploymentTarget}
                 </p>
                 <p>
-                  <span className="text-zinc-500">{locale === 'zh' ? '网络需求:' : 'Network:'}</span>{' '}
+                  <span className="text-zinc-500">{architectureDiagramText(locale).network}</span>{' '}
                   <span className="text-emerald-400">{activeProduct.connectivityRequirement}</span>
                 </p>
                 <p>
-                  <span className="text-zinc-500">{locale === 'zh' ? '架构定位:' : 'Role:'}</span>{' '}
+                  <span className="text-zinc-500">{architectureDiagramText(locale).role}</span>{' '}
                   {activeProduct.architectureRole}
                 </p>
               </div>
@@ -269,7 +270,7 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ onNavi
               onClick={() => onNavigateProduct(activeProduct.slug)}
               className="w-full py-2 px-3 rounded-lg text-xs font-mono font-medium bg-zinc-800 hover:bg-zinc-700 text-white flex items-center justify-center gap-1.5 transition-colors"
             >
-              <span>{t.architectureSection.viewProductDetail}</span>
+              <span>{architectureDiagramText(locale).viewProductDetail}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

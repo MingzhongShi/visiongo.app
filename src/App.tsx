@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext';
 import { renderRoute, SSRPages } from './routes';
 import { useSiteLocation } from './useSiteLocation';
 import type { SupportedLocale } from './types/i18n';
+import { appText } from './i18n/text/App';
 
 interface AppProps { initialPath?: string; initialLocale?: SupportedLocale; ssrPages?: Record<string, Record<string, ComponentType>> }
 
@@ -19,10 +20,10 @@ function AppContent({ initialPath }: AppProps) {
   const zh = locale === 'zh';
   return (
     <div onClick={followLink} className="flex min-h-screen flex-col bg-zinc-950">
-      <a className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[110] focus:rounded-xl focus:bg-zinc-800 focus:p-3 focus:text-white" href="#main-content">{zh ? '跳到正文' : 'Skip to content'}</a>
+      <a className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[110] focus:rounded-xl focus:bg-zinc-800 focus:p-3 focus:text-white" href="#main-content">{appText(zh).skipToContent}</a>
       <Navbar currentPath={path} onNavigate={navigate} onOpenContact={openContact} />
       <main id="main-content" className="flex-1">
-        <Suspense fallback={<div role="status" className="page-shell text-zinc-400">{zh ? '正在加载页面…' : 'Loading page…'}</div>}>
+        <Suspense fallback={<div role="status" className="page-shell text-zinc-400">{appText(zh).loadingPage}</div>}>
           {renderRoute(path, { navigate, openContact })}
         </Suspense>
       </main>

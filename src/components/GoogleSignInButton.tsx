@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { loadAuthConfig } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { googleSignInButtonText } from '../i18n/text/GoogleSignInButton';
 
 interface GoogleSignInButtonProps {
   onSuccess?: () => void;
@@ -96,7 +97,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
               if (ok) {
                 onSuccess?.();
               } else {
-                setError(locale === 'zh' ? '登录验证失败，请重试' : 'Authentication verification failed');
+                setError(googleSignInButtonText(locale).authenticationVerificationFailed);
               }
             }
           },
@@ -168,13 +169,11 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
-            <span>{loading ? (locale === 'zh' ? '正在连接...' : 'Connecting...') : (locale === 'zh' ? '使用本地模拟 Google 账号登录' : 'Continue with Demo Google Account')}</span>
+            <span>{loading ? (googleSignInButtonText(locale).connecting) : (googleSignInButtonText(locale).continueWithDemo)}</span>
           </button>
           {isDummyId && (
             <p className="text-[11px] text-amber-500/80 font-mono text-center max-w-[280px]">
-              {locale === 'zh' 
-                ? '提示：未检测到有效 Google Client ID，已启用本地模拟测试登录。' 
-                : 'Note: Valid Google Client ID not detected. Demo login active.'}
+              {googleSignInButtonText(locale).noteValidGoogle}
             </p>
           )}
         </div>

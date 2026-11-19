@@ -3,6 +3,7 @@ import React from 'react';
 import { ArrowRight, Check } from 'lucide-react';
 import { Product } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
+import { productCardText } from '../i18n/text/ProductCard';
 
 interface ProductCardProps {
   product: Product;
@@ -10,7 +11,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) => {
-  const { t } = useLanguage();
+  const { locale } = useLanguage();
 
   return (
     <SiteLink
@@ -74,13 +75,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) =
       {/* Footer CTA */}
       <div className="pt-2 border-t border-zinc-800/60 flex items-center justify-between text-xs font-mono font-medium">
         <span className="text-zinc-400 group-hover:text-white transition-colors">
-          {t.productsSection.exploreSpecs}
+          {productCardText(locale).exploreSpecs}
         </span>
         <span
           className="inline-flex items-center gap-1 transition-transform group-hover:translate-x-1 font-semibold"
           style={{ color: product.accentColor }}
         >
-          {t.productsSection.learnMore}
+          {productCardText(locale).learnMore}
           <ArrowRight className="w-3.5 h-3.5" />
         </span>
       </div>

@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Shield, Cpu, Sliders, Sparkles, Terminal, FileCo
 import { getProduct, getProducts } from '../data/products';
 import { SeoHead } from '../components/SeoHead';
 import { useLanguage } from '../i18n/LanguageContext';
+import { productPageText } from '../i18n/text/ProductPage';
 
 interface ProductPageProps {
   slug: string;
@@ -11,7 +12,7 @@ interface ProductPageProps {
 }
 
 export const ProductPage: React.FC<ProductPageProps> = ({ slug, onNavigate, onOpenContact }) => {
-  const { t, locale } = useLanguage();
+  const { locale } = useLanguage();
   const product = getProduct(slug, locale);
   const allProducts = getProducts(locale);
 
@@ -49,14 +50,14 @@ export const ProductPage: React.FC<ProductPageProps> = ({ slug, onNavigate, onOp
             onClick={() => onNavigate('/')}
             className="hover:text-zinc-300 transition-colors flex items-center gap-1"
           >
-            <ArrowLeft className="w-3 h-3" /> {locale === 'zh' ? '首页' : 'Home'}
+            <ArrowLeft className="w-3 h-3" /> {productPageText(locale).home}
           </button>
           <span>/</span>
           <button
             onClick={() => onNavigate('/#products')}
             className="hover:text-zinc-300 transition-colors"
           >
-            {t.nav.products}
+            {productPageText(locale).products}
           </button>
           <span>/</span>
           <span className="text-zinc-300">{product.name}</span>
@@ -79,7 +80,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({ slug, onNavigate, onOp
                   border: `1px solid ${product.accentColor}30`,
                 }}
               >
-                {product.shortAction} {t.productsSection.phaseSuffix}
+                {product.shortAction} {productPageText(locale).phaseSuffix}
               </span>
               <span className="text-xs font-mono text-zinc-400 bg-zinc-800/80 px-2.5 py-1 rounded">
                 {product.positioning}
@@ -104,7 +105,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({ slug, onNavigate, onOp
                 className="px-6 py-3 rounded-xl bg-white hover:bg-zinc-200 text-zinc-950 font-bold transition-all flex items-center gap-2"
               >
                 <span>
-                  {locale === 'zh' ? `申请 ${product.name} 试用评估` : `Request ${product.name} Trial`}
+                  {productPageText(locale).requestTrial(product.name)}
                 </span>
                 <ArrowRight className="w-4 h-4" />
               </button>
@@ -113,7 +114,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({ slug, onNavigate, onOp
                 onClick={() => onNavigate('/developers#docs')}
                 className="px-6 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium transition-all"
               >
-                {locale === 'zh' ? '阅读技术开发者文档' : 'Read Developer Docs'}
+                {productPageText(locale).readDeveloperDocs}
               </button>
             </div>
           </div>
@@ -123,21 +124,21 @@ export const ProductPage: React.FC<ProductPageProps> = ({ slug, onNavigate, onOp
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800">
             <div className="text-xs font-mono text-zinc-500 uppercase tracking-wider mb-2">
-              {locale === 'zh' ? '架构职责与定位' : 'Architecture Role'}
+              {productPageText(locale).architectureRole}
             </div>
             <p className="text-sm text-zinc-200 font-medium">{product.architectureRole}</p>
           </div>
 
           <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800">
             <div className="text-xs font-mono text-zinc-500 uppercase tracking-wider mb-2">
-              {locale === 'zh' ? '部署硬件与环境' : 'Deployment Target'}
+              {productPageText(locale).deploymentTarget}
             </div>
             <p className="text-sm text-zinc-200 font-medium">{product.deploymentTarget}</p>
           </div>
 
           <div className="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800">
             <div className="text-xs font-mono text-zinc-500 uppercase tracking-wider mb-2">
-              {locale === 'zh' ? '网络与连通性要求' : 'Network & Connectivity'}
+              {productPageText(locale).networkConnectivity}
             </div>
             <p className="text-sm text-emerald-400 font-medium font-mono">
               {product.connectivityRequirement}
@@ -148,7 +149,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({ slug, onNavigate, onOp
         {/* Key Capabilities */}
         <div className="mb-16">
           <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-            <span>{locale === 'zh' ? '关键特性与工程能力' : 'Key Capabilities & Engineering Features'}</span>
+            <span>{productPageText(locale).keyCapabilitiesEngineering}</span>
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -180,13 +181,11 @@ export const ProductPage: React.FC<ProductPageProps> = ({ slug, onNavigate, onOp
             <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
               <FileCode2 className="w-5 h-5 text-emerald-400" />
               <span>
-                {locale === 'zh' ? '配置清单与技术规格蓝图' : 'Specification & Configuration Blueprint'}
+                {productPageText(locale).specificationConfigurationBlueprint}
               </span>
             </h2>
             <p className="text-sm text-zinc-400 mb-6">
-              {locale === 'zh'
-                ? '声明式配方样例，演示系统互操作性与强类型 SDK 契约规范。'
-                : 'Sample declarative manifest demonstrating interoperability and schema contracts.'}
+              {productPageText(locale).sampleDeclarativeManifest}
             </p>
 
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950 overflow-hidden shadow-2xl">
@@ -213,7 +212,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({ slug, onNavigate, onOp
             className="text-xs font-mono text-zinc-400 hover:text-white transition-colors flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />{' '}
-            {locale === 'zh' ? '返回系统全局概览' : 'Back to Platform Overview'}
+            {productPageText(locale).backToPlatform}
           </button>
 
           <div className="flex items-center gap-3">

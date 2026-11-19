@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from './ui';
+import { useOrganizationsText } from '../../i18n/text/useOrganizations';
 
 export interface Tenant {
   tenant_id: string;
@@ -58,7 +59,7 @@ export function useOrganizations(zh: boolean): OrganizationsState {
   const reload = useCallback(async () => {
     const { ok, data } = await api('/api/orgs').catch(() => ({ ok: false, status: 0, data: {} as any }));
     setLoaded(true);
-    if (!ok) { setError(data.error || (zh ? '无法读取组织信息' : 'Could not load organizations')); return; }
+    if (!ok) { setError(data.error || (useOrganizationsText(zh).couldNotLoad)); return; }
     setError('');
     setTenants(data.tenants || []);
     setPlatformAdmin(!!data.is_platform_admin);
@@ -86,6 +87,6 @@ export function useOrganizations(zh: boolean): OrganizationsState {
 }
 
 export const roleLabel = (role: string | null, zh: boolean) => (
-  role === 'admin' || role === 'org_admin' ? (zh ? '管理员' : 'Admin')
-    : role === 'member' ? (zh ? '成员' : 'Member')
-    : (zh ? '平台管理' : 'Platform admin'));
+  role === 'admin' || role === 'org_admin' ? (useOrganizationsText(zh).admin)
+    : role === 'member' ? (useOrganizationsText(zh).member)
+    : (useOrganizationsText(zh).platformAdmin));
