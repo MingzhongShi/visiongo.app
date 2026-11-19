@@ -51,11 +51,4 @@ export const Alert: React.FC<{ tone?: 'error' | 'warning' | 'success' | 'info'; 
   return <div role={tone === 'error' ? 'alert' : undefined} className={`space-y-1 rounded-xl border p-3 text-sm leading-relaxed ${tones[tone]}`}>{children}</div>;
 };
 
-export async function api(path: string, body?: unknown): Promise<{ ok: boolean; status: number; data: any }> {
-  const response = await fetch(path, body === undefined ? undefined : {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  return { ok: response.ok, status: response.status, data: await response.json().catch(() => ({})) };
-}
+export { api } from '../../lib/api';

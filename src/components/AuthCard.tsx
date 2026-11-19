@@ -4,26 +4,15 @@ import { GitHubSignInButton } from './GitHubSignInButton';
 import { EmailAuthForm } from './EmailAuthForm';
 import { useLanguage } from '../i18n/LanguageContext';
 import { ShieldCheck, Mail, Globe } from 'lucide-react';
+import { ALL_AUTH_METHODS, loadAuthConfig, type AuthMethod } from '../lib/api';
 
 interface AuthCardProps {
   onSuccess?: () => void;
   className?: string;
 }
 
-type AuthMethod = 'email' | 'google' | 'github';
-
-// Sign-in methods of this edition (/api/auth/config): email in China, Google and GitHub abroad.
-const ALL_METHODS: AuthMethod[] = ['email', 'google', 'github'];
-let methodsRequest: Promise<AuthMethod[]> | null = null;
-function loadMethods(): Promise<AuthMethod[]> {
-  if (!methodsRequest) {
-    methodsRequest = fetch('/api/auth/config')
-      .then(response => (response.ok ? response.json() : null))
-      .then((config: { methods?: AuthMethod[] } | null): AuthMethod[] => config?.methods ?? ALL_METHODS)
-      .catch((): AuthMethod[] => { methodsRequest = null; return ALL_METHODS; });
-  }
-  return methodsRequest;
-}
+// Sign-in methods of this edition: email in China, Google and GitHub abroad.
+const loadMethods = (): Promise<AuthMethod[]> => loadAuthConfig().then(config => config?.methods ?? ALL_AUTH_METHODS);
 
 export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess, className = '' }) => {
   const { locale } = useLanguage();

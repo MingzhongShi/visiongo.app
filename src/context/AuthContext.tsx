@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { api } from '../lib/api';
 
 export interface AuthUser {
   id: string;
@@ -32,13 +33,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const refreshUser = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/auth/me');
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data.user || null);
-      } else {
-        setUser(null);
-      }
+      const { ok, data } = await api<{ user?: AuthUser | null }>('/api/auth/me');
+      setUser(ok ? data.user || null : null);
     } catch {
       setUser(null);
     } finally {
@@ -50,21 +46,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     refreshUser();
   }, []);
 
+  /** Posts a sign-in form; a returned user signs this page in. */
+  const submit = async (path: string, body: unknown, failed: string, network: string,
+                        expectsUser: string | null): Promise<{ success: boolean; message?: string; error?: string }> => {
+    try {
+      const { ok, data } = await api<{ user?: AuthUser; message?: string; error?: string }>(path, body);
+      if (!ok) return { success: false, error: data.error || failed };
+      if (expectsUser === null) return { success: true, message: data.message };
+      if (!data.user) return { success: false, error: expectsUser };
+      setUser(data.user);
+      return { success: true };
+    } catch {
+      return { success: false, error: network };
+    }
+  };
+
   const loginWithGoogle = async (credential: string): Promise<boolean> => {
     try {
-      const res = await fetch('/api/auth/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ credential }),
-      });
-
-      if (!res.ok) return false;
-      const data = await res.json();
-      if (data.user) {
-        setUser(data.user);
-        return true;
-      }
-      return false;
+      const { ok, data } = await api<{ user?: AuthUser }>('/api/auth/google', { credential });
+      if (!ok || !data.user) return false;
+      setUser(data.user);
+      return true;
     } catch (err) {
       console.error('[AuthContext] Google Login error:', err);
       return false;
@@ -77,101 +79,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return false;
   };
 
-  const sendEmailCode = async (
-    email: string,
-    purpose: 'register' | 'reset' = 'register'
-  ): Promise<{ success: boolean; message?: string; error?: string }> => {
-    try {
-      const res = await fetch('/api/auth/email/send-code', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, purpose }),
-      });
+  const sendEmailCode = (email: string, purpose: 'register' | 'reset' = 'register') =>
+    submit('/api/auth/email/send-code', { email, purpose }, '发送验证码失败', '网络连接失败，请检查网络设置', null);
 
-      const data = await res.json();
-      if (!res.ok) {
-        return { success: false, error: data.error || '发送验证码失败' };
-      }
-      return { success: true, message: data.message };
-    } catch {
-      return { success: false, error: '网络连接失败，请检查网络设置' };
-    }
-  };
+  const registerWithEmail = (email: string, code: string, password: string, displayName?: string) =>
+    submit('/api/auth/email/register', { email, code, password, displayName }, '注册失败', '网络连接失败，请稍后重试', '注册未返回有效用户信息');
 
-  const registerWithEmail = async (
-    email: string,
-    code: string,
-    password: string,
-    displayName?: string
-  ): Promise<{ success: boolean; error?: string }> => {
-    try {
-      const res = await fetch('/api/auth/email/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, code, password, displayName }),
-      });
+  const loginWithEmail = (email: string, password: string) =>
+    submit('/api/auth/email/login', { email, password }, '登录失败', '网络连接失败，请稍后重试', '登录未返回有效用户信息');
 
-      const data = await res.json();
-      if (!res.ok) {
-        return { success: false, error: data.error || '注册失败' };
-      }
-      if (data.user) {
-        setUser(data.user);
-        return { success: true };
-      }
-      return { success: false, error: '注册未返回有效用户信息' };
-    } catch {
-      return { success: false, error: '网络连接失败，请稍后重试' };
-    }
-  };
-
-  const loginWithEmail = async (
-    email: string,
-    password: string
-  ): Promise<{ success: boolean; error?: string }> => {
-    try {
-      const res = await fetch('/api/auth/email/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        return { success: false, error: data.error || '登录失败' };
-      }
-      if (data.user) {
-        setUser(data.user);
-        return { success: true };
-      }
-      return { success: false, error: '登录未返回有效用户信息' };
-    } catch {
-      return { success: false, error: '网络连接失败，请稍后重试' };
-    }
-  };
-
-  const resetPassword = async (
-    email: string,
-    code: string,
-    password: string
-  ): Promise<{ success: boolean; message?: string; error?: string }> => {
-    try {
-      const res = await fetch('/api/auth/email/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, code, password }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) return { success: false, error: data.error || '重置密码失败' };
-      return { success: true, message: data.message };
-    } catch {
-      return { success: false, error: '网络连接失败，请稍后重试' };
-    }
-  };
+  const resetPassword = (email: string, code: string, password: string) =>
+    submit('/api/auth/email/reset-password', { email, code, password }, '重置密码失败', '网络连接失败，请稍后重试', null);
 
   const logout = async (): Promise<void> => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await api('/api/auth/logout', {});
     } finally {
       setUser(null);
     }

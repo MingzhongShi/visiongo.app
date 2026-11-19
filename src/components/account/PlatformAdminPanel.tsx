@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Copy, KeyRound, PackageCheck, Search, Upload, UserPlus, Users } from 'lucide-react';
-import { Alert, Panel, ui } from './ui';
+import { Alert, Panel, api, ui } from './ui';
 
 interface AdminUser {
   id: string;
@@ -37,14 +37,6 @@ const button = ui.primary;
 const smallButton = ui.small;
 const badge = ui.badge;
 
-async function call(path: string, body?: unknown): Promise<{ ok: boolean; data: any }> {
-  const response = await fetch(path, body === undefined ? undefined : {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  return { ok: response.ok, data: await response.json().catch(() => ({})) };
-}
 
 /** Platform administrators: accounts without email delivery, and release manifests. */
 export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | 'releases' }> = ({ zh, section }) => {
@@ -66,7 +58,7 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
   const [releaseNotice, setReleaseNotice] = useState('');
 
   const search = useCallback(async (text: string) => {
-    const { ok, data } = await call(`/api/admin/users?q=${encodeURIComponent(text)}`);
+    const { ok, data } = await api(`/api/admin/users?q=${encodeURIComponent(text)}`);
     if (!ok) { setError(data.error || (zh ? '无法读取账号' : 'Could not load accounts')); return; }
     setUsers(data.users || []);
     setEmailSignIn(data.email_sign_in !== false);
@@ -74,7 +66,7 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
   }, [zh]);
 
   const loadReleases = useCallback(async () => {
-    const { ok, data } = await call('/api/admin/releases');
+    const { ok, data } = await api('/api/admin/releases');
     if (ok) setReleases(data.releases || []);
   }, []);
 
@@ -119,7 +111,7 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
     setBusy(true);
     try {
       const body = { ...release, min_supported: release.min_supported || release.latest };
-      const { ok, data } = await call('/api/admin/releases', body);
+      const { ok, data } = await api('/api/admin/releases', body);
       if (!ok) { setReleaseNotice(data.error || (zh ? '发布失败' : 'Could not publish')); return; }
       setReleaseNotice(zh ? `已发布 ${body.product} ${body.latest}（${body.platform} / ${body.channel}）` : `Published ${body.product} ${body.latest}`);
       await loadReleases();
@@ -157,7 +149,7 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
           <form className="flex flex-wrap gap-2" onSubmit={event => {
             event.preventDefault();
             const email = newEmail.trim().toLowerCase();
-            void act(() => call('/api/admin/users', { email, display_name: newName }),
+            void act(() => api('/api/admin/users', { email, display_name: newName }),
                      data => { passwordHandover(email, data.temporary_password, true); setNewEmail(''); setNewName(''); });
           }}>
             <input type="email" required value={newEmail} onChange={event => setNewEmail(event.target.value)}
@@ -171,7 +163,7 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
             <button type="button" disabled={busy} className={button} onClick={() => {
               const email = newEmail.trim().toLowerCase();
               if (!email) { setError(zh ? '请先填写邮箱' : 'Enter an email first'); return; }
-              void act(() => call('/api/admin/users/code', { email, purpose: 'register' }),
+              void act(() => api('/api/admin/users/code', { email, purpose: 'register' }),
                        data => codeHandover(email, data.code, 'register'));
             }}>
               <KeyRound className="w-3.5 h-3.5" />
@@ -218,11 +210,11 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
                 <div className="flex items-center gap-2">
                   <button type="button" disabled={busy} className={smallButton} onClick={() => {
                     if (!window.confirm(zh ? `为 ${account.email} 生成临时密码？旧密码立即失效，已登录的 VisionStudio 需要重新登录。` : `Reset the password of ${account.email}?`)) return;
-                    void act(() => call('/api/admin/users/reset-password', { email: account.email }),
+                    void act(() => api('/api/admin/users/reset-password', { email: account.email }),
                              data => passwordHandover(account.email, data.temporary_password, false));
                   }}>{zh ? '重置密码' : 'Reset password'}</button>
                   <button type="button" disabled={busy} className={smallButton} onClick={() => void act(
-                    () => call('/api/admin/users/code', { email: account.email, purpose: 'reset' }),
+                    () => api('/api/admin/users/code', { email: account.email, purpose: 'reset' }),
                     data => codeHandover(account.email, data.code, 'reset'))}>
                     {zh ? '生成重置验证码' : 'Reset code'}
                   </button>

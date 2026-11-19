@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Coins, ExternalLink, ReceiptText, BarChart3 } from 'lucide-react';
-import { Alert, Panel, ui } from './ui';
+import { Alert, Panel, api, ui } from './ui';
 import type { OrgChoice } from './useOrganizations';
 
 // Organization credits, ledger and usage kept by VisionCloud (read through /api/orgs/{id}/credits*,
@@ -46,10 +46,6 @@ const endpointName = (endpoint: string, zh: boolean) => {
   return key ? names[key][zh ? 0 : 1] : endpoint;
 };
 
-async function get(path: string): Promise<{ ok: boolean; status: number; data: any }> {
-  const response = await fetch(path);
-  return { ok: response.ok, status: response.status, data: await response.json().catch(() => ({})) };
-}
 
 
 /** Credits, usage and ledger of one organization (credits section). */
@@ -71,7 +67,7 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
     const query = new URLSearchParams({ limit: '50' });
     if (type) query.set('type', type);
     if (after) query.set('cursor', after);
-    const { ok, status, data } = await get(`${base}/transactions?${query}`);
+    const { ok, status, data } = await api(`${base}/transactions?${query}`);
     if (!ok) { setError(failure(status, data)); return; }
     setTransactions(previous => (after ? [...previous, ...data.items] : data.items));
     setCursor(data.next_cursor ?? null);
@@ -81,7 +77,7 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
     setError('');
     setUsage(null);
     const to = Date.now();
-    void get(`${base}/usage?from=${to - days * DAY}&to=${to}`).then(({ ok, status, data }) => {
+    void api(`${base}/usage?from=${to - days * DAY}&to=${to}`).then(({ ok, status, data }) => {
       if (ok) setUsage(data); else setError(failure(status, data));
     });
   }, [base, days]);
@@ -90,7 +86,7 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
     setAccount(null);
     setTransactions([]);
     if (!organization.admin) return;
-    void get(base).then(({ ok, status, data }) => { if (ok) setAccount(data); else setError(failure(status, data)); });
+    void api(base).then(({ ok, status, data }) => { if (ok) setAccount(data); else setError(failure(status, data)); });
   }, [base, organization.admin]);
 
   useEffect(() => { if (organization.admin) void loadTransactions(null); }, [organization.admin, loadTransactions]);
