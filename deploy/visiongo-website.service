@@ -20,7 +20,8 @@ Environment=CLOUD_API_URL=https://api.visiongo.com.cn
 Environment=CLOUD_BASE_URL=https://api.visiongo.com.cn
 # Email accounts only (verification codes via Resend: RESEND_API_KEY in .env).
 Environment=AUTH_METHODS=email
-Environment="EMAIL_FROM=VISIONGO <no-reply@visiongo.com.cn>"
+# Both editions send through the one Resend domain visiongo.app (inquiry notifications already use contact@visiongo.app).
+Environment="EMAIL_FROM=VISIONGO <no-reply@visiongo.app>"
 Environment=DATABASE_PATH=/home/ibm-rs240-svr/VISIONGO/visiongo.app/data/website.sqlite
 ExecStart=/home/ibm-rs240-svr/VISIONGO/visiongo.app/runtime/bin/node --env-file=.env deploy/server.mjs
 Restart=on-failure
