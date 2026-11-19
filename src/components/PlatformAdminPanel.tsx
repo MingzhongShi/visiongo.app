@@ -23,6 +23,7 @@ interface ReleaseRow {
   notes_url: string | null;
   published_at: string | null;
   updated_at?: string;
+  incremental_json?: string | null;
 }
 
 /** What to hand over: a temporary password or a code, shown once. */
@@ -64,7 +65,7 @@ export const PlatformAdminPanel: React.FC<{ locale: string }> = ({ locale }) => 
 
   const [releases, setReleases] = useState<ReleaseRow[]>([]);
   const [release, setRelease] = useState({ product: 'studio', platform: 'windows-x64', channel: 'stable', latest: '',
-                                           min_supported: '', url: '', sha256: '', notes_url: '' });
+                                           min_supported: '', url: '', sha256: '', notes_url: '', incremental_json: '' });
   const [releaseNotice, setReleaseNotice] = useState('');
 
   const search = useCallback(async (text: string) => {
@@ -120,11 +121,13 @@ export const PlatformAdminPanel: React.FC<{ locale: string }> = ({ locale }) => 
     setReleaseNotice('');
     setBusy(true);
     try {
-      const body = { ...release, min_supported: release.min_supported || release.latest };
+      const body = { ...release, min_supported: release.min_supported || release.latest, incremental: release.incremental_json.trim() ? JSON.parse(release.incremental_json) : null };
       const { ok, data } = await call('/api/admin/releases', body);
       if (!ok) { setReleaseNotice(data.error || (zh ? '发布失败' : 'Could not publish')); return; }
       setReleaseNotice(zh ? `已发布 ${body.product} ${body.latest}（${body.platform} / ${body.channel}）` : `Published ${body.product} ${body.latest}`);
       await loadReleases();
+    } catch (error) {
+      setReleaseNotice(error instanceof Error ? error.message : 'Invalid incremental JSON');
     } finally {
       setBusy(false);
     }
@@ -245,7 +248,7 @@ export const PlatformAdminPanel: React.FC<{ locale: string }> = ({ locale }) => 
           {releases.map(row => (
             <button type="button" key={`${row.product}-${row.platform}-${row.channel}`}
                     onClick={() => setRelease({ product: row.product, platform: row.platform, channel: row.channel, latest: row.latest,
-                                                min_supported: row.min_supported, url: row.url || '', sha256: row.sha256 || '', notes_url: row.notes_url || '' })}
+                                                min_supported: row.min_supported, url: row.url || '', sha256: row.sha256 || '', notes_url: row.notes_url || '', incremental_json: row.incremental_json || '' })}
                     className="w-full text-left p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-xs hover:border-zinc-700 cursor-pointer">
               <div className="text-zinc-200 font-mono">{row.product} · {row.platform} · {row.channel}</div>
               <div className="text-zinc-500 font-mono break-all">
@@ -273,6 +276,9 @@ export const PlatformAdminPanel: React.FC<{ locale: string }> = ({ locale }) => 
             {field('url', zh ? '安装包下载地址（https，可选）' : 'Installer URL (https, optional)')}
             {field('sha256', zh ? '安装包 SHA-256（可选）' : 'Installer SHA-256 (optional)')}
             {field('notes_url', zh ? '更新说明地址（https，可选）' : 'Release notes URL (https, optional)')}
+          <label className="block text-sm">{zh ? '增量制品 JSON（可选：base_version、target_version、url、sha256、size_bytes）' : 'Incremental artifact JSON (optional: base_version, target_version, url, sha256, size_bytes)'}
+            <textarea className={input} value={release.incremental_json} onChange={event => setRelease({...release, incremental_json: event.target.value})} rows={3} />
+          </label>
           </div>
           {releaseNotice && <p className="text-xs text-zinc-300">{releaseNotice}</p>}
           <button type="submit" disabled={busy} className={button}>

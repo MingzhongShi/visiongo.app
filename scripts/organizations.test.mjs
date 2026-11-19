@@ -541,6 +541,13 @@ test('platform administrators publish release manifests that desktop clients rea
   const updated = await call(env, '/api/releases/edge?platform=windows-x64');
   assert.equal(updated.body.latest, '6.3.0');
   assert.equal(updated.body.url, undefined);
+  const incremental = { base_version: '6.0.0.468.abcdef0', target_version: '6.3.0', url: 'https://dl.example/edge-patch.zip', sha256: 'b'.repeat(64), size_bytes: 1234 };
+  const artifact = await call(env, '/api/admin/releases', { cookie: rootCookie, body: {...release, latest:'6.3.0', incremental} });
+  assert.equal(artifact.status, 200);
+  assert.deepEqual((await call(env, '/api/releases/edge?platform=windows-x64')).body.incremental, incremental);
+  for (const bad of [{...incremental, size_bytes:-1}, {...incremental, sha256:'bad'}, {...incremental, url:'http://dl.example/patch.zip'}, {...incremental, target_version:'6.4.0'}]) {
+    assert.equal((await call(env, '/api/admin/releases', {cookie:rootCookie, body:{...release, latest:'6.3.0', incremental:bad}})).status,400);
+  }
   const listed = await call(env, '/api/admin/releases', { cookie: rootCookie });
   assert.equal(listed.body.releases.length, 1);
   assert.equal(listed.body.releases[0].updated_by, root.id);
