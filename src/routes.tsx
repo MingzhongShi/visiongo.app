@@ -28,6 +28,7 @@ type Props<T extends (props: never) => unknown> = Parameters<T>[0];
 const ProductPage = page<Props<typeof import('./pages/ProductPage').ProductPage>>('ProductPage');
 const DownloadsPage = page<Props<typeof import('./pages/DownloadsPage').DownloadsPage>>('DownloadsPage');
 const SolutionsPage = page<Props<typeof import('./pages/SolutionsPage').SolutionsPage>>('SolutionsPage');
+const PricingPage = page<Props<typeof import('./pages/PricingPage').PricingPage>>('PricingPage');
 const DevelopersPage = page<Props<typeof import('./pages/DevelopersPage').DevelopersPage>>('DevelopersPage');
 const ResourcesPage = page<{ slug?: string }>('ResourcesPage');
 const AboutPage = page<Props<typeof import('./pages/AboutPage').AboutPage>>('AboutPage');
@@ -45,6 +46,7 @@ export interface RouteContext {
 const exact = new Map<string, (c: RouteContext) => ReactElement>([
   ['/', c => <HomePage onNavigate={c.navigate} onOpenContact={c.openContact} />],
   ['/solutions', c => <SolutionsPage onNavigate={c.navigate} onOpenContact={c.openContact} />],
+  ['/pricing', c => <PricingPage onOpenContact={c.openContact} />],
   ['/developers', c => <DevelopersPage onNavigate={c.navigate} />],
   ['/resources', () => <ResourcesPage />],
   ['/about', c => <AboutPage onOpenContact={c.openContact} />],

@@ -66,6 +66,17 @@
     }
   },
   {
+    "path": "/pricing",
+    "title": {
+      "en": "Licensing & Plans",
+      "zh": "授权与方案"
+    },
+    "description": {
+      "en": "Compare evaluation downloads, production licensing, enterprise deployments, and optional VisionCloud AI credits.",
+      "zh": "了解 VISIONGO 评估试用、产线商业授权、企业与 OEM 方案及可选云端 AI 额度。"
+    }
+  },
+  {
     "path": "/developers",
     "title": {
       "en": "Developers — Getting Started",

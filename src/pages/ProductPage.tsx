@@ -67,7 +67,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({ slug, onOpenContact })
           <p className="lead">{product.description}</p>
           <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             <button type="button" onClick={onOpenContact} className="btn-primary">{tx.requestTrial(product.name)}<ArrowRight className="h-4 w-4" /></button>
-            <SiteLink href="/developers#docs" className="btn-secondary">{tx.readDeveloperDocs}</SiteLink>
+            <SiteLink href="/pricing" className="btn-secondary">{tx.readDeveloperDocs}</SiteLink>
           </div>
         </div>
         <dl className="space-y-5 self-center rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">

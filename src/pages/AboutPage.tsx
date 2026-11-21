@@ -81,6 +81,26 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenContact }) => {
           </div>
         </div>
 
+        {/* Commercial Delivery Process */}
+        <div className="mb-20">
+          <h3 className="section-title mb-8">
+            {aboutPageText(locale).deliveryHeader}
+          </h3>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              [aboutPageText(locale).step1Title, aboutPageText(locale).step1Desc],
+              [aboutPageText(locale).step2Title, aboutPageText(locale).step2Desc],
+              [aboutPageText(locale).step3Title, aboutPageText(locale).step3Desc],
+              [aboutPageText(locale).step4Title, aboutPageText(locale).step4Desc],
+            ].map(([title, desc]) => (
+              <div key={title} className="surface-card space-y-2 p-6">
+                <h4 className="text-base font-bold text-emerald-400">{title}</h4>
+                <p className="text-sm leading-relaxed text-zinc-400">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Global Contacts & Enterprise Pilot */}
         <div className="surface-card flex flex-col justify-between gap-8 p-8 sm:p-10 md:flex-row md:items-center">
           <div className="space-y-3">
