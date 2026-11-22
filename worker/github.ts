@@ -51,7 +51,7 @@ export class GitHubReleaseProvider implements ReleaseProvider {
 
   constructor(env: Env) {
     this.env = env;
-    this.org = env.GITHUB_ORG || 'simon-shi83';
+    this.org = env.GITHUB_ORG || 'MingzhongShi';
     this.repoMap = {
       visionstudio: env.VISIONSTUDIO_REPO || 'VisionStudio',
       visionruntime: env.VISIONRUNTIME_REPO || 'VisionRuntime',
@@ -172,7 +172,7 @@ export class GitHubDownloadProvider implements DownloadProvider {
 
   constructor(env: Env) {
     this.env = env;
-    this.org = env.GITHUB_ORG || 'simon-shi83';
+    this.org = env.GITHUB_ORG || 'MingzhongShi';
     this.repoMap = {
       visionstudio: env.VISIONSTUDIO_REPO || 'VisionStudio',
       visionruntime: env.VISIONRUNTIME_REPO || 'VisionRuntime',
