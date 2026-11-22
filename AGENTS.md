@@ -14,7 +14,7 @@
 | | 国内版 | 国际版 |
 |:---|:---|:---|
 | 域名 | `https://visiongo.com.cn`（`www` 跳转到它） | `https://visiongo.app`、`www.visiongo.app` |
-| 运行环境 | 主机 `ibm-rs240-lan202`，目录 `~/VISIONGO/visiongo.app`；独立的 Node 24（`runtime/bin/node`）通过 `deploy/server.mjs` 运行 Worker 构建产物，systemd 服务 `visiongo-website.service`，只监听 `127.0.0.1:8600`，经 FRP 与公网 nginx 对外 | 源码在 GitHub（`simon-shi83/website`），由 Cloudflare Workers 运行（`wrangler.jsonc`） |
+| 运行环境 | 主机 `ibm-rs240-lan202`，目录 `~/VISIONGO/visiongo.app`；独立的 Node 24（`runtime/bin/node`）通过 `deploy/server.mjs` 运行 Worker 构建产物，systemd 服务 `visiongo-website.service`，只监听 `127.0.0.1:8600`，经 FRP 与公网 nginx 对外 | 源码在 GitHub（`MingzhongShi/visiongo.app`），由 Cloudflare Workers 运行（`wrangler.jsonc`） |
 | 数据库 | 本机 SQLite：`data/website.sqlite`，由 `deploy/database.mjs` 提供与 D1 兼容的接口 | Cloudflare D1（`visiongo_db`） |
 | 密钥与配置 | 主机上的 `.env`（权限 0600） | `wrangler secret` |
 | 定时任务 | `deploy/server.mjs` 内置的 5 分钟定时器 | `wrangler.jsonc` 的 cron |
