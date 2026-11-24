@@ -20,7 +20,12 @@ async function releaseListing(env: Env, url: URL): Promise<Response | null> {
       results.forEach((result, index) => {
         const product = SUPPORTED_DOWNLOAD_PRODUCTS[index];
         releases[product] = result.status === 'fulfilled' ? result.value : [];
-        if (result.status === 'rejected') errors[product] = 'Release service unavailable. Please retry.';
+        if (result.status === 'rejected') {
+          errors[product] = 'Release service unavailable. Please retry.';
+          // The visitor sees a generic message; the log says why (missing token, GitHub status, timeout).
+          const reason = result.reason instanceof Error ? result.reason.message : String(result.reason);
+          console.error(`[API Releases] ${product} unavailable: ${reason}`);
+        }
       });
       const failed = Object.keys(errors).length;
       return Response.json({ success: failed < results.length, releases, errors, updatedAt: new Date().toISOString() }, {
