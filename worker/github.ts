@@ -93,7 +93,11 @@ export class GitHubReleaseProvider implements ReleaseProvider {
         },
       });
 
-      if (!response.ok) throw new Error(`Release service returned HTTP ${response.status}`);
+      if (!response.ok) {
+        // 401/403/404 mean the token cannot read this repository (for example a token of the previous
+        // owner after the repositories moved); the status tells that apart from a network fault.
+        throw new Error(`GitHub returned HTTP ${response.status} for ${this.org}/${repo}/releases`);
+      }
 
       const rawReleases = (await response.json()) as Array<{
         id: number;
@@ -143,7 +147,8 @@ export class GitHubReleaseProvider implements ReleaseProvider {
       releaseCache.set(cacheKey, { data: normalized, timestamp: Date.now() });
       return normalized;
     } catch (err) {
-      console.error(`[GitHub] Release request failed for ${product}`);
+      const reason = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+      console.error(`[GitHub] Release request failed for ${product} (${this.org}/${repo}): ${reason}`);
       throw err;
     }
   }
