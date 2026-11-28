@@ -185,5 +185,38 @@
       "en": "Understand the shared contract source and compatibility workflow.",
       "zh": "了解公共契约源与兼容性变更流程。"
     }
+  },
+  {
+    "path": "/resources/feasibility-checklist",
+    "title": {
+      "en": "Machine Vision Feasibility Evaluation Checklist",
+      "zh": "工业视觉工程可行性评估清单"
+    },
+    "description": {
+      "en": "Confirm optics, sample variation, cycle budget, and PLC handshake requirements before project kickoff.",
+      "zh": "项目启动前核对光学条件、样本差异、节拍约束与 PLC 通信接口需求。"
+    }
+  },
+  {
+    "path": "/resources/ai-assisted-tuning",
+    "title": {
+      "en": "AI-Assisted Diagnostics & L1/L2 Control Governance",
+      "zh": "AI 辅助调优与 L1/L2 安全治理边界"
+    },
+    "description": {
+      "en": "How VISIONGO isolates AI parameter exploration in L1 trials and enforces named L2 approval before production changes.",
+      "zh": "了解 VISIONGO 如何通过 L1 隔离试运行与 L2 工程师确认保障现场可控与可回滚。"
+    }
+  },
+  {
+    "path": "/resources/plc-integration-guide",
+    "title": {
+      "en": "Industrial Camera & PLC Protocol Integration Guide",
+      "zh": "工业相机与 PLC 通信协议集成指南"
+    },
+    "description": {
+      "en": "Overview of GenICam cameras, Siemens S7, Mitsubishi SLMP, Omron FINS, Modbus, OPC UA, and MQTT in VisionRuntime.",
+      "zh": "梳理 VisionRuntime 中 GenICam 相机采集及 S7、SLMP、FINS、Modbus、OPC UA 与 MQTT 的接入要点。"
+    }
   }
 ]

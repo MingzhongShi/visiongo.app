@@ -5,6 +5,8 @@ import { SeoHead } from '../components/SeoHead';
 import { SiteLink } from '../components/SiteLink';
 import { useLanguage } from '../i18n/LanguageContext';
 import { productPageText } from '../i18n/text/ProductPage';
+import { StudioShowcase } from '../components/StudioShowcase';
+import { SafetyControlDiagram } from '../components/SafetyControlDiagram';
 
 interface ProductPageProps {
   slug: string;
@@ -88,12 +90,48 @@ export const ProductPage: React.FC<ProductPageProps> = ({ slug, onOpenContact })
       </section>
 
       {product.slug === 'visionstudio' && (
-        <figure className="surface-card mb-16 overflow-hidden">
-          <a href="/screenshots/visionstudio-workflow.webp" target="_blank" rel="noopener" className="block overflow-x-auto bg-zinc-950">
-            <img src="/screenshots/visionstudio-workflow.webp" alt={tx.screenshotAlt} width={1680} height={980} loading="lazy" decoding="async" className="h-auto w-full min-w-[720px] md:min-w-0" />
-          </a>
-          <figcaption className="border-t border-zinc-200 px-4 py-3 text-xs text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">{tx.screenshotCaption}</figcaption>
-        </figure>
+        <section className="mb-16">
+          <div className="mb-6">
+            <h2 className="section-title">{tx.studioInteractiveHeading}</h2>
+            <p className="mt-2 max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">{tx.studioInteractiveSubtitle}</p>
+          </div>
+          <StudioShowcase initialTab="workflow" />
+        </section>
+      )}
+
+      {product.slug === 'visionruntime' && (
+        <section className="mb-16">
+          <div className="mb-6">
+            <h2 className="section-title">{tx.runtimeConnectivityHeading}</h2>
+            <p className="mt-2 max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">{tx.runtimeConnectivitySubtitle}</p>
+          </div>
+          <div className="grid gap-5 md:grid-cols-3">
+            {[
+              { title: tx.runtimeCameraGroup, items: ['GenICam', 'GigE Vision', 'USB3 Vision'] },
+              { title: tx.runtimePlcGroup, items: ['Siemens S7', 'Mitsubishi SLMP', 'Omron FINS', 'Modbus TCP / RTU', 'EtherNet/IP'] },
+              { title: tx.runtimeServiceGroup, items: ['OPC UA', 'MQTT', 'HTTP', 'JSON SDK IPC'] },
+            ].map(group => (
+              <div key={group.title} className="surface-card p-6">
+                <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{group.title}</h3>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {group.items.map(item => (
+                    <span key={item} className="tag font-mono text-xs">{item}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {(product.slug === 'visionedge' || product.slug === 'visioncloud') && (
+        <section className="mb-16">
+          <div className="mb-6">
+            <h2 className="section-title">{tx.safetyBoundaryHeading}</h2>
+            <p className="mt-2 max-w-3xl text-sm text-zinc-600 dark:text-zinc-400">{tx.safetyBoundarySubtitle}</p>
+          </div>
+          <SafetyControlDiagram initialMode={product.slug === 'visionedge' ? 'relay' : 'boundary'} />
+        </section>
       )}
 
       <section className="mb-16">

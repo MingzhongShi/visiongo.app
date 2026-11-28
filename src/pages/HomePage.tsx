@@ -1,7 +1,9 @@
 import { SiteLink } from '../components/SiteLink';
-import { ArrowRight, Cloud, Cpu, Lock, Shield, ShieldCheck, Workflow, ScanLine, Ruler, Shapes } from 'lucide-react';
+import { ArrowRight, Check, Cpu, Factory, Lock, Network, ShieldCheck, Sparkles, Workflow } from 'lucide-react';
 import { getProducts } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
+import { StudioShowcase } from '../components/StudioShowcase';
+import { SafetyControlDiagram } from '../components/SafetyControlDiagram';
 import { SeoHead } from '../components/SeoHead';
 import { useLanguage } from '../i18n/LanguageContext';
 import { homePageText } from '../i18n/text/HomePage';
@@ -9,61 +11,224 @@ import { homePageText } from '../i18n/text/HomePage';
 export function HomePage({ onNavigate, onOpenContact }: { onNavigate: (path: string) => void; onOpenContact: () => void }) {
   const { locale } = useLanguage();
   const zh = locale === 'zh';
+  const tx = homePageText(zh);
   const products = getProducts(locale);
-  return <div className="text-zinc-900 dark:text-zinc-100">
-    <SeoHead title={homePageText(zh).industrialVisionIntelligence} description={homePageText(zh).buildAndDebug} canonicalPath="/" />
-    <section className="site-container pb-16 pt-32 lg:pb-24 lg:pt-40">
-      <div className="max-w-3xl space-y-6">
-        <p className="eyebrow">VISIONGO / {homePageText(zh).industrialVisionSoftware}</p>
-        <h1 className="page-title">{homePageText(zh).buildDebugAnd}<span className="mt-2 block text-emerald-600 dark:text-emerald-400">{homePageText(zh).industrialVisionWorkflows}</span></h1>
-        <p className="lead max-w-2xl">{homePageText(zh).designInspectionWorkflows}</p>
-        <div className="flex flex-col gap-3 sm:flex-row"><SiteLink href="/downloads/visionstudio" className="btn-primary">{homePageText(zh).downloadVisionstudio}<ArrowRight className="h-4 w-4" /></SiteLink><button onClick={onOpenContact} className="btn-secondary">{homePageText(zh).requestADemo}</button></div>
-        <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-600 dark:text-zinc-400"><SiteLink href="/developers#quickstart" className="hover:text-zinc-950 dark:hover:text-white">{homePageText(zh).quickstart}</SiteLink><SiteLink href="/downloads#requirements" className="hover:text-zinc-950 dark:hover:text-white">{homePageText(zh).systemAndInstallation}</SiteLink><SiteLink href="#architecture" className="hover:text-zinc-950 dark:hover:text-white">{homePageText(zh).deploymentArchitecture}</SiteLink></div>
-      </div>
-      <figure className="surface-card mt-12 overflow-hidden shadow-xl shadow-zinc-900/10 dark:shadow-2xl dark:shadow-black/30 lg:mt-16"><a href="/screenshots/visionstudio-workflow.webp" target="_blank" rel="noopener" className="block overflow-x-auto bg-zinc-950" aria-label={homePageText(zh).openFullSize}><img src="/screenshots/visionstudio-workflow.webp" alt={homePageText(zh).visionstudioWorkflowEditor} width={1680} height={980} fetchPriority="high" decoding="async" className="h-auto w-full min-w-[720px] md:min-w-0" /></a><figcaption className="flex flex-wrap items-center justify-between gap-2 border-t border-zinc-200 px-4 py-3 text-xs leading-relaxed text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"><span>{homePageText(zh).visionstudioWorkflowEditorExample}</span><a href="/screenshots/visionstudio-workflow.webp" target="_blank" rel="noopener" className="text-link text-xs">{homePageText(zh).openFullSize}</a></figcaption></figure>
-    </section>
-    <section id="products" className="section section-band"><div className="site-container">
-      <div className="mb-8 max-w-2xl"><h2 className="section-title">{homePageText(zh).fromEngineeringTo}</h2><p className="mt-3 leading-relaxed text-zinc-600 dark:text-zinc-400">{homePageText(zh).theWorkspaceHandles}</p></div>
-      <div className="grid gap-6 md:grid-cols-2">{products.slice(0, 2).map(product => <ProductCard key={product.id} product={product} onSelect={slug => onNavigate(`/products/${slug}`)} />)}</div>
-      <div className="mt-6 flex flex-wrap gap-5 text-sm text-zinc-600 dark:text-zinc-400"><span>{homePageText(zh).extensions}</span>{products.slice(2).map(product => <SiteLink key={product.id} href={`/products/${product.slug}`} className="hover:text-zinc-950 dark:hover:text-white">{product.name} <span className="text-zinc-500">— {product.positioning}</span></SiteLink>)}</div>
-    </div></section>
-    <section className="site-container section"><h2 className="section-title mb-8">{homePageText(zh).organizeWorkflowsAround}</h2><div className="grid gap-6 md:grid-cols-3">{[
-      { icon: Shapes, title: homePageText(zh).shapeMatching, text: homePageText(zh).createATemplate },
-      { icon: Ruler, title: homePageText(zh).measurement, text: homePageText(zh).combineImageProcessing },
-      { icon: ScanLine, title: homePageText(zh).regionAnalysis, text: homePageText(zh).buildInspectionWorkflows },
-    ].map(item => <div key={item.title} className="surface-card p-6"><span className="icon-tile mb-5"><item.icon className="h-5 w-5" /></span><h3 className="text-lg font-semibold text-zinc-950 dark:text-white">{item.title}</h3><p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{item.text}</p></div>)}</div></section>
-    <section id="architecture" className="section section-band"><div className="site-container">
-      <h2 className="section-title">{homePageText(zh).clearDeploymentAnd}</h2>
-      <div className="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr]">
-        <div className="rounded-2xl border border-emerald-600/25 bg-white/80 p-5 shadow-sm dark:border-emerald-500/25 dark:bg-zinc-950/60 dark:shadow-none sm:p-6">
-          <p className="mb-4 text-xs font-medium uppercase tracking-wider text-emerald-700 dark:text-emerald-400">{homePageText(zh).localBoundaryLabel}</p>
-          <div className="grid items-stretch gap-4 sm:grid-cols-3">
-            <SiteLink href="/products/visionstudio" className="surface-card block p-5 transition-colors hover:border-emerald-500/50"><Workflow className="mb-3 h-5 w-5 text-emerald-600 dark:text-emerald-400" /><h3 className="text-base font-semibold text-zinc-950 dark:text-white">VisionStudio</h3><p className="mt-2 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">{homePageText(zh).designDebugConfirm}</p></SiteLink>
-            <SiteLink href="/products/visionruntime" className="surface-card block p-5 transition-colors hover:border-cyan-500/50"><Cpu className="mb-3 h-5 w-5 text-cyan-600 dark:text-cyan-400" /><h3 className="text-base font-semibold text-zinc-950 dark:text-white">VisionRuntime</h3><p className="mt-2 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">{homePageText(zh).inspectionExecutionDevice}</p></SiteLink>
-            <SiteLink href="/products/visionedge" className="surface-card block p-5 transition-colors hover:border-violet-500/50"><Shield className="mb-3 h-5 w-5 text-violet-600 dark:text-violet-400" /><h3 className="text-base font-semibold text-zinc-950 dark:text-white">VisionEdge</h3><p className="mt-2 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">{homePageText(zh).edgeGatewayDesc}</p></SiteLink>
+
+  return (
+    <div className="text-zinc-900 dark:text-zinc-100">
+      <SeoHead title={tx.industrialVisionIntelligence} description={tx.buildAndDebug} canonicalPath="/" />
+
+      {/* 1. Hero + Interactive Studio Showcase */}
+      <section className="site-container pb-16 pt-28 lg:pb-20 lg:pt-36">
+        <div className="max-w-3xl space-y-6">
+          <p className="eyebrow">VISIONGO / {tx.industrialVisionSoftware}</p>
+          <h1 className="page-title">
+            {tx.buildDebugAnd}
+            <span className="mt-2 block text-emerald-600 dark:text-emerald-400">{tx.industrialVisionWorkflows}</span>
+          </h1>
+          <p className="lead max-w-2xl">{tx.designInspectionWorkflows}</p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <SiteLink href="/downloads/visionstudio" className="btn-primary">
+              {tx.downloadVisionstudio}
+              <ArrowRight className="h-4 w-4" />
+            </SiteLink>
+            <button onClick={onOpenContact} className="btn-secondary">
+              {tx.requestADemo}
+            </button>
           </div>
-          <p className="mt-4 text-xs text-zinc-500">SDK / IPC · {homePageText(zh).theWorkspaceHandles}</p>
+          <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <SiteLink href="/developers#quickstart" className="hover:text-zinc-950 dark:hover:text-white">{tx.quickstart}</SiteLink>
+            <SiteLink href="/downloads#requirements" className="hover:text-zinc-950 dark:hover:text-white">{tx.systemAndInstallation}</SiteLink>
+            <SiteLink href="#architecture" className="hover:text-zinc-950 dark:hover:text-white">{tx.deploymentArchitecture}</SiteLink>
+          </div>
         </div>
-        <div className="rounded-2xl border border-dashed border-amber-600/35 bg-amber-50/40 p-5 dark:border-amber-500/30 dark:bg-zinc-950/40 sm:p-6">
-          <p className="mb-4 text-xs font-medium uppercase tracking-wider text-amber-700 dark:text-amber-400">{homePageText(zh).cloudBoundaryLabel}</p>
-          <SiteLink href="/products/visioncloud" className="surface-card block p-5 transition-colors hover:border-amber-500/50"><Cloud className="mb-3 h-5 w-5 text-amber-600 dark:text-amber-400" /><h3 className="text-base font-semibold text-zinc-950 dark:text-white">VisionCloud</h3><p className="mt-2 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">{homePageText(zh).cloudAdviceDesc}</p></SiteLink>
-          <p className="mt-4 text-xs text-zinc-500">HTTPS / SDK Contracts</p>
+
+        <div className="mt-10 lg:mt-14">
+          <StudioShowcase />
         </div>
-      </div>
-      <p className="mt-6 max-w-3xl leading-relaxed text-zinc-600 dark:text-zinc-400">{homePageText(zh).productionControlRetains}</p>
-      <SiteLink href="/developers#docs" className="text-link mt-6">{homePageText(zh).exploreEngineeringAnd}<ArrowRight className="h-4 w-4" /></SiteLink>
-    </div></section>
-    <section className="site-container section">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <h2 className="section-title">{homePageText(zh).trustTitle}</h2>
-        <SiteLink href="/about#security" className="text-link">{homePageText(zh).learnSecurityBoundaries}<ArrowRight className="h-4 w-4" /></SiteLink>
-      </div>
-      <div className="grid gap-6 md:grid-cols-3">{[
-        { icon: Cpu, title: homePageText(zh).trustOfflineTitle, text: homePageText(zh).trustOfflineDesc },
-        { icon: Lock, title: homePageText(zh).trustAiDataTitle, text: homePageText(zh).trustAiDataDesc },
-        { icon: ShieldCheck, title: homePageText(zh).trustControlTitle, text: homePageText(zh).trustControlDesc },
-      ].map(item => <div key={item.title} className="surface-card p-6"><span className="icon-tile mb-5"><item.icon className="h-5 w-5" /></span><h3 className="text-lg font-semibold text-zinc-950 dark:text-white">{item.title}</h3><p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{item.text}</p></div>)}</div>
-    </section>
-    <section className="site-container section space-y-5 text-center"><h2 className="section-title">{homePageText(zh).startYourFirst}</h2><p className="text-zinc-600 dark:text-zinc-400">{homePageText(zh).chooseARelease}</p><div className="flex flex-wrap justify-center gap-3"><SiteLink href="/downloads" className="btn-primary">{homePageText(zh).getTheSoftware}</SiteLink><SiteLink href="/developers#quickstart" className="btn-secondary">{homePageText(zh).readTheQuickstart}</SiteLink></div></section>
-  </div>;
+
+        <div className="mt-8 flex flex-wrap items-center gap-2.5">
+          {tx.trustStrip.map(item => (
+            <span key={item} className="tag font-mono text-xs">{item}</span>
+          ))}
+        </div>
+      </section>
+
+      {/* 2. Core Platform Architecture */}
+      <section id="products" className="section section-band">
+        <div className="site-container">
+          <div className="mb-8 max-w-2xl">
+            <h2 className="section-title">{tx.fromEngineeringTo}</h2>
+            <p className="mt-3 leading-relaxed text-zinc-600 dark:text-zinc-400">{tx.theWorkspaceHandles}</p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            {products.slice(0, 2).map(product => (
+              <ProductCard key={product.id} product={product} onSelect={slug => onNavigate(`/products/${slug}`)} />
+            ))}
+          </div>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {products.slice(2).map(product => (
+              <SiteLink key={product.id} href={`/products/${product.slug}`} className="card-link flex items-start justify-between gap-4 p-5">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-zinc-950 dark:text-white">{product.name}</span>
+                    <span className="tag text-[11px]">{product.positioning}</span>
+                  </div>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">{product.summary}</p>
+                </div>
+                <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              </SiteLink>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Deterministic Rule Vision x Human-in-the-loop AI */}
+      <section className="site-container section">
+        <div className="mb-10 max-w-3xl space-y-3">
+          <p className="eyebrow">{tx.dualCapabilityEyebrow}</p>
+          <h2 className="section-title">{tx.dualCapabilityTitle}</h2>
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 sm:text-base">{tx.dualCapabilitySub}</p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="surface-card p-6 sm:p-8 space-y-4">
+            <div className="icon-tile"><Workflow className="h-5 w-5" /></div>
+            <h3 className="text-xl font-semibold text-zinc-950 dark:text-white">{tx.ruleTitle}</h3>
+            <ul className="space-y-3">
+              {tx.ruleItems.map(item => (
+                <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="surface-card p-6 sm:p-8 space-y-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-cyan-600/25 bg-cyan-500/10 text-cyan-700 dark:border-cyan-500/25 dark:text-cyan-400">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <h3 className="text-xl font-semibold text-zinc-950 dark:text-white">{tx.aiTitle}</h3>
+            <ul className="space-y-3">
+              {tx.aiItems.map(item => (
+                <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-cyan-600 dark:text-cyan-400" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Applications x Industries Matrix */}
+      <section className="section section-band">
+        <div className="site-container">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+            <div className="max-w-2xl space-y-2">
+              <p className="eyebrow">{tx.matrixEyebrow}</p>
+              <h2 className="section-title">{tx.matrixTitle}</h2>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">{tx.matrixSub}</p>
+            </div>
+            <SiteLink href="/solutions" className="text-link">
+              {tx.viewSolutions}
+              <ArrowRight className="h-4 w-4" />
+            </SiteLink>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {tx.tasks.map(task => (
+              <div key={task.title} className="surface-card p-5 space-y-2">
+                <h3 className="text-base font-semibold text-zinc-950 dark:text-white">{task.title}</h3>
+                <p className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">{task.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {tx.industries.map(ind => (
+              <SiteLink key={ind.name} href={ind.href} className="card-link flex flex-col justify-between gap-3 p-5">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                    <Factory className="h-3.5 w-3.5" />
+                    <span>{ind.name}</span>
+                  </div>
+                  <p className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">{ind.focus}</p>
+                </div>
+                <span className="inline-flex items-center gap-1 text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                  {tx.viewSolutions}
+                  <ArrowRight className="h-3 w-3" />
+                </span>
+              </SiteLink>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Industrial Connectivity & Device Ecosystem */}
+      <section className="site-container section">
+        <div className="mb-8 max-w-3xl space-y-2">
+          <p className="eyebrow">{tx.connectivityEyebrow}</p>
+          <h2 className="section-title">{tx.connectivityTitle}</h2>
+          <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{tx.connectivitySub}</p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {tx.connectivityGroups.map(group => (
+            <div key={group.group} className="surface-card space-y-4 p-6">
+              <div className="flex items-center gap-2 text-sm font-semibold text-zinc-950 dark:text-white">
+                <Network className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                <span>{group.group}</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {group.items.map(item => (
+                  <span key={item} className="tag font-mono text-xs">{item}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 6. Deployment, Remote Assist & Security Boundaries */}
+      <section id="architecture" className="section section-band">
+        <div className="site-container space-y-8">
+          <div className="max-w-3xl space-y-3">
+            <h2 className="section-title">{tx.clearDeploymentAnd}</h2>
+            <p className="leading-relaxed text-zinc-600 dark:text-zinc-400">{tx.productionControlRetains}</p>
+          </div>
+
+          <SafetyControlDiagram />
+
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+            <h3 className="text-xl font-semibold text-zinc-950 dark:text-white">{tx.trustTitle}</h3>
+            <SiteLink href="/about#security" className="text-link">
+              {tx.learnSecurityBoundaries}
+              <ArrowRight className="h-4 w-4" />
+            </SiteLink>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              { icon: Cpu, title: tx.trustOfflineTitle, text: tx.trustOfflineDesc },
+              { icon: Lock, title: tx.trustAiDataTitle, text: tx.trustAiDataDesc },
+              { icon: ShieldCheck, title: tx.trustControlTitle, text: tx.trustControlDesc },
+            ].map(item => (
+              <div key={item.title} className="surface-card p-6">
+                <span className="icon-tile mb-5"><item.icon className="h-5 w-5" /></span>
+                <h4 className="text-lg font-semibold text-zinc-950 dark:text-white">{item.title}</h4>
+                <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Dual-Path Evaluation CTA */}
+      <section className="site-container section space-y-5 text-center">
+        <h2 className="section-title">{tx.startYourFirst}</h2>
+        <p className="mx-auto max-w-2xl text-zinc-600 dark:text-zinc-400">{tx.chooseARelease}</p>
+        <div className="flex flex-wrap justify-center gap-3">
+          <SiteLink href="/downloads" className="btn-primary">{tx.getTheSoftware}</SiteLink>
+          <SiteLink href="/developers#quickstart" className="btn-secondary">{tx.readTheQuickstart}</SiteLink>
+          <SiteLink href="/contact" className="btn-secondary">{tx.bookFeasibility}</SiteLink>
+        </div>
+      </section>
+    </div>
+  );
 }
