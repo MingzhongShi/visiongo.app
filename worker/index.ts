@@ -8,7 +8,7 @@
 import type { Env } from './types';
 import { json } from './reliability';
 import { withErrorCode } from './errorCodes';
-import { receiveInquiry, dispatchInquiries } from './contacts';
+import { receiveInquiry, dispatchInquiries, handleAdminInquiriesApi } from './contacts';
 import { handleReleaseAdmin, handleReleaseManifest } from './releases';
 import { handleAccountApi, handleAdminUsersApi } from './accountAdmin';
 import { handleDesktopSessionApi } from './desktopSessions';
@@ -36,6 +36,7 @@ const API: Handler[] = [
   handleDesktopAuthApi,
   handleAccountApi,
   handleAdminUsersApi,
+  handleAdminInquiriesApi,
   handleDesktopSessionApi,
   handleOrganizationApi,
 ];

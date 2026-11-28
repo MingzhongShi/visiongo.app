@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { localizedPath } from '../../shared/routing';
+import { localizedPath, stripLocalePath } from '../../shared/routing';
+import { buildPageSchema } from '../../shared/seoSchema';
 import { useLanguage } from '../i18n/LanguageContext';
 
 interface SeoHeadProps { title: string; description: string; canonicalPath?: string; noindex?: boolean }
@@ -29,7 +30,14 @@ export function SeoHead({ title, description, canonicalPath = '/', noindex = fal
     document.head.querySelectorAll('script[type="application/ld+json"]').forEach(element => element.remove());
     if (!noindex) {
       const schema = document.createElement('script'); schema.type = 'application/ld+json';
-      schema.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebPage', name: fullTitle, description, url, inLanguage: locale === 'zh' ? 'zh-CN' : 'en' });
+      schema.textContent = JSON.stringify(buildPageSchema({
+        plainPath: stripLocalePath(canonicalPath),
+        title: fullTitle,
+        description,
+        url,
+        origin: window.location.origin,
+        locale,
+      }));
       document.head.appendChild(schema);
     }
   }, [title, description, canonicalPath, noindex, locale]);

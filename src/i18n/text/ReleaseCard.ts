@@ -18,6 +18,9 @@ export const releaseCardText = bilingual({
     selectAPackage: 'Select a package to download',
     releaseNotes: 'Release notes',
     quickstartAndInstallation: 'Quickstart and installation guidance',
+    matchedDevice: 'Matched for your device',
+    copySha256: 'Copy SHA-256',
+    copiedSha256: 'Copied',
   },
   zh: {
     loadingReleases: '正在获取发行版本…',
@@ -36,5 +39,8 @@ export const releaseCardText = bilingual({
     selectAPackage: '选择安装包后下载',
     releaseNotes: '更新日志与版本说明',
     quickstartAndInstallation: '快速开始与安装指引',
+    matchedDevice: '已自动匹配当前设备',
+    copySha256: '复制 SHA-256',
+    copiedSha256: '已复制',
   },
 });

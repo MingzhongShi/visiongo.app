@@ -59,7 +59,7 @@ async function downloadAsset(request: Request, env: Env, url: URL, ctx: Executio
   if (!isValidProduct(product)) return json({ error: 'Invalid download product' }, 400);
   if (!/^\d+$/.test(assetId)) return json({ error: 'Invalid asset ID' }, 400);
 
-  const result = await new GitHubDownloadProvider(env).getDownloadStream(product, assetId);
+  const result = await new GitHubDownloadProvider(env).getDownloadStream(product, assetId, request.headers.get('Range'));
   if (!result) {
     await recordDownloadAnalytics(env, request, {
       product, version: 'unknown', assetName: `asset-${assetId}`, statusCode: 404, status: 'not_found',
@@ -67,28 +67,41 @@ async function downloadAsset(request: Request, env: Env, url: URL, ctx: Executio
     return json({ error: 'Release asset not found or download authorization unavailable.', code: 'NOT_FOUND' }, 404);
   }
 
-  // Signed-in visitors see the download in their history; recorded without delaying the stream.
-  const session = await getSessionUser(env, request.headers.get('Cookie'));
-  if (session) {
-    const recorded = recordUserDownloadHistory(env, session.id, product, result.version || 'unknown', result.filename);
-    if (typeof ctx?.waitUntil === 'function') ctx.waitUntil(recorded);
+  if (result.status === 416) {
+    const headers = new Headers({ 'Accept-Ranges': 'bytes', 'Cache-Control': 'no-store' });
+    if (result.contentRange) headers.set('Content-Range', result.contentRange);
+    return new Response(null, { status: 416, headers });
   }
 
-  // Privacy-preserving analytics: HMAC hash, no raw IP.
-  recordDownloadAnalytics(env, request, {
-    product, version: result.version || 'unknown', assetName: result.filename, platform: result.platform,
-    arch: result.arch, assetSize: result.size, statusCode: 200, status: 'success',
-  }, ctx);
+  const responseStatus = result.status === 206 ? 206 : 200;
+  // Record analytics and download history once on full downloads or initial range requests.
+  const isContinuationRange = responseStatus === 206 && result.contentRange && !result.contentRange.startsWith('bytes 0-');
+  if (!isContinuationRange) {
+    const session = await getSessionUser(env, request.headers.get('Cookie'));
+    if (session) {
+      const recorded = recordUserDownloadHistory(env, session.id, product, result.version || 'unknown', result.filename);
+      if (typeof ctx?.waitUntil === 'function') ctx.waitUntil(recorded);
+    }
+
+    // Privacy-preserving analytics: HMAC hash, no raw IP.
+    recordDownloadAnalytics(env, request, {
+      product, version: result.version || 'unknown', assetName: result.filename, platform: result.platform,
+      arch: result.arch, assetSize: result.size, statusCode: responseStatus, status: 'success',
+    }, ctx);
+  }
 
   const headers = new Headers();
   const safeFilename = result.filename.replace(/[\x00-\x1f\x7f"\\]/g, '_').replace(/[^\x20-\x7e]/g, '_');
   const encodedFilename = encodeURIComponent(result.filename).replace(/['()*]/g, char => `%${char.charCodeAt(0).toString(16).toUpperCase()}`);
   headers.set('Content-Disposition', `attachment; filename="${safeFilename}"; filename*=UTF-8''${encodedFilename}`);
   headers.set('Content-Type', result.contentType || 'application/octet-stream');
-  if (result.size) headers.set('Content-Length', String(result.size));
+  headers.set('Accept-Ranges', 'bytes');
+  if (result.contentRange) headers.set('Content-Range', result.contentRange);
+  const length = result.contentLength ?? (responseStatus === 200 ? result.size : undefined);
+  if (length) headers.set('Content-Length', String(length));
   headers.set('Cache-Control', 'private, no-cache, no-store, must-revalidate');
   headers.set('X-Content-Type-Options', 'nosniff');
-  return new Response(result.stream, { status: 200, headers });
+  return new Response(result.stream, { status: responseStatus, headers });
 }
 
 /** GitHub release listing, the download proxy and the signed-in user's download history. */

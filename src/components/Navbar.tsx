@@ -22,7 +22,12 @@ export function Navbar({ currentPath, onOpenContact }: { currentPath: string; on
   }, []);
   // The current section: white text with an emerald underline.
   const activeLink = 'text-white underline decoration-emerald-400 decoration-2 underline-offset-[10px]';
-  const links = [{ path: '/solutions', label: navbarText(locale).solutions }, { path: '/developers', label: navbarText(locale).developers }, { path: '/resources', label: navbarText(locale).resources }];
+  const links = [
+    { path: '/solutions', label: navbarText(locale).solutions },
+    { path: '/developers', label: navbarText(locale).developers },
+    { path: '/resources', label: navbarText(locale).resources },
+    { path: '/about', label: navbarText(locale).about },
+  ];
   return <header ref={header} className="fixed inset-x-0 top-0 z-50 border-b border-zinc-800 bg-zinc-950/95 backdrop-blur-md" onKeyDown={event => { if (event.key === 'Escape') { setMobile(false); setProducts(false); } }}>
     <div className="site-container flex h-16 items-center justify-between gap-4"><SiteLink href="/" className="text-lg font-semibold tracking-wider text-white">VISION<span className="text-emerald-400">GO</span></SiteLink>
       <nav aria-label={navbarText(locale).mainNavigation} className="hidden items-center gap-2 xl:flex">

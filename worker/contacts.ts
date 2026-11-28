@@ -1,8 +1,23 @@
 import type { Env } from './types';
+import { getSessionUser } from './auth';
 import { allowRequest, json, requireDatabase } from './reliability';
 
 type Inquiry = { id: string; name: string; email: string; company: string; country: string; product: string; message: string; locale: string; source: string; notification_attempts: number };
+type AdminInquiryRow = { id: string; name: string; email: string; company: string; country: string; product: string; message: string; locale: string; source: string; created_at: string; notification_status: string };
 const text = (value: unknown) => typeof value === 'string' ? value.trim() : '';
+
+/** Platform administrators inspect recent contact inquiries at GET /api/admin/inquiries. */
+export async function handleAdminInquiriesApi(request: Request, env: Env, url: URL): Promise<Response | null> {
+  if (url.pathname !== '/api/admin/inquiries') return null;
+  const user = await getSessionUser(env, request.headers.get('Cookie'));
+  if (!user) return json({ error: 'Unauthorized' }, 401);
+  if (user.role !== 'super_admin') return json({ error: 'Only platform administrators can inspect inquiries' }, 403);
+  if (request.method !== 'GET') return json({ error: 'Method not allowed' }, 405);
+  const { results } = await requireDatabase(env).prepare(
+    'SELECT id, name, email, company, country, product, message, locale, source, created_at, notification_status FROM contact_inquiries ORDER BY created_at DESC LIMIT 50'
+  ).all<AdminInquiryRow>();
+  return json({ inquiries: results || [] });
+}
 
 export async function receiveInquiry(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   let body: Record<string, unknown>;

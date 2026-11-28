@@ -19,6 +19,13 @@ export const downloadsPageText = bilingual({
     connectivityRequirementsDepend: 'Connectivity requirements depend on enabled features; online sign-in and cloud features require their services. VisionCloud has no local installer.',
     installationAndFirst: 'Installation and first-run guide',
     askAboutVersion: 'Ask about version compatibility',
+    faqTitle: 'Licensing & deployment FAQ',
+    faqs: [
+      { q: 'Do I need an account to download or run locally?', a: 'No account is required to download installers or run VisionRuntime locally. An account is only needed for organization management, VisionCloud AI assistance, or recording download history.' },
+      { q: 'What is the difference between evaluation downloads and commercial production?', a: 'Published packages are open for engineering evaluation and sample validation. Continuous 24/7 commercial production lines require a formal commercial license or hardware dongle.' },
+      { q: 'How do VisionCloud credits and AI data authorization work?', a: 'Credits are isolated per organization, and personal organizations include 100 trial credits. AI data authorization is off by default and controlled by organization administrators in My Account.' },
+      { q: 'Can I verify package integrity before installing on an industrial PC?', a: 'Yes. Packages with published SHA-256 digests display the checksum directly in the package summary with one-click copy.' },
+    ],
   },
   zh: {
     downloadsSoftwareReleases: '软件下载',
@@ -38,5 +45,12 @@ export const downloadsPageText = bilingual({
     connectivityRequirementsDepend: '本地部署的联网要求取决于启用的功能；在线登录与云端功能需要相应服务可用。VisionCloud 无需本地安装。',
     installationAndFirst: '安装与首次运行指引',
     askAboutVersion: '咨询版本兼容性',
+    faqTitle: '授权与部署常见问题',
+    faqs: [
+      { q: '下载和本地运行必须登录账号吗？', a: '不需要。下载安装包及在本地运行 VisionRuntime 均无需账号；仅在使用组织管理、VisionCloud AI 建议或保存个人下载记录时需要登录。' },
+      { q: '公开下载包与商业产线授权有什么区别？', a: '下载中心提供的发行包开放给工程师进行技术评估与样本验证；投入 7×24 商业连续生产的工控机需要正式商用授权码或硬件加密狗。' },
+      { q: 'VisionCloud 额度与 AI 数据授权如何管理？', a: '云端额度按组织隔离，个人组织首次使用赠送 100 Credits；AI 数据使用权限默认关闭，由组织管理员在“我的账户”中随时开启或关闭。' },
+      { q: '安装到工控机前如何校验安装包完整性？', a: '带有 SHA-256 摘要的发行包会在选定后直接展示校验值，并支持一键复制核对。' },
+    ],
   },
 });

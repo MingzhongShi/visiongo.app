@@ -8,6 +8,7 @@ import {
   Download,
   LayoutDashboard,
   LogOut,
+  Mail,
   Monitor,
   Package,
   PackageCheck,
@@ -43,13 +44,13 @@ interface AccountPageProps {
 }
 
 type SectionId = 'overview' | 'security' | 'devices' | 'organization' | 'credits' | 'downloads'
-  | 'admin-accounts' | 'admin-organizations' | 'admin-releases';
+  | 'admin-accounts' | 'admin-organizations' | 'admin-releases' | 'admin-inquiries';
 
 interface NavItem { id: SectionId; label: string; hint: string; icon: React.ElementType }
 interface NavGroup { label: string; items: NavItem[] }
 
 const SECTIONS: SectionId[] = ['overview', 'security', 'devices', 'organization', 'credits', 'downloads',
-  'admin-accounts', 'admin-organizations', 'admin-releases'];
+  'admin-accounts', 'admin-organizations', 'admin-releases', 'admin-inquiries'];
 const ORG_KEY = 'visiongo_account_org';
 
 const sectionFromHash = (): SectionId => {
@@ -199,6 +200,7 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
       { id: 'admin-accounts', label: accountPageText(zh).accounts, hint: accountPageText(zh).createResetCodes, icon: UserCog },
       { id: 'admin-organizations', label: accountPageText(zh).adminOrganizations, hint: accountPageText(zh).createSuspend, icon: Building2 },
       { id: 'admin-releases', label: accountPageText(zh).releases, hint: accountPageText(zh).desktopUpdateRecords, icon: PackageCheck },
+      { id: 'admin-inquiries', label: accountPageText(zh).inquiries, hint: accountPageText(zh).customerInquiriesDesc, icon: Mail },
     ] });
     return list;
   }, [zh, platformAdmin]);
@@ -326,6 +328,7 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
           <PlatformOrganizationsPanel zh={zh} myEmail={user.email} orgs={orgs} onManage={manageOrg} />
         )}
         {platformAdmin && current.id === 'admin-releases' && <PlatformAdminPanel zh={zh} section="releases" />}
+        {platformAdmin && current.id === 'admin-inquiries' && <PlatformAdminPanel zh={zh} section="inquiries" />}
 
         <button type="button" onClick={() => void logout()} className={`${ui.secondary} w-full lg:hidden`}>
           <LogOut className="h-4 w-4" />{accountPageText(zh).signOut}
@@ -397,6 +400,7 @@ const Overview: React.FC<{
               {accountPageText(zh).manageOrganizationsCount(orgs.allOrganizations.length)}
             </button>
             <button type="button" onClick={() => go('admin-releases')} className={ui.secondary}>{accountPageText(zh).releases}</button>
+            <button type="button" onClick={() => go('admin-inquiries')} className={ui.secondary}>{accountPageText(zh).inquiries}</button>
           </div>
         </Panel>
       )}

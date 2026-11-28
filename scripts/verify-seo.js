@@ -15,6 +15,7 @@ assert.ok(robots.includes(`Sitemap: ${origin}/sitemap.xml`), 'robots sitemap');
 for (const file of fs.readdirSync(dist, { recursive: true }).filter(file => /\.(html|txt|xml)$/.test(file))) {
   assert.doesNotMatch(fs.readFileSync(path.join(dist, file), 'utf8'), /__SITE_ORIGIN__/, `${file}: unresolved origin`);
 }
+assert.deepEqual(fs.readdirSync(dist, { recursive: true }).filter(file => String(file).endsWith('.map')), [], 'production dist must not emit source maps');
 assert.doesNotMatch(sitemap, /<loc>[^<]*\/(api\/|my|account|auth\/)/);
 const titles = new Set();
 for (const locale of ['en', 'zh']) for (const route of routes) {

@@ -391,3 +391,51 @@ test('session pages: me, logout, download history and URL normalization keep the
   const wrongMethod = await request('/api/auth/token', undefined, env);
   assert.equal(wrongMethod.status, 404);
 });
+
+test('security headers, immutable asset caching, source map blocking, range downloads and admin inquiries', async () => {
+  const env = environment();
+  env.ASSETS.fetch = async req => {
+    const pathname = new URL(req.url).pathname;
+    if (pathname === '/assets/app.js') return new Response('console.log(1)', { headers: { 'Content-Type': 'application/javascript' } });
+    const filename = `dist${pathname}`;
+    return fs.existsSync(filename) && fs.statSync(filename).isFile() ? new Response(fs.readFileSync(filename), { headers: { 'Content-Type': 'text/html' } }) : new Response('Not found', { status: 404 });
+  };
+  assert.equal((await request('/assets/app.js.map', undefined, env)).status, 404);
+  const asset = await request('/assets/app.js', undefined, env);
+  assert.equal(asset.status, 200);
+  assert.equal(asset.headers.get('Cache-Control'), 'public, max-age=31536000, immutable');
+  const home = await request('/', undefined, env);
+  assert.equal(home.status, 200);
+  assert.match(home.headers.get('Content-Security-Policy') || '', /default-src 'self'/);
+  assert.match(home.headers.get('Strict-Transport-Security') || '', /max-age=31536000/);
+
+  // Range download forwarding
+  env.GITHUB_RELEASE_TOKEN = 'token';
+  await mockFetch(async (_url, options) => {
+    if (options.headers.Accept === 'application/octet-stream') {
+      assert.equal(options.headers.Range, 'bytes=0-3');
+      return new Response('real', { status: 206, headers: { 'Content-Range': 'bytes 0-3/19', 'Content-Length': '4' } });
+    }
+    return Response.json({ name: 'studio-win-x64.exe', content_type: 'application/octet-stream', size: 19 });
+  }, async () => {
+    const partial = await request('/api/download/visionstudio/42', undefined, env, { Range: 'bytes=0-3' });
+    assert.equal(partial.status, 206);
+    assert.equal(partial.headers.get('Accept-Ranges'), 'bytes');
+    assert.equal(partial.headers.get('Content-Range'), 'bytes 0-3/19');
+    assert.equal(await partial.text(), 'real');
+  });
+
+  // Admin inquiries endpoint requires super_admin
+  await request('/api/contact', form(), env);
+  assert.equal((await request('/api/admin/inquiries', undefined, env)).status, 401);
+  await auth.saveVerificationCode(env, 'member@example.com', '123456');
+  const memberReg = await request('/api/auth/email/register', { email: 'member@example.com', code: '123456', password: 'password-1' }, env);
+  const memberCookie = sessionOf(memberReg);
+  assert.equal((await request('/api/admin/inquiries', undefined, env, { Cookie: memberCookie })).status, 403);
+  env.DB.sqlite.prepare("UPDATE users SET role = 'super_admin' WHERE email = 'member@example.com'").run();
+  const adminRes = await request('/api/admin/inquiries', undefined, env, { Cookie: memberCookie });
+  assert.equal(adminRes.status, 200);
+  const adminData = await adminRes.json();
+  assert.equal(adminData.inquiries.length, 1);
+  assert.equal(adminData.inquiries[0].email, 'engineer@example.com');
+});

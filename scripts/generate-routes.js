@@ -18,6 +18,7 @@ const vite = await createServer({ root, server: { middlewareMode: true, hmr: fal
 const urls = [];
 try {
   const { App } = await vite.ssrLoadModule('/src/App.tsx');
+  const { buildPageSchema } = await vite.ssrLoadModule('/shared/seoSchema.ts');
   const ssrPages = {};
   for (const file of fs.readdirSync(path.join(root, 'src/pages')).filter(file => file.endsWith('.tsx'))) ssrPages[file.slice(0, -4)] = await vite.ssrLoadModule(`/src/pages/${file}`);
   const render = (route, locale, privatePage = false) => {
@@ -38,7 +39,7 @@ try {
     html = html.replace(/<link\s+rel="canonical"\s+href="[^"]*"\s*\/>/, `<link rel="canonical" href="${canonical}" />`);
     if (!privatePage) {
       const links = [['en', local(route.path, 'en')], ['zh-CN', local(route.path, 'zh')], ['x-default', local(route.path, 'en')]].map(([lang, pathname]) => `<link rel="alternate" hreflang="${lang}" href="${origin}${pathname}" />`).join('\n');
-      const schema = JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebPage', name: pageTitle, description, url: canonical, inLanguage: locale === 'zh' ? 'zh-CN' : 'en' }).replaceAll('<', '\\u003c');
+      const schema = JSON.stringify(buildPageSchema({ plainPath: route.path, title: pageTitle, description, url: canonical, origin, locale })).replaceAll('<', '\\u003c');
       html = html.replace('</head>', `${links}\n<meta property="og:locale" content="${locale === 'zh' ? 'zh_CN' : 'en_US'}" />\n<script type="application/ld+json">${schema}</script>\n</head>`);
       urls.push(canonical);
     }

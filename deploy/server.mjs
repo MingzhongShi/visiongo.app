@@ -19,11 +19,15 @@ const DB = createDatabase(process.env.DATABASE_PATH || resolve(root, 'data/websi
 const types = { '.html':'text/html; charset=utf-8', '.js':'application/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json', '.xml':'application/xml', '.txt':'text/plain; charset=utf-8', '.svg':'image/svg+xml', '.png':'image/png', '.jpg':'image/jpeg', '.jpeg':'image/jpeg', '.webp':'image/webp', '.ico':'image/x-icon', '.woff2':'font/woff2', '.pdf':'application/pdf' };
 const env = { ...process.env, PUBLIC_ORIGIN: publicOrigin.origin, DB, ASSETS: { async fetch(request) {
   try {
-    const filename = resolve(assets, '.' + decodeURIComponent(new URL(request.url).pathname));
+    const pathname = decodeURIComponent(new URL(request.url).pathname);
+    const filename = resolve(assets, '.' + pathname);
     if (!filename.startsWith(assets + sep)) return new Response('Not Found', { status: 404 });
     const info = await stat(filename);
     if (!info.isFile()) return new Response('Not Found', { status: 404 });
-    return new Response(request.method === 'HEAD' ? null : await readFile(filename), { headers: { 'Content-Type': types[extname(filename)] || 'application/octet-stream', 'Content-Length': String(info.size) } });
+    const headers = { 'Content-Type': types[extname(filename)] || 'application/octet-stream', 'Content-Length': String(info.size) };
+    if (pathname.startsWith('/assets/')) headers['Cache-Control'] = 'public, max-age=31536000, immutable';
+    else if (extname(filename) !== '.html') headers['Cache-Control'] = 'public, max-age=3600';
+    return new Response(request.method === 'HEAD' ? null : await readFile(filename), { headers });
   } catch { return new Response('Not Found', { status: 404 }); }
 } } };
 if (!env.SESSION_SECRET) throw new Error('SESSION_SECRET is required');
@@ -43,13 +47,19 @@ const server = createServer(async (incoming, outgoing) => {
     // Keep a www host visible so the Worker issues its canonical redirect.
     const origin = host.toLowerCase().startsWith(`www.${publicOrigin.hostname}`) ? `${publicOrigin.protocol}//www.${publicOrigin.host}` : publicOrigin.origin;
     const controller = new AbortController();
-    outgoing.on('close', () => { if (!outgoing.writableFinished) controller.abort(); });
+    const isDownload = (incoming.url || '').startsWith('/api/download/');
+    // Large installer downloads stream over FRP and can exceed 30s; cap everything else.
+    const requestTimer = isDownload ? null : setTimeout(() => controller.abort(), 30_000);
+    outgoing.on('close', () => {
+      if (requestTimer) clearTimeout(requestTimer);
+      if (!outgoing.writableFinished) controller.abort();
+    });
     let body;
     if (incoming.method !== 'GET' && incoming.method !== 'HEAD') {
       const chunks = []; let size = 0;
       for await (const chunk of incoming) {
         size += chunk.length;
-        if (size > 1_048_576) { outgoing.writeHead(413).end(); return; }
+        if (size > 1_048_576) { if (requestTimer) clearTimeout(requestTimer); outgoing.writeHead(413).end(); return; }
         chunks.push(chunk);
       }
       body = Buffer.concat(chunks);
@@ -62,6 +72,7 @@ const server = createServer(async (incoming, outgoing) => {
     if (cookies.length) outgoing.setHeader('set-cookie', cookies);
     if (incoming.method === 'HEAD' || !response.body) outgoing.end();
     else await pipeline(Readable.fromWeb(response.body), outgoing);
+    if (requestTimer) clearTimeout(requestTimer);
   } catch (error) {
     if (!outgoing.destroyed) {
       console.error('HTTP request failed:', error.name);
@@ -70,7 +81,7 @@ const server = createServer(async (incoming, outgoing) => {
     }
   }
 });
-server.requestTimeout = 30_000;
+server.requestTimeout = 0;
 server.headersTimeout = 15_000;
 server.listen(Number(process.env.PORT || 8600), '127.0.0.1', () => console.log('VISIONGO website listening on loopback port', process.env.PORT || 8600));
 let scheduling = false;

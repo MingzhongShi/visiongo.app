@@ -91,7 +91,10 @@ export const PrivacyPolicyPage: React.FC = () => {
             </ul>
           </div>
 
-          <div className="space-y-3"><h3 className="text-lg font-semibold text-white">{privacyPolicyPageText(locale).githubAndEmail}</h3><p>{privacyPolicyPageText(locale).githubSignIn}</p><p>{privacyPolicyPageText(locale).abuseLimitsUse}</p></div>
+          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-6 space-y-2">
+            <h3 className="text-base font-semibold text-emerald-300">{privacyPolicyPageText(locale).aiDataTitle}</h3>
+            <p className="text-zinc-300">{privacyPolicyPageText(locale).aiDataDesc}</p>
+          </div>
           {/* Section 4: Contact Form */}
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
@@ -113,7 +116,7 @@ export const PrivacyPolicyPage: React.FC = () => {
               {privacyPolicyPageText(locale).weDoNot}
             </p>
             <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 font-mono text-xs text-zinc-400">
-              <code>vg_session: HttpOnly; Secure; SameSite=Lax; Max-Age=30 days; GitHub state: 10 minutes</code>
+              <code>{privacyPolicyPageText(locale).cookieSummary}</code>
             </div>
           </div>
 

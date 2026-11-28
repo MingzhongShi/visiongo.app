@@ -187,7 +187,8 @@ export class GitHubDownloadProvider implements DownloadProvider {
 
   public async getDownloadStream(
     product: SupportedProduct,
-    assetId: string
+    assetId: string,
+    range?: string | null
   ): Promise<DownloadStreamResult | null> {
     // Validate assetId is strictly numeric
     if (!/^\d+$/.test(assetId)) {
@@ -204,6 +205,7 @@ export class GitHubDownloadProvider implements DownloadProvider {
     try {
       // Step 1: Query asset metadata to get proper filename and size
       const metaRes = await fetch(assetMetaUrl, {
+        signal: AbortSignal.timeout(10000),
         headers: {
           'Accept': 'application/vnd.github+json',
           'Authorization': `Bearer ${token}`,
@@ -221,22 +223,47 @@ export class GitHubDownloadProvider implements DownloadProvider {
 
       // Step 2: Request the raw binary stream.
       // GitHub release asset endpoint redirects (302) to S3/CDN. We follow redirects.
+      const downloadHeaders: Record<string, string> = {
+        'Accept': 'application/octet-stream',
+        'Authorization': `Bearer ${token}`,
+        'User-Agent': 'VISIONGO-WebWorker/1.0',
+      };
+      if (range && /^bytes=\d*-\d*$/.test(range.trim())) {
+        downloadHeaders['Range'] = range.trim();
+      }
       const downloadRes = await fetch(assetMetaUrl, {
-        headers: {
-          'Accept': 'application/octet-stream',
-          'Authorization': `Bearer ${token}`,
-          'User-Agent': 'VISIONGO-WebWorker/1.0',
-        },
+        headers: downloadHeaders,
         redirect: 'follow',
       });
 
+      if (downloadRes.status === 416) {
+        return {
+          stream: new ReadableStream({ start(controller) { controller.close(); } }),
+          filename,
+          contentType: meta.content_type || 'application/octet-stream',
+          size: meta.size || undefined,
+          status: 416,
+          contentRange: downloadRes.headers.get('Content-Range') || (meta.size ? `bytes */${meta.size}` : undefined),
+          platform,
+          arch,
+        };
+      }
+
       if (!downloadRes.ok || !downloadRes.body) throw new Error('Binary download service unavailable');
+
+      const status = downloadRes.status === 206 ? 206 : 200;
+      const contentRange = status === 206 ? downloadRes.headers.get('Content-Range') || undefined : undefined;
+      const rawLength = downloadRes.headers.get('Content-Length');
+      const contentLength = rawLength && /^\d+$/.test(rawLength) ? Number(rawLength) : undefined;
 
       return {
         stream: downloadRes.body,
         filename,
         contentType: meta.content_type || 'application/octet-stream',
         size: meta.size || undefined,
+        status,
+        contentRange,
+        contentLength,
         platform,
         arch,
       };
