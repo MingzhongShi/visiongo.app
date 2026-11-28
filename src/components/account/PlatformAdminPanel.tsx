@@ -154,7 +154,7 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
       <Panel icon={<Users className="h-4 w-4 text-zinc-400" />} title={platformAdminPanelText(zh).accounts}
              description={platformAdminPanelText(zh).findAccountsCreate}>
         {!emailDelivery && emailSignIn && (
-          <p className="p-3 rounded-xl border border-amber-500/30 bg-amber-500/5 text-sm text-amber-200">
+          <p className="p-3 rounded-xl border border-amber-500/40 bg-amber-50 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/5 dark:text-amber-200">
             {platformAdminPanelText(zh).thisSiteCannot}
           </p>
         )}
@@ -192,14 +192,14 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
         )}
 
         {handover && (
-          <div className="p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-2">
+          <div className="p-3 rounded-xl border border-emerald-600/30 bg-emerald-50 dark:border-emerald-500/30 dark:bg-emerald-500/5 space-y-2">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-sm font-semibold text-emerald-300">{handover.title}</span>
+              <span className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">{handover.title}</span>
               <button type="button" onClick={() => void copy()} className={smallButton}>
                 <span className="inline-flex items-center gap-1 text-sm"><Copy className="w-3 h-3" />{copied ? (platformAdminPanelText(zh).copied) : (platformAdminPanelText(zh).copy)}</span>
               </button>
             </div>
-            <pre className="whitespace-pre-wrap break-all text-sm text-zinc-200 font-mono">{handover.message}</pre>
+            <pre className="whitespace-pre-wrap break-all text-sm text-zinc-900 dark:text-zinc-200 font-mono">{handover.message}</pre>
             <p className="text-[11px] text-zinc-500">
               {platformAdminPanelText(zh).shownOnlyThis}
             </p>
@@ -214,11 +214,11 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
         <div className="space-y-2">
           {users.length === 0 && <p className="text-sm text-zinc-500">{platformAdminPanelText(zh).noAccountsFound}</p>}
           {users.map(account => (
-            <div key={account.id} className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-sm">
+            <div key={account.id} className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-zinc-50 border border-zinc-200 dark:bg-zinc-950 dark:border-zinc-800 text-sm">
               <div className="min-w-0">
-                <div className="text-zinc-200 truncate">
+                <div className="text-zinc-900 dark:text-zinc-200 truncate">
                   {account.display_name || account.email}
-                  {account.role === 'super_admin' && <span className={`${badge} ml-2 border-emerald-500/30 text-emerald-400`}>{platformAdminPanelText(zh).platformAdmin}</span>}
+                  {account.role === 'super_admin' && <span className={`${badge} ml-2 border-emerald-600/30 text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-400`}>{platformAdminPanelText(zh).platformAdmin}</span>}
                 </div>
                 <div className="text-zinc-500 font-mono truncate">
                   {account.email} · {platformAdminPanelText(zh).lastSignIn} {(account.last_login_at || account.created_at).slice(0, 10)}
@@ -248,13 +248,13 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
       <Panel icon={<PackageCheck className="h-4 w-4 text-zinc-400" />} title={platformAdminPanelText(zh).softwareReleases}
              description={platformAdminPanelText(zh).visionstudioAndVisionedge}>
         <div className="space-y-2">
-          {releases.length === 0 && <p className="text-sm text-amber-300">{platformAdminPanelText(zh).nothingPublishedYet}</p>}
+          {releases.length === 0 && <p className="text-sm text-amber-700 dark:text-amber-300">{platformAdminPanelText(zh).nothingPublishedYet}</p>}
           {releases.map(row => (
             <button type="button" key={`${row.product}-${row.platform}-${row.channel}`}
                     onClick={() => setRelease({ product: row.product, platform: row.platform, channel: row.channel, latest: row.latest,
                                                 min_supported: row.min_supported, url: row.url || '', sha256: row.sha256 || '', notes_url: row.notes_url || '' })}
-                    className="w-full text-left p-3 rounded-xl bg-zinc-950 border border-zinc-800 text-sm hover:border-zinc-700 cursor-pointer">
-              <div className="text-zinc-200 font-mono">{row.product} · {row.platform} · {row.channel}</div>
+                    className="w-full text-left p-3 rounded-xl bg-zinc-50 border border-zinc-200 hover:border-zinc-300 dark:bg-zinc-950 dark:border-zinc-800 dark:hover:border-zinc-700 text-sm cursor-pointer">
+              <div className="text-zinc-900 dark:text-zinc-200 font-mono">{row.product} · {row.platform} · {row.channel}</div>
               <div className="text-zinc-500 font-mono break-all">
                 {platformAdminPanelText(zh).latest} {row.latest} · {platformAdminPanelText(zh).min} {row.min_supported}{row.url ? ` · ${row.url}` : ''}
               </div>
@@ -281,7 +281,7 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
             {field('sha256', platformAdminPanelText(zh).installerSha256)}
             {field('notes_url', platformAdminPanelText(zh).releaseNotesUrl)}
           </div>
-          {releaseNotice && <p className="text-sm text-zinc-300">{releaseNotice}</p>}
+          {releaseNotice && <p className="text-sm text-zinc-700 dark:text-zinc-300">{releaseNotice}</p>}
           <button type="submit" disabled={busy} className={button}>
             <Upload className="w-3.5 h-3.5" />
             <span>{platformAdminPanelText(zh).publish}</span>
@@ -291,27 +291,27 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
       )}
 
       {section === 'inquiries' && (
-      <Panel icon={<Mail className="h-4 w-4 text-zinc-400" />} title={platformAdminPanelText(zh).inquiriesTitle}
+      <Panel icon={<Mail className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />} title={platformAdminPanelText(zh).inquiriesTitle}
              description={platformAdminPanelText(zh).inquiriesDesc}
              actions={<button type="button" onClick={() => void loadInquiries()} className={ui.secondary}><RefreshCw className="h-3.5 w-3.5" />{platformAdminPanelText(zh).refresh}</button>}>
         <div className="space-y-3">
           {inquiries.length === 0 && <p className="text-sm text-zinc-500">{platformAdminPanelText(zh).noInquiriesYet}</p>}
           {inquiries.map(item => (
-            <div key={item.id} className="space-y-2 rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm">
+            <div key={item.id} className="space-y-2 rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950 p-4 text-sm">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-medium text-white">{item.name}</span>
-                  {item.company && <span className="text-xs text-zinc-400">· {item.company}</span>}
-                  <a href={`mailto:${item.email}`} className="font-mono text-xs text-emerald-400 hover:underline">{item.email}</a>
+                  <span className="font-medium text-zinc-950 dark:text-white">{item.name}</span>
+                  {item.company && <span className="text-xs text-zinc-500 dark:text-zinc-400">· {item.company}</span>}
+                  <a href={`mailto:${item.email}`} className="font-mono text-xs text-emerald-700 dark:text-emerald-400 hover:underline">{item.email}</a>
                 </div>
                 <div className="flex items-center gap-2 text-xs">
-                  <span className={`${badge} ${item.notification_status === 'sent' ? 'border-emerald-500/30 text-emerald-400' : item.notification_status === 'failed' ? 'border-amber-500/30 text-amber-300' : 'border-zinc-700 text-zinc-400'}`}>
+                  <span className={`${badge} ${item.notification_status === 'sent' ? 'border-emerald-600/30 text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-400' : item.notification_status === 'failed' ? 'border-amber-600/35 text-amber-700 dark:border-amber-500/30 dark:text-amber-300' : 'border-zinc-300 text-zinc-600 dark:border-zinc-700 dark:text-zinc-400'}`}>
                     {item.notification_status === 'sent' ? platformAdminPanelText(zh).inquiryStatusSent : item.notification_status === 'failed' ? platformAdminPanelText(zh).inquiryStatusFailed : platformAdminPanelText(zh).inquiryStatusPending}
                   </span>
                   <span className="font-mono text-zinc-500">{item.created_at.slice(0, 16).replace('T', ' ')}</span>
                 </div>
               </div>
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-300">{item.message}</p>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{item.message}</p>
               <div className="flex flex-wrap gap-3 font-mono text-[11px] text-zinc-500">
                 <span>{item.product}</span>
                 {item.source && <span>{item.source}</span>}

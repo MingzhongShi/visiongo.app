@@ -39,14 +39,14 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess, className = '' })
     <div className={`w-full max-w-md mx-auto space-y-6 ${className}`}>
       {/* Top Tab Switcher */}
       {email && oauth && (
-      <div className="flex border-b border-zinc-800 pb-2">
+      <div className="flex border-b border-zinc-200 dark:border-zinc-800 pb-2">
         <button
           type="button"
           onClick={() => setTab('oauth')}
           className={`flex-1 pb-2 text-xs font-medium flex items-center justify-center gap-2 border-b-2 transition-all cursor-pointer ${
             tab === 'oauth'
-              ? 'border-emerald-400 text-emerald-400'
-              : 'border-transparent text-zinc-500 hover:text-zinc-300'
+              ? 'border-emerald-600 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400'
+              : 'border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300'
           }`}
         >
           <Globe className="w-3.5 h-3.5" />
@@ -57,8 +57,8 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess, className = '' })
           onClick={() => setTab('email')}
           className={`flex-1 pb-2 text-xs font-medium flex items-center justify-center gap-2 border-b-2 transition-all cursor-pointer ${
             tab === 'email'
-              ? 'border-emerald-400 text-emerald-400'
-              : 'border-transparent text-zinc-500 hover:text-zinc-300'
+              ? 'border-emerald-600 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400'
+              : 'border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300'
           }`}
         >
           <Mail className="w-3.5 h-3.5" />
@@ -74,10 +74,10 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess, className = '' })
             {google && <GoogleSignInButton onSuccess={onSuccess} />}
 
             {google && github && (
-              <div className="w-full max-w-[280px] flex items-center gap-2 text-zinc-600 my-1">
-                <div className="h-[1px] bg-zinc-800 flex-1" />
+              <div className="w-full max-w-[280px] flex items-center gap-2 text-zinc-400 dark:text-zinc-600 my-1">
+                <div className="h-[1px] bg-zinc-200 dark:bg-zinc-800 flex-1" />
                 <span className="text-[10px] uppercase">{authCardText(locale).or}</span>
-                <div className="h-[1px] bg-zinc-800 flex-1" />
+                <div className="h-[1px] bg-zinc-200 dark:bg-zinc-800 flex-1" />
               </div>
             )}
 
@@ -89,7 +89,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess, className = '' })
             <button
               type="button"
               onClick={() => setTab('email')}
-              className="text-xs text-zinc-500 hover:text-emerald-400 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+              className="text-xs text-zinc-500 hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
             >
               <Mail className="w-3.5 h-3.5" />
               <span>{authCardText(locale).noOauthAccount}</span>
@@ -107,9 +107,9 @@ export const AuthCard: React.FC<AuthCardProps> = ({ onSuccess, className = '' })
       )}
 
       {/* Privacy Guarantee Footer */}
-      <div className="pt-2 border-t border-zinc-800/80">
+      <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800/80">
         <div className="flex items-center justify-center gap-2 text-[11px] text-zinc-500">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
           <span>{authCardText(locale).endToEnd}</span>
         </div>
       </div>

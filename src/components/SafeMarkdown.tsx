@@ -12,9 +12,9 @@ export function SafeMarkdown({ content, className = '', headingOffset = 1 }: Saf
     while ((match = tokens.exec(text))) {
       if (match.index > start) result.push(text.slice(start, match.index));
       const key = match.index;
-      if (match[1]) result.push(<code key={key} className="rounded bg-zinc-800 px-1 py-0.5 font-mono text-xs text-emerald-300">{match[1]}</code>);
-      else if (match[2]) result.push(<strong key={key} className="font-semibold text-white">{match[2]}</strong>);
-      else result.push(<SiteLink key={key} href={match[4]} className="text-emerald-400 underline underline-offset-2">{match[3]}</SiteLink>);
+      if (match[1]) result.push(<code key={key} className="rounded bg-zinc-100 px-1 py-0.5 font-mono text-xs text-emerald-700 dark:bg-zinc-800 dark:text-emerald-300">{match[1]}</code>);
+      else if (match[2]) result.push(<strong key={key} className="font-semibold text-zinc-950 dark:text-white">{match[2]}</strong>);
+      else result.push(<SiteLink key={key} href={match[4]} className="text-emerald-700 underline underline-offset-2 dark:text-emerald-400">{match[3]}</SiteLink>);
       start = tokens.lastIndex;
     }
     if (start < text.length) result.push(text.slice(start));
@@ -35,10 +35,10 @@ export function SafeMarkdown({ content, className = '', headingOffset = 1 }: Saf
     const heading = line.match(/^(#{1,6})\s+(.+)/);
     if (heading) {
       const Heading = `h${Math.min(6, heading[1].length + headingOffset)}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-      nodes.push(<Heading key={index} className="mb-3 mt-8 text-xl font-semibold text-white">{inline(heading[2])}</Heading>);
+      nodes.push(<Heading key={index} className="mb-3 mt-8 text-xl font-semibold text-zinc-950 dark:text-white">{inline(heading[2])}</Heading>);
       continue;
     }
-    if (/^\s*(---|\*\*\*)\s*$/.test(line)) { nodes.push(<hr key={index} className="my-6 border-zinc-800" />); continue; }
+    if (/^\s*(---|\*\*\*)\s*$/.test(line)) { nodes.push(<hr key={index} className="my-6 border-zinc-200 dark:border-zinc-800" />); continue; }
     const bullet = /^\s*[-*]\s+/;
     const ordered = /^\s*\d+[.)]\s+/;
     const listPattern = bullet.test(line) ? bullet : ordered.test(line) ? ordered : null;
@@ -48,10 +48,10 @@ export function SafeMarkdown({ content, className = '', headingOffset = 1 }: Saf
       const start = ordered.test(line) ? Number(line.trim().match(/^\d+/)?.[0]) : undefined;
       do { items.push(<li key={index} className="pl-1">{inline(lines[index].replace(listPattern, ''))}</li>); index++; } while (index < lines.length && listPattern.test(lines[index]));
       index--;
-      nodes.push(start === undefined ? <ul key={key} className="my-3 list-disc space-y-2 pl-6 text-sm leading-relaxed text-zinc-300">{items}</ul> : <ol key={key} start={start} className="my-3 list-decimal space-y-2 pl-6 text-sm leading-relaxed text-zinc-300">{items}</ol>);
+      nodes.push(start === undefined ? <ul key={key} className="my-3 list-disc space-y-2 pl-6 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{items}</ul> : <ol key={key} start={start} className="my-3 list-decimal space-y-2 pl-6 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{items}</ol>);
       continue;
     }
-    nodes.push(<p key={index} className="my-3 text-sm leading-relaxed text-zinc-300">{inline(line)}</p>);
+    nodes.push(<p key={index} className="my-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{inline(line)}</p>);
   }
   return <div className={className}>{nodes}</div>;
 }

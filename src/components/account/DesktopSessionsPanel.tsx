@@ -33,19 +33,19 @@ export const DesktopSessionsPanel: React.FC<{
       {sessions === null ? (
         <p className={ui.muted}>{desktopSessionsPanelText(zh).loading}</p>
       ) : sessions.length === 0 ? (
-        <p className="text-sm text-zinc-400">{desktopSessionsPanelText(zh).noComputerIs}</p>
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">{desktopSessionsPanelText(zh).noComputerIs}</p>
       ) : (
         <ul className="space-y-2">
           {sessions.map(session => (
             <li key={session.family_id} className={ui.row}>
               <div className="flex min-w-0 items-center gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-zinc-900 text-zinc-400"><Monitor className="h-4 w-4" /></span>
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-zinc-200/70 text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400"><Monitor className="h-4 w-4" /></span>
                 <div className="min-w-0">
-                  <div className="truncate text-zinc-100">{session.device_name || (desktopSessionsPanelText(zh).unnamedComputer)}</div>
+                  <div className="truncate text-zinc-900 dark:text-zinc-100">{session.device_name || (desktopSessionsPanelText(zh).unnamedComputer)}</div>
                   <div className="text-xs text-zinc-500">
                     {session.tenant_name || session.tenant_id} · {desktopSessionsPanelText(zh).lastUsed} {when(session.last_used_at)}
                   </div>
-                  <div className="text-xs text-zinc-600">{desktopSessionsPanelText(zh).signedIn} {when(session.signed_in_at)}</div>
+                  <div className="text-xs text-zinc-500 dark:text-zinc-600">{desktopSessionsPanelText(zh).signedIn} {when(session.signed_in_at)}</div>
                 </div>
               </div>
               <button type="button" disabled={busy} onClick={() => onRevoke({ family_id: session.family_id })} className={ui.small}>

@@ -69,8 +69,8 @@ const formatDate = (iso: string, zh: boolean) => {
 
 const Avatar: React.FC<{ user: AuthUser; size?: string }> = ({ user, size = 'h-14 w-14 text-xl' }) => (
   user.avatarUrl
-    ? <img src={user.avatarUrl} alt="" className={`${size} shrink-0 rounded-2xl border border-zinc-700 object-cover`} />
-    : <div className={`${size} flex shrink-0 items-center justify-center rounded-2xl border border-zinc-700 bg-zinc-800 font-semibold text-emerald-300`}>
+    ? <img src={user.avatarUrl} alt="" className={`${size} shrink-0 rounded-2xl border border-zinc-200 dark:border-zinc-700 object-cover`} />
+    : <div className={`${size} flex shrink-0 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-100 font-semibold text-emerald-700 dark:border-zinc-700 dark:bg-zinc-800 dark:text-emerald-300`}>
         {(user.displayName || user.email)[0].toUpperCase()}
       </div>
 );
@@ -83,7 +83,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({ onNavigate }) => {
   const authNotice = authParams.has('auth_error') || authParams.has('auth_notice');
 
   return (
-    <div className="min-h-screen bg-zinc-950 pb-24 pt-24 font-sans text-zinc-100">
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 pb-24 pt-24 font-sans">
       <SeoHead
         noindex
         title={accountPageText(zh).myAccountVisiongo}
@@ -112,13 +112,13 @@ export const AccountPage: React.FC<AccountPageProps> = ({ onNavigate }) => {
 };
 
 const SignIn: React.FC<{ zh: boolean }> = ({ zh }) => (
-  <div className="mx-auto max-w-xl space-y-6 rounded-3xl border border-zinc-800 bg-zinc-900/70 p-8 text-center shadow-2xl sm:p-12">
-    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-950 text-emerald-400">
+  <div className="mx-auto max-w-xl space-y-6 rounded-3xl border border-zinc-200 bg-white p-8 text-center shadow-xl dark:border-zinc-800 dark:bg-zinc-900/70 dark:shadow-2xl sm:p-12">
+    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-100 text-emerald-700 dark:border-zinc-800 dark:bg-zinc-950 dark:text-emerald-400">
       <User className="h-7 w-7" />
     </div>
     <div className="space-y-2">
-      <h1 className="text-xl font-bold text-white">{accountPageText(zh).signInTo}</h1>
-      <p className="mx-auto max-w-sm text-sm leading-relaxed text-zinc-400">
+      <h1 className="text-xl font-bold text-zinc-950 dark:text-white">{accountPageText(zh).signInTo}</h1>
+      <p className="mx-auto max-w-sm text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
         {accountPageText(zh).oneAccountFor}
       </p>
     </div>
@@ -236,12 +236,12 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
         <div className="mb-4 hidden items-center gap-3 lg:flex">
           <Avatar user={user} size="h-10 w-10 text-base" />
           <div className="min-w-0">
-            <div className="truncate text-sm font-semibold text-white">{name}</div>
+            <div className="truncate text-sm font-semibold text-zinc-950 dark:text-white">{name}</div>
             <div className="truncate text-xs text-zinc-500">{user.email}</div>
           </div>
         </div>
         <nav data-account-nav aria-label={accountPageText(zh).accountNavigation}
-             className="relative -mx-4 mb-6 flex gap-1 overflow-x-auto border-b border-zinc-800 px-4 pb-3 sm:-mx-6 sm:px-6 lg:mx-0 lg:mb-0 lg:block lg:space-y-5 lg:overflow-visible lg:border-0 lg:px-0 lg:pb-0">
+             className="relative -mx-4 mb-6 flex gap-1 overflow-x-auto border-b border-zinc-200 dark:border-zinc-800 px-4 pb-3 sm:-mx-6 sm:px-6 lg:mx-0 lg:mb-0 lg:block lg:space-y-5 lg:overflow-visible lg:border-0 lg:px-0 lg:pb-0">
           {groups.map(group => (
             <div key={group.label} className="contents lg:block">
               <div className="hidden px-3 pb-1 text-[11px] font-medium uppercase tracking-wider text-zinc-500 lg:block">{group.label}</div>
@@ -254,8 +254,8 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
                       <a href={`#${item.id}`} aria-current={active ? 'page' : undefined}
                          onClick={event => { event.preventDefault(); go(item.id); }}
                          className={`flex items-center gap-2 whitespace-nowrap rounded-xl px-3 py-2 text-sm transition-colors ${
-                           active ? 'bg-emerald-500/10 font-medium text-emerald-300 ring-1 ring-inset ring-emerald-500/30'
-                                  : 'text-zinc-400 hover:bg-zinc-900 hover:text-white'}`}>
+                           active ? 'bg-emerald-500/10 font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/30 dark:text-emerald-300 dark:ring-emerald-500/30'
+                                  : 'text-zinc-600 hover:bg-zinc-200/60 hover:text-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-white'}`}>
                         <Icon className="h-4 w-4 shrink-0" />
                         {item.label}
                       </a>
@@ -267,15 +267,15 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
           ))}
         </nav>
         <button type="button" onClick={() => void logout()}
-                className="mt-6 hidden w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-zinc-500 hover:bg-zinc-900 hover:text-white cursor-pointer lg:flex">
+                className="mt-6 hidden w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-200/60 hover:text-zinc-950 dark:text-zinc-500 dark:hover:bg-zinc-900 dark:hover:text-white cursor-pointer lg:flex">
           <LogOut className="h-4 w-4" />{accountPageText(zh).signOut}
         </button>
       </aside>
 
       <section aria-labelledby="account-section-title" className="min-w-0 space-y-6">
         <header className="space-y-1">
-          <h1 id="account-section-title" className="text-2xl font-bold tracking-tight text-white sm:text-3xl">{current.label}</h1>
-          <p className="text-sm text-zinc-400">{current.hint}</p>
+          <h1 id="account-section-title" className="text-2xl font-bold tracking-tight text-zinc-950 dark:text-white sm:text-3xl">{current.label}</h1>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">{current.hint}</p>
         </header>
 
         {current.id === 'overview' && (
@@ -284,15 +284,15 @@ const Account: React.FC<{ zh: boolean; user: AuthUser; logout: () => Promise<voi
 
         {current.id === 'security' && (
           <>
-            <Panel icon={<User className="h-4 w-4 text-zinc-400" />} title={accountPageText(zh).profile}
+            <Panel icon={<User className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />} title={accountPageText(zh).profile}
                    actions={<button type="button" onClick={() => void logout()} className={ui.secondary}><LogOut className="h-4 w-4" />{accountPageText(zh).signOut}</button>}>
               <div className="flex items-center gap-4">
                 <Avatar user={user} />
                 <dl className="grid min-w-0 gap-x-6 gap-y-1 text-sm sm:grid-cols-[auto_1fr]">
-                  <dt className="text-zinc-500">{accountPageText(zh).name}</dt><dd className="truncate text-zinc-100">{name}</dd>
-                  <dt className="text-zinc-500">{accountPageText(zh).email}</dt><dd className="truncate font-mono text-zinc-100">{user.email}</dd>
-                  <dt className="text-zinc-500">{accountPageText(zh).memberSince}</dt><dd className="text-zinc-100">{formatDate(user.createdAt, zh)}</dd>
-                  <dt className="text-zinc-500">{accountPageText(zh).accountId}</dt><dd className="truncate font-mono text-xs text-zinc-400">{user.id}</dd>
+                  <dt className="text-zinc-500">{accountPageText(zh).name}</dt><dd className="truncate text-zinc-900 dark:text-zinc-100">{name}</dd>
+                  <dt className="text-zinc-500">{accountPageText(zh).email}</dt><dd className="truncate font-mono text-zinc-900 dark:text-zinc-100">{user.email}</dd>
+                  <dt className="text-zinc-500">{accountPageText(zh).memberSince}</dt><dd className="text-zinc-900 dark:text-zinc-100">{formatDate(user.createdAt, zh)}</dd>
+                  <dt className="text-zinc-500">{accountPageText(zh).accountId}</dt><dd className="truncate font-mono text-xs text-zinc-500 dark:text-zinc-400">{user.id}</dd>
                 </dl>
               </div>
             </Panel>
@@ -350,23 +350,23 @@ const Overview: React.FC<{
 }> = ({ zh, user, name, org, orgs, sessions, downloads, go }) => {
   const tile = (id: SectionId, Icon: React.ElementType, title: string, value: string, detail: string) => (
     <button key={id} type="button" onClick={() => go(id)}
-            className="group flex flex-col gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 text-left transition-colors hover:border-zinc-700 hover:bg-zinc-900 cursor-pointer">
-      <span className="flex items-center justify-between text-sm text-zinc-400">
+            className="surface-card group flex flex-col gap-3 p-5 text-left transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 cursor-pointer">
+      <span className="flex items-center justify-between text-sm text-zinc-600 dark:text-zinc-400">
         <span className="flex items-center gap-2"><Icon className="h-4 w-4" />{title}</span>
-        <ArrowRight className="h-4 w-4 text-zinc-600 transition-transform group-hover:translate-x-0.5 group-hover:text-emerald-300" />
+        <ArrowRight className="h-4 w-4 text-zinc-400 dark:text-zinc-600 transition-transform group-hover:translate-x-0.5 group-hover:text-emerald-600 dark:group-hover:text-emerald-300" />
       </span>
-      <span className="truncate text-xl font-semibold text-white">{value}</span>
+      <span className="truncate text-xl font-semibold text-zinc-950 dark:text-white">{value}</span>
       <span className="text-xs leading-relaxed text-zinc-500">{detail}</span>
     </button>
   );
   const mine = orgs.choices.filter(choice => choice.role !== null);
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 sm:flex-row sm:items-center sm:p-6">
+      <div className="surface-card flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:p-6">
         <Avatar user={user} />
         <div className="min-w-0 flex-1">
-          <div className="truncate text-lg font-semibold text-white">{accountPageText(zh).hello(name)}</div>
-          <div className="truncate font-mono text-sm text-zinc-400">{user.email}</div>
+          <div className="truncate text-lg font-semibold text-zinc-950 dark:text-white">{accountPageText(zh).hello(name)}</div>
+          <div className="truncate font-mono text-sm text-zinc-600 dark:text-zinc-400">{user.email}</div>
           <div className="text-xs text-zinc-500">{accountPageText(zh).memberSinceShort} {formatDate(user.createdAt, zh)}</div>
         </div>
         <button type="button" onClick={() => go('security')} className={ui.secondary}>{accountPageText(zh).signInSecurity}</button>
@@ -421,30 +421,30 @@ const Downloads: React.FC<{ zh: boolean; downloads: UserDownloadRecord[] | null;
         <div className="grid gap-3 sm:grid-cols-3">
           {products.map(product => (
             <button key={product.name} type="button" onClick={() => onNavigate(product.path)}
-                    className="flex items-center justify-between gap-3 rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-left hover:border-zinc-700 cursor-pointer">
+                    className="flex items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-left hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-700 cursor-pointer">
               <span className="min-w-0">
-                <span className="block font-medium text-white">{product.name}</span>
+                <span className="block font-medium text-zinc-950 dark:text-white">{product.name}</span>
                 <span className="block text-xs text-zinc-500">{product.detail}</span>
               </span>
-              <Download className="h-4 w-4 shrink-0 text-emerald-300" />
+              <Download className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-300" />
             </button>
           ))}
         </div>
       </Panel>
 
-      <Panel icon={<Package className="h-4 w-4 text-zinc-400" />} title={accountPageText(zh).myDownloads}
+      <Panel icon={<Package className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />} title={accountPageText(zh).myDownloads}
              description={accountPageText(zh).installersDownloadedWhile}>
         {downloads === null ? <p className={ui.muted}>{accountPageText(zh).loadingList}</p>
-          : downloads.length === 0 ? <p className="text-sm text-zinc-400">{accountPageText(zh).noDownloadsYet}</p>
+          : downloads.length === 0 ? <p className="text-sm text-zinc-600 dark:text-zinc-400">{accountPageText(zh).noDownloadsYet}</p>
           : (
-            <ul className="divide-y divide-zinc-800 rounded-xl border border-zinc-800 bg-zinc-950">
+            <ul className="divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-zinc-50 dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-950">
               {downloads.map(record => (
                 <li key={record.id} className="flex items-center justify-between gap-4 px-4 py-3 text-sm">
                   <div className="min-w-0">
-                    <p className="truncate font-mono text-zinc-100">{record.assetName}</p>
+                    <p className="truncate font-mono text-zinc-900 dark:text-zinc-100">{record.assetName}</p>
                     <p className="text-xs text-zinc-500">{record.product} · {record.version}</p>
                   </div>
-                  <span className="shrink-0 text-xs text-zinc-400">{formatDate(record.downloadedAt, zh)}</span>
+                  <span className="shrink-0 text-xs text-zinc-500 dark:text-zinc-400">{formatDate(record.downloadedAt, zh)}</span>
                 </li>
               ))}
             </ul>

@@ -38,10 +38,10 @@ export function ContactForm() {
   };
   if (status === 'success') return (
     <div role="status" className="space-y-4 py-8 text-center">
-      <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-400" aria-hidden="true" />
-      <h2 className="text-xl font-semibold text-white">{contactFormText(zh).inquirySaved}</h2>
-      <p className="text-sm text-zinc-400">{contactFormText(zh).ourEngineeringTeam}</p>
-      <p className="break-all text-xs text-zinc-400">{contactFormText(zh).reference}{reference}</p>
+      <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+      <h2 className="text-xl font-semibold text-zinc-950 dark:text-white">{contactFormText(zh).inquirySaved}</h2>
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">{contactFormText(zh).ourEngineeringTeam}</p>
+      <p className="break-all text-xs text-zinc-500 dark:text-zinc-400">{contactFormText(zh).reference}{reference}</p>
       <button className="btn-secondary" onClick={() => { setStatus('idle'); submissionId.current = null; setForm(previous => ({ ...previous, message: '' })); }}>{contactFormText(zh).sendAnotherInquiry}</button>
     </div>
   );
@@ -60,10 +60,10 @@ export function ContactForm() {
         </select></label>
         <label className="form-label">{contactFormText(zh).projectDescription}<textarea className="form-input min-h-32" value={form.message} onChange={e => update('message', e.target.value)} required maxLength={5000} placeholder={contactFormText(zh).describeTheInspection} /></label>
         <div className="absolute -left-[10000px]" aria-hidden="true"><label>Website<input tabIndex={-1} autoComplete="off" value={form.websiteUrl} onChange={e => update('websiteUrl', e.target.value)} /></label></div>
-        <p className="text-xs leading-relaxed text-zinc-400">{contactFormText(zh).weUseThese} <SiteLink href="/privacy" className="text-emerald-400 underline">{contactFormText(zh).privacyPolicy}</SiteLink>{contactFormText(zh).fullStop}</p>
+        <p className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">{contactFormText(zh).weUseThese} <SiteLink href="/privacy" className="text-emerald-700 underline dark:text-emerald-400">{contactFormText(zh).privacyPolicy}</SiteLink>{contactFormText(zh).fullStop}</p>
         <button type="submit" className="btn-primary w-full"><span>{status === 'submitting' ? (contactFormText(zh).submitting) : (contactFormText(zh).contactEngineering)}</span><ArrowRight className="h-4 w-4" aria-hidden="true" /></button>
       </fieldset>
-      {error && <div role="alert" className="flex items-start gap-2 rounded-xl border border-amber-500/30 p-3 text-sm text-amber-300"><AlertCircle className="h-4 w-4 shrink-0 mt-0.5" aria-hidden="true" /><div>{error}<br /><SiteLink className="underline" href="mailto:contact@visiongo.app">contact@visiongo.app</SiteLink></div></div>}
+      {error && <div role="alert" className="flex items-start gap-2 rounded-xl border border-amber-500/40 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/5 dark:text-amber-300"><AlertCircle className="h-4 w-4 shrink-0 mt-0.5" aria-hidden="true" /><div>{error}<br /><SiteLink className="underline" href="mailto:contact@visiongo.app">contact@visiongo.app</SiteLink></div></div>}
     </form>
   );
 }

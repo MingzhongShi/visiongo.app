@@ -97,8 +97,8 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
     recharge: creditsPanelText(zh).recharge, consumption: creditsPanelText(zh).consumption, adjustment: creditsPanelText(zh).adjustment,
   } as Record<string, string>)[value] || value;
   const empty = organization.admin && account && organization.type === 'enterprise' && (!account.opened || account.balance_micros <= 0);
-  const stat = (label: string, value: string, tone = 'text-white') => (
-    <div key={label} className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+  const stat = (label: string, value: string, tone = 'text-zinc-950 dark:text-white') => (
+    <div key={label} className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-950">
       <div className="text-xs text-zinc-500">{label}</div>
       <div className={`mt-1 break-words font-mono text-lg font-semibold sm:text-xl ${tone}`}>{value}</div>
     </div>
@@ -109,21 +109,21 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
       {error && <Alert tone="error">{error}</Alert>}
 
       {organization.admin && (
-        <Panel icon={<Coins className="h-4 w-4 text-zinc-400" />} title={creditsPanelText(zh).creditAccount}
+        <Panel icon={<Coins className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />} title={creditsPanelText(zh).creditAccount}
                description={creditsPanelText(zh).membersUseOf}>
           {!account ? <p className={ui.muted}>{creditsPanelText(zh).loading}</p> : account.opened ? (
             <>
               <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                {stat(creditsPanelText(zh).balanceCredits, credits(account.balance_micros), account.balance_micros <= 0 ? 'text-amber-300' : 'text-emerald-300')}
+                {stat(creditsPanelText(zh).balanceCredits, credits(account.balance_micros), account.balance_micros <= 0 ? 'text-amber-700 dark:text-amber-300' : 'text-emerald-700 dark:text-emerald-300')}
                 {stat(creditsPanelText(zh).usedInTotal, credits(account.used_micros))}
                 {stat(creditsPanelText(zh).inputOutputPrice, `${credits(account.input_price_micros_per_1m)} / ${credits(account.output_price_micros_per_1m)}`)}
                 {stat(creditsPanelText(zh).status, account.status === 'suspended' ? (creditsPanelText(zh).suspended) : (creditsPanelText(zh).active),
-                      account.status === 'suspended' ? 'text-red-300' : 'text-white')}
+                      account.status === 'suspended' ? 'text-red-700 dark:text-red-300' : 'text-zinc-950 dark:text-white')}
               </div>
               <p className={ui.muted}>{creditsPanelText(zh).pricesInCredits}</p>
             </>
           ) : (
-            <p className="text-sm text-zinc-400">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
               {organization.type === 'personal'
                 ? (creditsPanelText(zh).thisOrganizationHas)
                 : (creditsPanelText(zh).thisEnterpriseOrganization)}
@@ -132,7 +132,7 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
           {empty && (
             <Alert tone="warning">
               <p>{creditsPanelText(zh).thisEnterpriseOrganizationHas}</p>
-              <p className="text-amber-300/80">
+              <p className="text-amber-700 dark:text-amber-300/80">
                 {cloudAdminUrl
                   ? <>{creditsPanelText(zh).platformAdministratorsOpen}
                       <a href={cloudAdminUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 underline">{creditsPanelText(zh).visioncloudAdmin}<ExternalLink className="h-3 w-3" /></a>
@@ -144,12 +144,12 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
           )}
           {account?.notices?.length ? (
             <div className="space-y-2">
-              <div className="text-xs text-zinc-400">{creditsPanelText(zh).notices}</div>
+              <div className="text-xs text-zinc-500 dark:text-zinc-400">{creditsPanelText(zh).notices}</div>
               {account.notices.map(notice => (
-                <div key={notice.id} className="rounded-xl border border-zinc-800 bg-zinc-950 p-3 text-sm">
-                  <div className="flex justify-between gap-2 text-zinc-200"><span>{notice.title}</span>
+                <div key={notice.id} className="rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-sm dark:border-zinc-800 dark:bg-zinc-950">
+                  <div className="flex justify-between gap-2 text-zinc-900 dark:text-zinc-200"><span>{notice.title}</span>
                     <span className="shrink-0 font-mono text-xs text-zinc-500">{new Date(notice.created_at_unix_ms).toLocaleDateString()}</span></div>
-                  <div className="mt-1 whitespace-pre-wrap text-zinc-400">{notice.content}</div>
+                  <div className="mt-1 whitespace-pre-wrap text-zinc-600 dark:text-zinc-400">{notice.content}</div>
                 </div>
               ))}
             </div>
@@ -157,7 +157,7 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
         </Panel>
       )}
 
-      <Panel icon={<BarChart3 className="h-4 w-4 text-zinc-400" />}
+      <Panel icon={<BarChart3 className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />}
              title={organization.admin ? (creditsPanelText(zh).usageTab) : (creditsPanelText(zh).myUsage)}
              description={organization.admin ? (creditsPanelText(zh).byMemberAnd)
                                               : (creditsPanelText(zh).yourAiUsage)}
@@ -177,7 +177,7 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
                   <thead className="text-xs text-zinc-500"><tr><th className={ui.cell}>{creditsPanelText(zh).member}</th><th className={ui.cell}>{creditsPanelText(zh).requestsColumn}</th>
                     <th className={ui.cell}>Token</th><th className={ui.cell}>Credits</th></tr></thead>
                   <tbody>{usage.by_user.map(row => (
-                    <tr key={row.user_id} className="border-t border-zinc-800 text-zinc-300">
+                    <tr key={row.user_id} className="border-t border-zinc-200 text-zinc-700 dark:border-zinc-800 dark:text-zinc-300">
                       <td className={ui.cell} title={users[row.user_id]?.email}>{users[row.user_id]?.name || row.user_id}</td>
                       <td className={`${ui.cell} font-mono`}>{row.requests}</td>
                       <td className={`${ui.cell} font-mono`}>{(row.prompt_tokens || 0) + (row.completion_tokens || 0)}</td>
@@ -192,7 +192,7 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
                   <thead className="text-xs text-zinc-500"><tr><th className={ui.cell}>{creditsPanelText(zh).feature}</th><th className={ui.cell}>{creditsPanelText(zh).requestsColumn}</th>
                     <th className={ui.cell}>Credits</th></tr></thead>
                   <tbody>{usage.by_endpoint.map(row => (
-                    <tr key={row.endpoint} className="border-t border-zinc-800 text-zinc-300">
+                    <tr key={row.endpoint} className="border-t border-zinc-200 text-zinc-700 dark:border-zinc-800 dark:text-zinc-300">
                       <td className={ui.cell}>{endpointName(row.endpoint, zh)}</td>
                       <td className={`${ui.cell} font-mono`}>{row.requests}</td>
                       <td className={`${ui.cell} font-mono`}>{credits(row.cost_micros, 4)}</td>
@@ -205,7 +205,7 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
       </Panel>
 
       {organization.admin && (
-        <Panel icon={<ReceiptText className="h-4 w-4 text-zinc-400" />} title={creditsPanelText(zh).ledger}
+        <Panel icon={<ReceiptText className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />} title={creditsPanelText(zh).ledger}
                actions={
                  <select value={type} onChange={event => setType(event.target.value)} className={ui.input} aria-label={creditsPanelText(zh).transactionType}>
                    <option value="">{creditsPanelText(zh).allTypes}</option>
@@ -217,12 +217,12 @@ export const CreditsPanel: React.FC<{ zh: boolean; organization: OrgChoice; clou
                 <thead className="text-xs text-zinc-500"><tr><th className={ui.cell}>{creditsPanelText(zh).time}</th><th className={ui.cell}>{creditsPanelText(zh).typeColumn}</th>
                   <th className={ui.cell}>{creditsPanelText(zh).amount}</th><th className={ui.cell}>{creditsPanelText(zh).balance}</th><th className={ui.cell}>{creditsPanelText(zh).description}</th></tr></thead>
                 <tbody>{transactions.map(item => (
-                  <tr key={item.id} className="border-t border-zinc-800 text-zinc-300">
+                  <tr key={item.id} className="border-t border-zinc-200 text-zinc-700 dark:border-zinc-800 dark:text-zinc-300">
                     <td className={`${ui.cell} whitespace-nowrap font-mono text-xs`}>{new Date(item.created_at_unix_ms).toLocaleString(zh ? 'zh-CN' : 'en-US')}</td>
                     <td className={ui.cell}>{typeLabel(item.type)}</td>
-                    <td className={`${ui.cell} font-mono ${item.amount_micros < 0 ? 'text-red-300' : 'text-emerald-300'}`}>{credits(item.amount_micros, 4)}</td>
+                    <td className={`${ui.cell} font-mono ${item.amount_micros < 0 ? 'text-red-700 dark:text-red-300' : 'text-emerald-700 dark:text-emerald-300'}`}>{credits(item.amount_micros, 4)}</td>
                     <td className={`${ui.cell} font-mono`}>{credits(item.balance_after_micros, 4)}</td>
-                    <td className={`${ui.cell} text-zinc-400`}>{item.description}</td>
+                    <td className={`${ui.cell} text-zinc-500 dark:text-zinc-400`}>{item.description}</td>
                   </tr>))}</tbody>
               </table>
             </div>

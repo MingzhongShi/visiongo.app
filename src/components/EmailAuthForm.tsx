@@ -145,22 +145,22 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
       {/* Mode Switch Tabs */}
       {mode === 'reset' ? (
         <div className="flex items-center justify-between text-xs">
-          <span className="text-emerald-400 font-semibold">{emailAuthFormText(zh).resetPassword}</span>
-          <button type="button" onClick={() => switchMode('login')} className="text-zinc-400 hover:text-white cursor-pointer">
+          <span className="text-emerald-700 dark:text-emerald-400 font-semibold">{emailAuthFormText(zh).resetPassword}</span>
+          <button type="button" onClick={() => switchMode('login')} className="text-zinc-600 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white cursor-pointer">
             {emailAuthFormText(zh).backToSign}
           </button>
         </div>
       ) : (
-        <div className="flex rounded-xl bg-zinc-950 p-1 border border-zinc-800 text-xs">
+        <div className="flex rounded-xl bg-zinc-100 border border-zinc-200 dark:bg-zinc-950 p-1 dark:border-zinc-800 text-xs">
           {(['login', 'register'] as const).map(item => (
             <button
               key={item}
               type="button"
               onClick={() => switchMode(item)}
-              className={`flex-1 py-1.5 rounded-lg transition-all ${
+              className={`flex-1 py-1.5 rounded-lg transition-all cursor-pointer ${
                 mode === item
-                  ? 'bg-emerald-500/10 text-emerald-400 font-semibold border border-emerald-500/30'
-                  : 'text-zinc-400 hover:text-white'
+                  ? 'bg-white text-emerald-700 font-semibold border border-emerald-600/25 shadow-sm dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/30 dark:shadow-none'
+                  : 'text-zinc-600 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white'
               }`}
             >
               {item === 'login' ? (emailAuthFormText(zh).emailSignIn) : (emailAuthFormText(zh).emailRegister)}
@@ -172,18 +172,18 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
       <form onSubmit={handleSubmit} className="space-y-3 text-left">
         {/* Email Field */}
         <div>
-          <label className="block text-[11px] text-zinc-400 mb-1">
+          <label className="block text-[11px] text-zinc-600 dark:text-zinc-400 mb-1">
             {emailAuthFormText(locale).emailAddress}
           </label>
           <div className="relative">
-            <Mail className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Mail className="w-4 h-4 text-zinc-400 dark:text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="engineer@company.com"
               required
-              className="w-full pl-9 pr-3 py-2 bg-zinc-950/80 border border-zinc-800 rounded-xl text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full pl-9 pr-3 py-2 bg-white border border-zinc-300 text-zinc-900 placeholder-zinc-400 focus:border-emerald-600 dark:bg-zinc-950/80 dark:border-zinc-800 rounded-xl text-xs dark:text-white dark:placeholder-zinc-600 focus:outline-none dark:focus:border-emerald-500 transition-colors"
             />
           </div>
         </div>
@@ -191,12 +191,12 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
         {/* Verification Code Field (sign-up and password reset) */}
         {needsCode && (
           <div>
-            <label className="block text-[11px] text-zinc-400 mb-1">
+            <label className="block text-[11px] text-zinc-600 dark:text-zinc-400 mb-1">
               {emailAuthFormText(locale).verificationCode}
             </label>
             <div className="flex gap-2">
               <div className="relative flex-1">
-                <KeyRound className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <KeyRound className="w-4 h-4 text-zinc-400 dark:text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   maxLength={6}
@@ -204,14 +204,14 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
                   onChange={(e) => setCode(e.target.value)}
                   placeholder="6 位数字"
                   required={needsCode}
-                  className="w-full pl-9 pr-3 py-2 bg-zinc-950/80 border border-zinc-800 rounded-xl text-xs font-mono text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors tracking-widest"
+                  className="w-full pl-9 pr-3 py-2 bg-white border border-zinc-300 text-zinc-900 placeholder-zinc-400 focus:border-emerald-600 dark:bg-zinc-950/80 dark:border-zinc-800 rounded-xl text-xs font-mono dark:text-white dark:placeholder-zinc-600 focus:outline-none dark:focus:border-emerald-500 transition-colors tracking-widest"
                 />
               </div>
               <button
                 type="button"
                 onClick={handleSendCode}
                 disabled={sendingCode || countdown > 0}
-                className="px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 disabled:bg-zinc-900 border border-zinc-700 disabled:border-zinc-800 text-[11px] text-emerald-400 disabled:text-zinc-500 transition-colors shrink-0 cursor-pointer disabled:cursor-not-allowed min-w-[96px] text-center"
+                className="px-3 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 disabled:bg-zinc-100 border border-zinc-300 disabled:border-zinc-200 text-emerald-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:disabled:bg-zinc-900 dark:border-zinc-700 dark:disabled:border-zinc-800 text-[11px] dark:text-emerald-400 disabled:text-zinc-400 dark:disabled:text-zinc-500 transition-colors shrink-0 cursor-pointer disabled:cursor-not-allowed min-w-[96px] text-center"
               >
                 {sendingCode
                   ? (emailAuthFormText(locale).sending)
@@ -221,7 +221,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
               </button>
             </div>
             {!emailDelivery && (
-              <p className="mt-1.5 text-[11px] text-amber-300">
+              <p className="mt-1.5 text-[11px] text-amber-700 dark:text-amber-300">
                 {emailAuthFormText(zh).thisSiteCannot}
               </p>
             )}
@@ -231,17 +231,17 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
         {/* Optional Display Name (Only for Register) */}
         {mode === 'register' && (
           <div>
-            <label className="block text-[11px] text-zinc-400 mb-1">
+            <label className="block text-[11px] text-zinc-600 dark:text-zinc-400 mb-1">
               {emailAuthFormText(locale).displayNameOptional}
             </label>
             <div className="relative">
-              <UserIcon className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <UserIcon className="w-4 h-4 text-zinc-400 dark:text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder={emailAuthFormText(locale).visionEngineer}
-                className="w-full pl-9 pr-3 py-2 bg-zinc-950/80 border border-zinc-800 rounded-xl text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full pl-9 pr-3 py-2 bg-white border border-zinc-300 text-zinc-900 placeholder-zinc-400 focus:border-emerald-600 dark:bg-zinc-950/80 dark:border-zinc-800 rounded-xl text-xs dark:text-white dark:placeholder-zinc-600 focus:outline-none dark:focus:border-emerald-500 transition-colors"
               />
             </div>
           </div>
@@ -249,23 +249,23 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
 
         {/* Password Field */}
         <div>
-          <label className="block text-[11px] text-zinc-400 mb-1">
+          <label className="block text-[11px] text-zinc-600 dark:text-zinc-400 mb-1">
             {mode === 'reset' ? (emailAuthFormText(zh).newPassword) : (emailAuthFormText(zh).password)}
           </label>
           <div className="relative">
-            <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Lock className="w-4 h-4 text-zinc-400 dark:text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="w-full pl-9 pr-9 py-2 bg-zinc-950/80 border border-zinc-800 rounded-xl text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-emerald-500 transition-colors"
+              className="w-full pl-9 pr-9 py-2 bg-white border border-zinc-300 text-zinc-900 placeholder-zinc-400 focus:border-emerald-600 dark:bg-zinc-950/80 dark:border-zinc-800 rounded-xl text-xs dark:text-white dark:placeholder-zinc-600 focus:outline-none dark:focus:border-emerald-500 transition-colors"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"
             >
               {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
             </button>
@@ -276,7 +276,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
             </p>
           ) : (
             <button type="button" onClick={() => switchMode('reset')}
-                    className="text-[11px] text-zinc-500 hover:text-emerald-400 mt-1 cursor-pointer">
+                    className="text-[11px] text-zinc-500 hover:text-emerald-700 dark:hover:text-emerald-400 mt-1 cursor-pointer">
               {emailAuthFormText(zh).forgotPassword}
             </button>
           )}
@@ -284,15 +284,15 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
 
         {/* Feedback Messages */}
         {error && (
-          <div className="p-2.5 rounded-xl bg-red-950/40 border border-red-800 text-red-300 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+          <div className="p-2.5 rounded-xl bg-red-50 border border-red-300 text-red-700 dark:bg-red-950/40 dark:border-red-800 dark:text-red-300 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-red-600 dark:text-red-400" />
             <span>{error}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+          <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 dark:bg-emerald-950/40 dark:border-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
             <span>{successMsg}</span>
           </div>
         )}
@@ -304,7 +304,7 @@ export const EmailAuthForm: React.FC<EmailAuthFormProps> = ({ onSuccess, classNa
           className="btn-primary btn-sm w-full"
         >
           {loading ? (
-            <div className="w-4 h-4 border-2 border-zinc-950 border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-white dark:border-zinc-950 border-t-transparent rounded-full animate-spin" />
           ) : (
             <>
               <span>
