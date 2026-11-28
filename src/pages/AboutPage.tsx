@@ -81,6 +81,22 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenContact }) => {
           </div>
         </div>
 
+        {/* Security, Data Sovereignty & Licensing */}
+        <section id="security" className="mb-20">
+          <div className="mb-8 max-w-2xl">
+            <h2 className="section-title">{aboutPageText(locale).securityHeader}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-400">{aboutPageText(locale).securitySub}</p>
+          </div>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {aboutPageText(locale).securityItems.map(item => (
+              <div key={item.title} className="surface-card space-y-2 p-7">
+                <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                <p className="text-sm leading-relaxed text-zinc-400">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Global Contacts & Enterprise Pilot */}
         <div className="surface-card flex flex-col justify-between gap-8 p-8 sm:p-10 md:flex-row md:items-center">
           <div className="space-y-3">
@@ -89,10 +105,10 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenContact }) => {
               {aboutPageText(locale).contactDesc}
             </p>
             <div className="pt-2 flex flex-col gap-1 text-xs text-zinc-400">
-              <span className="text-zinc-300">Websites: https://visiongo.app (International) · https://visiongo.com.cn (China)</span>
-              <span>General: contact@visiongo.app</span>
-              <span>Enterprise & Licensing: sales@visiongo.app</span>
-              <span>Technical Support: support@visiongo.app</span>
+              <span className="text-zinc-300">{aboutPageText(locale).labelWebsites}: https://visiongo.app · https://visiongo.com.cn</span>
+              <span>{aboutPageText(locale).labelGeneral}: contact@visiongo.app</span>
+              <span>{aboutPageText(locale).labelSales}: sales@visiongo.app</span>
+              <span>{aboutPageText(locale).labelSupport}: support@visiongo.app</span>
             </div>
           </div>
 

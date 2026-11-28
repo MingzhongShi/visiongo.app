@@ -60,6 +60,17 @@ export function DownloadsPage({ initialProduct, initialVersion }: { initialProdu
     {missingVersion && <p role="alert" className="mb-6 rounded-xl border border-amber-500/30 p-4 text-sm text-amber-300">{downloadsPageText(zh).theLinkedVersion}</p>}
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">{PRODUCTS.map(product => <ReleaseCard key={product} productId={product} productName={names[product]} tagline={product === 'visionstudio' ? (downloadsPageText(zh).engineeringWorkspace) : product === 'visionruntime' ? (downloadsPageText(zh).localExecutionRuntime) : (downloadsPageText(zh).edgeGateway)} accentColor="#34d399" releases={releases[product]} loading={loading} error={errors[product]} onRetry={() => setAttempt(value => value + 1)} onOpenReleaseNotes={release => setSelected({ product, release })} />)}</div>
     <section id="requirements" className="surface-card mt-10 space-y-4 p-6 sm:p-8"><h2 className="text-xl font-semibold text-white">{downloadsPageText(zh).installationAndCompatibility}</h2><p className="text-sm leading-relaxed text-zinc-400">{downloadsPageText(zh).supportedOperatingSystems}</p><p className="text-sm text-zinc-400">{downloadsPageText(zh).connectivityRequirementsDepend}</p><div className="flex flex-wrap gap-5 text-sm"><SiteLink href="/developers#quickstart" className="text-link">{downloadsPageText(zh).installationAndFirst}</SiteLink><SiteLink href="/contact" className="text-link">{downloadsPageText(zh).askAboutVersion}</SiteLink></div></section>
+    <section id="faq" className="mt-10 space-y-5">
+      <h2 className="text-xl font-semibold text-white">{downloadsPageText(zh).faqTitle}</h2>
+      <div className="grid gap-4 md:grid-cols-2">
+        {downloadsPageText(zh).faqs.map(item => (
+          <div key={item.q} className="surface-card space-y-2 p-6">
+            <h3 className="text-base font-medium text-white">{item.q}</h3>
+            <p className="text-sm leading-relaxed text-zinc-400">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
     <ReleaseNotesModal isOpen={!!selected} onClose={() => setSelected(null)} productName={selected ? names[selected.product] : ''} release={selected?.release || null} allReleases={selected ? releases[selected.product] : []} onSelectRelease={release => setSelected(previous => previous ? { ...previous, release } : null)} />
   </div>;
 }

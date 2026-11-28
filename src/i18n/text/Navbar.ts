@@ -14,6 +14,7 @@ export const navbarText = bilingual({
     products: 'Products',
     resources: 'Resources',
     solutions: 'Solutions',
+    about: 'About',
   },
   zh: {
     mainNavigation: '主导航',
@@ -28,5 +29,6 @@ export const navbarText = bilingual({
     products: '产品矩阵',
     resources: '技术资源',
     solutions: '解决方案',
+    about: '关于我们',
   },
 });

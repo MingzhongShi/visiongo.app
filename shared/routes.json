@@ -149,8 +149,8 @@
       "zh": "开始使用 VisionStudio 与 VisionRuntime"
     },
     "description": {
-      "en": "A practical VISIONGO engineering guide.",
-      "zh": "VISIONGO 实用工程指南。"
+      "en": "Choose packages, connect the runtime and validate your first inspection workflow.",
+      "zh": "从选择发行包、连接 Runtime 到验证第一个检测流程。"
     }
   },
   {
@@ -160,8 +160,8 @@
       "zh": "调试检测工作流"
     },
     "description": {
-      "en": "A practical VISIONGO engineering guide.",
-      "zh": "VISIONGO 实用工程指南。"
+      "en": "Inspect node data, ROI settings and execution costs before changing a workflow.",
+      "zh": "先检查节点数据、ROI 与执行耗时，再调整流程。"
     }
   },
   {
@@ -171,8 +171,8 @@
       "zh": "规划本地部署"
     },
     "description": {
-      "en": "A practical VISIONGO engineering guide.",
-      "zh": "VISIONGO 实用工程指南。"
+      "en": "Define execution, connectivity and control requirements for each station.",
+      "zh": "为每个工位明确执行、联网与控制要求。"
     }
   },
   {
@@ -182,8 +182,8 @@
       "zh": "了解 SDK 契约边界"
     },
     "description": {
-      "en": "A practical VISIONGO engineering guide.",
-      "zh": "VISIONGO 实用工程指南。"
+      "en": "Understand the shared contract source and compatibility workflow.",
+      "zh": "了解公共契约源与兼容性变更流程。"
     }
   }
 ]

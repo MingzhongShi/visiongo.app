@@ -48,13 +48,16 @@ export interface DownloadStreamResult {
   filename: string;
   contentType: string;
   size?: number;
+  status?: number;
+  contentRange?: string;
+  contentLength?: number;
   version?: string;
   platform?: PlatformType;
   arch?: ArchitectureType;
 }
 
 export interface DownloadProvider {
-  getDownloadStream(product: SupportedProduct, assetId: string): Promise<DownloadStreamResult | null>;
+  getDownloadStream(product: SupportedProduct, assetId: string, range?: string | null): Promise<DownloadStreamResult | null>;
 }
 
 export interface AnalyticsDataPoint {

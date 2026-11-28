@@ -3,8 +3,21 @@ import { allowRequest, json } from '../reliability';
 import { isPublicPath, localizedPath, stripLocalePath } from '../../shared/routing';
 
 const BROWSER_WRITE_PREFIXES = ['/api/auth/email/', '/api/orgs/', '/api/admin/', '/api/account/'];
-const STATIC_ASSET = /\.(svg|png|jpg|jpeg|gif|ico|webp|woff|woff2|ttf|css|js|map|json|txt|xml)$/i;
+const STATIC_ASSET = /\.(svg|png|jpg|jpeg|gif|ico|webp|woff|woff2|ttf|css|js|json|txt|xml)$/i;
 const APP_PAGES = new Set(['/my', '/account', '/auth/desktop']);
+const CONTENT_SECURITY_POLICY = [
+  "default-src 'self'",
+  "script-src 'self' https://accounts.google.com/gsi/client",
+  "style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style",
+  "img-src 'self' data: https:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://accounts.google.com/gsi/",
+  "frame-src https://accounts.google.com/gsi/",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join('; ');
 
 /** Browser writes must originate from this site and are rate limited; desktop token contracts are unchanged. */
 export async function guardBrowserWrite(request: Request, env: Env, url: URL): Promise<Response | null> {
@@ -66,6 +79,8 @@ function htmlHeaders(source: Headers, notFound = false): Headers {
   headers.set('X-Frame-Options', 'DENY');
   headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  headers.set('Content-Security-Policy', CONTENT_SECURITY_POLICY);
   headers.set('Content-Type', 'text/html; charset=utf-8');
   if (notFound) {
     headers.set('X-Robots-Tag', 'noindex, nofollow');
@@ -94,12 +109,21 @@ export async function serveSite(request: Request, env: Env, url: URL): Promise<R
     return textAsset(request, env, 'application/xml; charset=utf-8', () => new Response('Not Found', { status: 404 }));
   }
 
+  if (url.pathname.endsWith('.map')) {
+    return new Response('Asset Not Found', { status: 404, headers: { 'Content-Type': 'text/plain' } });
+  }
+
   if (url.pathname.startsWith('/assets/') || STATIC_ASSET.test(url.pathname)) {
     const asset = await env.ASSETS.fetch(request);
     if (asset.status >= 400 || (url.pathname.startsWith('/assets/') && asset.headers.get('Content-Type')?.includes('text/html'))) {
       return new Response('Asset Not Found', { status: 404, headers: { 'Content-Type': 'text/plain' } });
     }
-    return asset;
+    const headers = new Headers(asset.headers);
+    headers.set('X-Content-Type-Options', 'nosniff');
+    if (url.pathname.startsWith('/assets/') && !headers.has('Cache-Control')) {
+      headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+    }
+    return new Response(asset.body, { status: asset.status, headers });
   }
 
   // Public routes and download deep links share the route registry of the prerender.

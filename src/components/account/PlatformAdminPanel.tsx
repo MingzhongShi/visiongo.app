@@ -1,7 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Copy, KeyRound, PackageCheck, Search, Upload, UserPlus, Users } from 'lucide-react';
+import { Copy, KeyRound, Mail, PackageCheck, RefreshCw, Search, Upload, UserPlus, Users } from 'lucide-react';
 import { Alert, Panel, api, ui } from './ui';
 import { platformAdminPanelText } from '../../i18n/text/PlatformAdminPanel';
+
+interface AdminInquiry {
+  id: string;
+  name: string;
+  email: string;
+  company: string;
+  country: string;
+  product: string;
+  message: string;
+  locale: string;
+  source: string;
+  created_at: string;
+  notification_status: string;
+}
 
 interface AdminUser {
   id: string;
@@ -39,8 +53,8 @@ const smallButton = ui.small;
 const badge = ui.badge;
 
 
-/** Platform administrators: accounts without email delivery, and release manifests. */
-export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | 'releases' }> = ({ zh, section }) => {
+/** Platform administrators: accounts without email delivery, release manifests, and inquiries. */
+export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | 'releases' | 'inquiries' }> = ({ zh, section }) => {
   const signInUrl = typeof window !== 'undefined' ? `${window.location.origin}${platformAdminPanelText(zh).my}` : '';
   const [query, setQuery] = useState('');
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -57,6 +71,7 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
   const [release, setRelease] = useState({ product: 'studio', platform: 'windows-x64', channel: 'stable', latest: '',
                                            min_supported: '', url: '', sha256: '', notes_url: '' });
   const [releaseNotice, setReleaseNotice] = useState('');
+  const [inquiries, setInquiries] = useState<AdminInquiry[]>([]);
 
   const search = useCallback(async (text: string) => {
     const { ok, data } = await api(`/api/admin/users?q=${encodeURIComponent(text)}`);
@@ -71,7 +86,16 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
     if (ok) setReleases(data.releases || []);
   }, []);
 
-  useEffect(() => { void search(''); void loadReleases(); }, [search, loadReleases]);
+  const loadInquiries = useCallback(async () => {
+    const { ok, data } = await api('/api/admin/inquiries');
+    if (ok) setInquiries(data.inquiries || []);
+  }, []);
+
+  useEffect(() => {
+    if (section === 'accounts') void search('');
+    else if (section === 'releases') void loadReleases();
+    else void loadInquiries();
+  }, [section, search, loadReleases, loadInquiries]);
 
   const act = async (action: () => Promise<{ ok: boolean; data: any }>, done: (data: any) => void) => {
     setBusy(true);
@@ -123,7 +147,7 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
   );
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6">
       {error && <Alert tone="error">{error}</Alert>}
 
       {section === 'accounts' && (
@@ -263,6 +287,39 @@ export const PlatformAdminPanel: React.FC<{ zh: boolean; section: 'accounts' | '
             <span>{platformAdminPanelText(zh).publish}</span>
           </button>
         </form>
+      </Panel>
+      )}
+
+      {section === 'inquiries' && (
+      <Panel icon={<Mail className="h-4 w-4 text-zinc-400" />} title={platformAdminPanelText(zh).inquiriesTitle}
+             description={platformAdminPanelText(zh).inquiriesDesc}
+             actions={<button type="button" onClick={() => void loadInquiries()} className={ui.secondary}><RefreshCw className="h-3.5 w-3.5" />{platformAdminPanelText(zh).refresh}</button>}>
+        <div className="space-y-3">
+          {inquiries.length === 0 && <p className="text-sm text-zinc-500">{platformAdminPanelText(zh).noInquiriesYet}</p>}
+          {inquiries.map(item => (
+            <div key={item.id} className="space-y-2 rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-medium text-white">{item.name}</span>
+                  {item.company && <span className="text-xs text-zinc-400">· {item.company}</span>}
+                  <a href={`mailto:${item.email}`} className="font-mono text-xs text-emerald-400 hover:underline">{item.email}</a>
+                </div>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className={`${badge} ${item.notification_status === 'sent' ? 'border-emerald-500/30 text-emerald-400' : item.notification_status === 'failed' ? 'border-amber-500/30 text-amber-300' : 'border-zinc-700 text-zinc-400'}`}>
+                    {item.notification_status === 'sent' ? platformAdminPanelText(zh).inquiryStatusSent : item.notification_status === 'failed' ? platformAdminPanelText(zh).inquiryStatusFailed : platformAdminPanelText(zh).inquiryStatusPending}
+                  </span>
+                  <span className="font-mono text-zinc-500">{item.created_at.slice(0, 16).replace('T', ' ')}</span>
+                </div>
+              </div>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-300">{item.message}</p>
+              <div className="flex flex-wrap gap-3 font-mono text-[11px] text-zinc-500">
+                <span>{item.product}</span>
+                {item.source && <span>{item.source}</span>}
+                <span>{item.id}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </Panel>
       )}
     </div>
