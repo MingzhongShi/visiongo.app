@@ -32,15 +32,15 @@ export const OrganizationPicker: React.FC<{
           return (
             <button key={choice.id} type="button" role="radio" aria-checked={active} onClick={() => onSelect(choice.id)}
                     className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors cursor-pointer ${
-                      active ? 'border-emerald-500/50 bg-emerald-500/10' : 'border-zinc-800 bg-zinc-950 hover:border-zinc-700'}`}>
-              <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-emerald-500/20 text-emerald-300' : 'bg-zinc-900 text-zinc-400'}`}>
+                      active ? 'border-emerald-600/40 bg-emerald-500/10 dark:border-emerald-500/50' : 'border-zinc-200 bg-zinc-50 hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-700'}`}>
+              <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300' : 'bg-zinc-200/70 text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400'}`}>
                 {choice.type === 'personal' ? <User className="h-4 w-4" /> : <Building2 className="h-4 w-4" />}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-medium text-zinc-100">{choice.name}</span>
+                <span className="block truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">{choice.name}</span>
                 <span className="block text-xs text-zinc-500">{typeLabel(choice.type, zh)} · {roleLabel(choice.role, zh)}</span>
               </span>
-              {active && <Check className="h-4 w-4 shrink-0 text-emerald-300" />}
+              {active && <Check className="h-4 w-4 shrink-0 text-emerald-700 dark:text-emerald-300" />}
             </button>
           );
         })}
@@ -116,7 +116,7 @@ export const OrganizationDetail: React.FC<{ zh: boolean; org: OrgChoice; platfor
         {!enterprise ? (
           <Alert tone="warning">
             <p>{organizationPanelsText(zh).toWorkWith}</p>
-            <p className="text-amber-300/80">
+            <p className="text-amber-700 dark:text-amber-300/80">
               {platformAdmin
                 ? (organizationPanelsText(zh).youAreA)
                 : (organizationPanelsText(zh).visiongoCreatesEnterprise)}
@@ -152,14 +152,14 @@ export const OrganizationDetail: React.FC<{ zh: boolean; org: OrgChoice; platfor
               {members.map(member => (
                 <li key={member.email} className={ui.row}>
                   <div className="min-w-0">
-                    <div className="truncate text-zinc-100">{member.display_name || member.email}</div>
+                    <div className="truncate text-zinc-900 dark:text-zinc-100">{member.display_name || member.email}</div>
                     {member.display_name && <div className="truncate font-mono text-xs text-zinc-500">{member.email}</div>}
                   </div>
                   <div className="flex items-center gap-2">
-                    {member.status === 'invited' && <span className={`${ui.badge} border-amber-500/30 text-amber-300`}>{organizationPanelsText(zh).noAccountYet}</span>}
+                    {member.status === 'invited' && <span className={`${ui.badge} border-amber-500/40 text-amber-700 dark:border-amber-500/30 dark:text-amber-300`}>{organizationPanelsText(zh).noAccountYet}</span>}
                     <select value={member.role} disabled={busy} aria-label={organizationPanelsText(zh).roleOf(member.email)}
                             onChange={event => void run(() => api(`${base}/members/role`, { email: member.email, role: event.target.value }))}
-                            className="rounded-lg border border-zinc-800 bg-zinc-900 px-2 py-1.5 text-xs text-zinc-300">
+                            className="rounded-lg border border-zinc-300 bg-white px-2 py-1.5 text-xs text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
                       <option value="member">{organizationPanelsText(zh).member}</option>
                       <option value="admin">{organizationPanelsText(zh).admin}</option>
                     </select>
@@ -168,7 +168,7 @@ export const OrganizationDetail: React.FC<{ zh: boolean; org: OrgChoice; platfor
                               if (!window.confirm(organizationPanelsText(zh).removeFrom(member.email))) return;
                               void run(() => api(`${base}/members/remove`, { email: member.email }));
                             }}
-                            className="rounded-lg p-2 text-zinc-400 hover:bg-red-950/40 hover:text-red-300 cursor-pointer">
+                            className="rounded-lg p-2 text-zinc-500 hover:bg-red-500/10 hover:text-red-700 dark:text-zinc-400 dark:hover:bg-red-950/40 dark:hover:text-red-300 cursor-pointer">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -180,18 +180,18 @@ export const OrganizationDetail: React.FC<{ zh: boolean; org: OrgChoice; platfor
       </Panel>
 
       {detail && (
-        <Panel icon={<ShieldCheck className="h-4 w-4 text-zinc-400" />} title={organizationPanelsText(zh).aiDataAuthorization}
+        <Panel icon={<ShieldCheck className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />} title={organizationPanelsText(zh).aiDataAuthorization}
                description={organizationPanelsText(zh).whetherVisioncloudS}>
-          <label className="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-zinc-800 bg-zinc-950 p-3">
-            <span className="text-sm text-zinc-100">{organizationPanelsText(zh).letVisioncloudUse}</span>
-            <input type="checkbox" className="h-5 w-5 shrink-0 accent-emerald-400" checked={detail.ai_data_authorized === 1} disabled={busy}
+          <label className="flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-950">
+            <span className="text-sm text-zinc-900 dark:text-zinc-100">{organizationPanelsText(zh).letVisioncloudUse}</span>
+            <input type="checkbox" className="h-5 w-5 shrink-0 accent-emerald-600 dark:accent-emerald-400" checked={detail.ai_data_authorized === 1} disabled={busy}
                    onChange={event => void run(() => api(`${base}/ai-data-authorization`, { authorized: event.target.checked }))} />
           </label>
           {detail.cloud_synced === false && (
             <Alert tone="warning">{organizationPanelsText(zh).savedButVisioncloud}</Alert>
           )}
           <details className="group text-xs text-zinc-500">
-            <summary className="cursor-pointer text-zinc-400 hover:text-zinc-200">{organizationPanelsText(zh).whatDataIs}</summary>
+            <summary className="cursor-pointer text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200">{organizationPanelsText(zh).whatDataIs}</summary>
             <p className="mt-2 leading-relaxed">
               {organizationPanelsText(zh).whenOnVisionclouds}
             </p>
@@ -257,9 +257,9 @@ export const PlatformOrganizationsPanel: React.FC<{
           {orgs.allOrganizations.map(org => (
             <li key={org.id} className={ui.row}>
               <div className="min-w-0">
-                <div className="flex items-center gap-2 truncate text-zinc-100">
+                <div className="flex items-center gap-2 truncate text-zinc-900 dark:text-zinc-100">
                   {org.name}
-                  {org.status === 'suspended' && <span className={`${ui.badge} border-red-500/30 text-red-300`}>{organizationPanelsText(zh).suspendedBadge}</span>}
+                  {org.status === 'suspended' && <span className={`${ui.badge} border-red-500/40 text-red-700 dark:border-red-500/30 dark:text-red-300`}>{organizationPanelsText(zh).suspendedBadge}</span>}
                 </div>
                 <div className="truncate font-mono text-xs text-zinc-500">
                   {org.id}{typeof org.member_count === 'number' ? ` · ${organizationPanelsText(zh).memberCount(org.member_count)}` : ''}

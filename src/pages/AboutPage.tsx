@@ -53,28 +53,28 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenContact }) => {
               <div className="icon-tile">
                 <Shield className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold text-white">{aboutPageText(locale).principle1Title}</h4>
-              <p className="text-sm leading-relaxed text-zinc-400">
+              <h4 className="text-base font-bold text-zinc-950 dark:text-white">{aboutPageText(locale).principle1Title}</h4>
+              <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
                 {aboutPageText(locale).principle1Desc}
               </p>
             </div>
 
             <div className="surface-card space-y-3 p-7">
-              <div className="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center border border-cyan-500/20">
+              <div className="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 flex items-center justify-center border border-cyan-600/20 dark:border-cyan-500/20">
                 <Terminal className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold text-white">{aboutPageText(locale).principle2Title}</h4>
-              <p className="text-sm leading-relaxed text-zinc-400">
+              <h4 className="text-base font-bold text-zinc-950 dark:text-white">{aboutPageText(locale).principle2Title}</h4>
+              <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
                 {aboutPageText(locale).principle2Desc}
               </p>
             </div>
 
             <div className="surface-card space-y-3 p-7">
-              <div className="w-10 h-10 rounded-lg bg-violet-500/10 text-violet-400 flex items-center justify-center border border-violet-500/20">
+              <div className="w-10 h-10 rounded-lg bg-violet-500/10 text-violet-700 dark:text-violet-400 flex items-center justify-center border border-violet-600/20 dark:border-violet-500/20">
                 <Shield className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold text-white">{aboutPageText(locale).principle3Title}</h4>
-              <p className="text-sm leading-relaxed text-zinc-400">
+              <h4 className="text-base font-bold text-zinc-950 dark:text-white">{aboutPageText(locale).principle3Title}</h4>
+              <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
                 {aboutPageText(locale).principle3Desc}
               </p>
             </div>
@@ -85,13 +85,13 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenContact }) => {
         <section id="security" className="mb-20">
           <div className="mb-8 max-w-2xl">
             <h2 className="section-title">{aboutPageText(locale).securityHeader}</h2>
-            <p className="mt-2 text-sm leading-relaxed text-zinc-400">{aboutPageText(locale).securitySub}</p>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{aboutPageText(locale).securitySub}</p>
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {aboutPageText(locale).securityItems.map(item => (
               <div key={item.title} className="surface-card space-y-2 p-7">
-                <h3 className="text-base font-semibold text-white">{item.title}</h3>
-                <p className="text-sm leading-relaxed text-zinc-400">{item.desc}</p>
+                <h3 className="text-base font-semibold text-zinc-950 dark:text-white">{item.title}</h3>
+                <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -100,12 +100,12 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenContact }) => {
         {/* Global Contacts & Enterprise Pilot */}
         <div className="surface-card flex flex-col justify-between gap-8 p-8 sm:p-10 md:flex-row md:items-center">
           <div className="space-y-3">
-            <h3 className="text-2xl font-bold text-white">{aboutPageText(locale).contactTitle}</h3>
-            <p className="text-xs text-zinc-400 max-w-md leading-relaxed">
+            <h3 className="text-2xl font-bold text-zinc-950 dark:text-white">{aboutPageText(locale).contactTitle}</h3>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 max-w-md leading-relaxed">
               {aboutPageText(locale).contactDesc}
             </p>
-            <div className="pt-2 flex flex-col gap-1 text-xs text-zinc-400">
-              <span className="text-zinc-300">{aboutPageText(locale).labelWebsites}: https://visiongo.app · https://visiongo.com.cn</span>
+            <div className="pt-2 flex flex-col gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+              <span className="text-zinc-800 dark:text-zinc-300">{aboutPageText(locale).labelWebsites}: https://visiongo.app · https://visiongo.com.cn</span>
               <span>{aboutPageText(locale).labelGeneral}: contact@visiongo.app</span>
               <span>{aboutPageText(locale).labelSales}: sales@visiongo.app</span>
               <span>{aboutPageText(locale).labelSupport}: support@visiongo.app</span>
@@ -124,7 +124,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onOpenContact }) => {
               href="mailto:contact@visiongo.app"
               className="btn-secondary"
             >
-              <Mail className="w-4 h-4 text-zinc-400" />
+              <Mail className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
               <span>{aboutPageText(locale).emailEngineering}</span>
             </SiteLink>
           </div>

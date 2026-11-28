@@ -55,18 +55,18 @@ export function DownloadsPage({ initialProduct, initialVersion }: { initialProdu
   return <div className="page-shell">
     <SeoHead title={downloadsPageText(zh).downloadsSoftwareReleases} description={downloadsPageText(zh).choosePublishedVisiongo} canonicalPath="/downloads" />
     <SectionHeader as="h1" badge={navbarText(zh).downloads} title={downloadsPageText(zh).downloadAndStart} description={downloadsPageText(zh).noSignIn} />
-    <div className="mb-8 flex flex-wrap items-center justify-between gap-4"><label className="flex min-h-11 items-center gap-3 text-sm text-zinc-300"><input type="checkbox" checked={includePrereleases} onChange={event => setIncludePrereleases(event.target.checked)} />{downloadsPageText(zh).includePreviewReleases}</label><SiteLink href="/developers#quickstart" className="text-link">{downloadsPageText(zh).firstTimeRead}</SiteLink></div>
-    {initialProduct && !initialVersion && <p role="status" className="mb-6 text-sm text-zinc-400">{downloadsPageText(zh).youAreLooking} {names[initialProduct]}。{downloadsPageText(zh).chooseItsPackage}</p>}
-    {missingVersion && <p role="alert" className="mb-6 rounded-xl border border-amber-500/30 p-4 text-sm text-amber-300">{downloadsPageText(zh).theLinkedVersion}</p>}
+    <div className="mb-8 flex flex-wrap items-center justify-between gap-4"><label className="flex min-h-11 items-center gap-3 text-sm text-zinc-700 dark:text-zinc-300"><input type="checkbox" className="accent-emerald-600 dark:accent-emerald-400" checked={includePrereleases} onChange={event => setIncludePrereleases(event.target.checked)} />{downloadsPageText(zh).includePreviewReleases}</label><SiteLink href="/developers#quickstart" className="text-link">{downloadsPageText(zh).firstTimeRead}</SiteLink></div>
+    {initialProduct && !initialVersion && <p role="status" className="mb-6 text-sm text-zinc-600 dark:text-zinc-400">{downloadsPageText(zh).youAreLooking} {names[initialProduct]}。{downloadsPageText(zh).chooseItsPackage}</p>}
+    {missingVersion && <p role="alert" className="mb-6 rounded-xl border border-amber-500/40 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/5 dark:text-amber-300">{downloadsPageText(zh).theLinkedVersion}</p>}
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">{PRODUCTS.map(product => <ReleaseCard key={product} productId={product} productName={names[product]} tagline={product === 'visionstudio' ? (downloadsPageText(zh).engineeringWorkspace) : product === 'visionruntime' ? (downloadsPageText(zh).localExecutionRuntime) : (downloadsPageText(zh).edgeGateway)} accentColor="#34d399" releases={releases[product]} loading={loading} error={errors[product]} onRetry={() => setAttempt(value => value + 1)} onOpenReleaseNotes={release => setSelected({ product, release })} />)}</div>
-    <section id="requirements" className="surface-card mt-10 space-y-4 p-6 sm:p-8"><h2 className="text-xl font-semibold text-white">{downloadsPageText(zh).installationAndCompatibility}</h2><p className="text-sm leading-relaxed text-zinc-400">{downloadsPageText(zh).supportedOperatingSystems}</p><p className="text-sm text-zinc-400">{downloadsPageText(zh).connectivityRequirementsDepend}</p><div className="flex flex-wrap gap-5 text-sm"><SiteLink href="/developers#quickstart" className="text-link">{downloadsPageText(zh).installationAndFirst}</SiteLink><SiteLink href="/contact" className="text-link">{downloadsPageText(zh).askAboutVersion}</SiteLink></div></section>
+    <section id="requirements" className="surface-card mt-10 space-y-4 p-6 sm:p-8"><h2 className="text-xl font-semibold text-zinc-950 dark:text-white">{downloadsPageText(zh).installationAndCompatibility}</h2><p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{downloadsPageText(zh).supportedOperatingSystems}</p><p className="text-sm text-zinc-600 dark:text-zinc-400">{downloadsPageText(zh).connectivityRequirementsDepend}</p><div className="flex flex-wrap gap-5 text-sm"><SiteLink href="/developers#quickstart" className="text-link">{downloadsPageText(zh).installationAndFirst}</SiteLink><SiteLink href="/contact" className="text-link">{downloadsPageText(zh).askAboutVersion}</SiteLink></div></section>
     <section id="faq" className="mt-10 space-y-5">
-      <h2 className="text-xl font-semibold text-white">{downloadsPageText(zh).faqTitle}</h2>
+      <h2 className="text-xl font-semibold text-zinc-950 dark:text-white">{downloadsPageText(zh).faqTitle}</h2>
       <div className="grid gap-4 md:grid-cols-2">
         {downloadsPageText(zh).faqs.map(item => (
           <div key={item.q} className="surface-card space-y-2 p-6">
-            <h3 className="text-base font-medium text-white">{item.q}</h3>
-            <p className="text-sm leading-relaxed text-zinc-400">{item.a}</p>
+            <h3 className="text-base font-medium text-zinc-950 dark:text-white">{item.q}</h3>
+            <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{item.a}</p>
           </div>
         ))}
       </div>

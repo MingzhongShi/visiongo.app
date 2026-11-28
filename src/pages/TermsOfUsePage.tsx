@@ -29,11 +29,11 @@ export const TermsOfUsePage: React.FC = () => {
           }
         />
 
-        <div className="prose prose-invert max-w-none text-sm text-zinc-300 space-y-10 leading-relaxed">
+        <div className="max-w-none text-sm text-zinc-700 dark:text-zinc-300 space-y-10 leading-relaxed">
           {/* Section 1: Acceptance */}
           <div className="space-y-3">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Scale className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-lg font-bold text-zinc-950 dark:text-white flex items-center gap-2">
+              <Scale className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               <span>{termsOfUsePageText(locale).acceptanceOfTerms}</span>
             </h3>
             <p>
@@ -42,25 +42,25 @@ export const TermsOfUsePage: React.FC = () => {
           </div>
 
           {/* Section 2: CRITICAL SOFTWARE LICENSING CLAUSE */}
-          <div className="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/25 space-y-4">
-            <div className="flex items-center gap-2 text-amber-400 text-xs font-bold">
+          <div className="p-6 rounded-2xl bg-amber-50 border border-amber-500/35 dark:bg-amber-500/10 dark:border-amber-500/25 space-y-4">
+            <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-bold">
               <AlertTriangle className="w-4 h-4" />
               <span>
                 {termsOfUsePageText(locale).importantNoticeSoftware}
               </span>
             </div>
-            <p className="text-zinc-300">
+            <p className="text-zinc-800 dark:text-zinc-300">
               {termsOfUsePageText(locale).downloadingVisiongoSoftware}
             </p>
-            <p className="text-zinc-400 text-xs">
+            <p className="text-zinc-600 dark:text-zinc-400 text-xs">
               {termsOfUsePageText(locale).commercialProductionDeployment}
             </p>
           </div>
 
           {/* Section 3: Intellectual Property */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-lg font-bold text-zinc-950 dark:text-white flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               <span>{termsOfUsePageText(locale).intellectualPropertyRights}</span>
             </h3>
             <p>
@@ -70,14 +70,14 @@ export const TermsOfUsePage: React.FC = () => {
 
           {/* Section 4: Acceptable Use */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-lg font-bold text-zinc-950 dark:text-white flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               <span>{termsOfUsePageText(locale).acceptableUseOf}</span>
             </h3>
             <p>
               {termsOfUsePageText(locale).youAgreeNot}
             </p>
-            <ul className="list-disc pl-5 space-y-1.5 text-zinc-400">
+            <ul className="list-disc pl-5 space-y-1.5 text-zinc-600 dark:text-zinc-400">
               <li>{termsOfUsePageText(locale).launchingDosAttacks}</li>
               <li>{termsOfUsePageText(locale).tamperingWithApi}</li>
               <li>{termsOfUsePageText(locale).submittingSpamOr}</li>
@@ -86,30 +86,30 @@ export const TermsOfUsePage: React.FC = () => {
 
           {/* Section 5: Disclaimers & Limitation of Liability */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <FileText className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-lg font-bold text-zinc-950 dark:text-white flex items-center gap-2">
+              <FileText className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               <span>{termsOfUsePageText(locale).disclaimersLimitationOf}</span>
             </h3>
-            <p className="text-zinc-400">
+            <p className="text-zinc-600 dark:text-zinc-400">
               {termsOfUsePageText(locale).thisWebsiteAnd}
             </p>
           </div>
 
           {/* Section 6: Contact */}
-          <div className="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-2">
-            <h4 className="text-base font-bold text-white flex items-center gap-2">
-              <Mail className="w-4 h-4 text-emerald-400" />
+          <div className="surface-card p-6 space-y-2">
+            <h4 className="text-base font-bold text-zinc-950 dark:text-white flex items-center gap-2">
+              <Mail className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               <span>{termsOfUsePageText(locale).enterpriseLicensingLegal}</span>
             </h4>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">
               {termsOfUsePageText(locale).forCommercialProduction}
             </p>
-            <div className="pt-2 text-xs text-emerald-400">
+            <div className="pt-2 text-xs text-emerald-700 dark:text-emerald-400">
               <SiteLink href="mailto:sales@visiongo.app" className="hover:underline">
                 sales@visiongo.app
               </SiteLink>{' '}
-              <span className="text-zinc-600">|</span>{' '}
-              <SiteLink href="mailto:contact@visiongo.app" className="hover:underline text-zinc-300">
+              <span className="text-zinc-400 dark:text-zinc-600">|</span>{' '}
+              <SiteLink href="mailto:contact@visiongo.app" className="hover:underline text-zinc-700 dark:text-zinc-300">
                 contact@visiongo.app
               </SiteLink>
             </div>

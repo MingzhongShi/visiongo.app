@@ -124,7 +124,7 @@ export const DesktopAuthPage: React.FC = () => {
   }, [user, params, tenants, choosesTenant, redirected, errorMsg, needsSignIn]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans pt-32 pb-24 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans pt-32 pb-24 flex items-center justify-center px-4">
       <SeoHead
         noindex
         title={params?.portal ? 'VisionCloud 管理后台登录 — VISIONGO' : 'VisionStudio 授权登录 — VISIONGO'}
@@ -132,16 +132,16 @@ export const DesktopAuthPage: React.FC = () => {
         canonicalPath="/auth/desktop"
       />
 
-      <div className="max-w-md w-full p-8 rounded-3xl bg-zinc-900/80 border border-zinc-800 shadow-2xl text-center space-y-6 tech-grid">
-        <div className="w-16 h-16 rounded-2xl bg-zinc-950 border border-zinc-800 text-emerald-400 flex items-center justify-center mx-auto shadow-inner">
+      <div className="max-w-md w-full p-8 rounded-3xl bg-white border border-zinc-200 shadow-xl dark:bg-zinc-900/80 dark:border-zinc-800 dark:shadow-2xl text-center space-y-6 tech-grid">
+        <div className="w-16 h-16 rounded-2xl bg-zinc-100 border border-zinc-200 text-emerald-700 dark:bg-zinc-950 dark:border-zinc-800 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-inner">
           <Laptop className="w-8 h-8" />
         </div>
 
         <div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">
+          <h2 className="text-2xl font-bold text-zinc-950 dark:text-white tracking-tight">
             {params?.portal ? '登录 VisionCloud 管理后台' : '授权登录 VisionStudio'}
           </h2>
-          <p className="text-zinc-400 text-xs mt-2">
+          <p className="text-zinc-600 dark:text-zinc-400 text-xs mt-2">
             {params?.portal
               ? `授权后将返回 ${new URL(params.redirectUri).host} 的管理后台。`
               : '授权后，VisionStudio 桌面客户端将同步您的云端身份与组织 Credits 配额。'}
@@ -149,7 +149,7 @@ export const DesktopAuthPage: React.FC = () => {
         </div>
 
         {errorMsg ? (
-          <div className="p-4 rounded-xl bg-red-950/40 border border-red-800 text-red-300 text-sm">
+          <div className="p-4 rounded-xl bg-red-50 border border-red-300 text-red-700 dark:bg-red-950/40 dark:border-red-800 dark:text-red-300 text-sm">
             {errorMsg}
           </div>
         ) : loading ? (
@@ -158,7 +158,7 @@ export const DesktopAuthPage: React.FC = () => {
           </div>
         ) : !user || needsSignIn ? (
           <div className="space-y-4">
-            <p className="text-zinc-300 text-sm">
+            <p className="text-zinc-700 dark:text-zinc-300 text-sm">
               {needsSignIn ? '客户端要求重新登录确认身份，请再次登录您的 VISIONGO 账号：' : '请先登录或注册您的 VISIONGO 账号：'}
             </p>
             <div>
@@ -170,32 +170,32 @@ export const DesktopAuthPage: React.FC = () => {
           </div>
         ) : redirected ? (
           <div className="space-y-4 py-4">
-            <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto animate-bounce" />
-            <p className="text-emerald-300 font-medium">
+            <CheckCircle2 className="w-12 h-12 text-emerald-600 dark:text-emerald-400 mx-auto animate-bounce" />
+            <p className="text-emerald-700 dark:text-emerald-300 font-medium">
               {params?.portal ? '✓ 授权成功！正在返回管理后台...' : '✓ 授权成功！正在返回桌面应用...'}
             </p>
             {!params?.portal && <p className="text-xs text-zinc-500">若浏览器未自动关闭，您可以安全关闭本标签页。</p>}
           </div>
         ) : (
           <div className="space-y-5">
-            <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800 text-left flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
+            <div className="p-4 rounded-xl bg-zinc-50 border border-zinc-200 dark:bg-zinc-950/60 dark:border-zinc-800 text-left flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold">
                 {user.displayName ? user.displayName[0].toUpperCase() : <User className="w-5 h-5" />}
               </div>
               <div className="overflow-hidden">
-                <div className="font-semibold text-white truncate text-sm">{user.displayName || user.email}</div>
-                <div className="text-xs text-zinc-400 truncate">{user.email}</div>
+                <div className="font-semibold text-zinc-950 dark:text-white truncate text-sm">{user.displayName || user.email}</div>
+                <div className="text-xs text-zinc-600 dark:text-zinc-400 truncate">{user.email}</div>
               </div>
             </div>
 
             {choosesTenant && tenants && (
               <fieldset className="space-y-2 text-left">
-                <legend className="text-xs text-zinc-400 mb-2">选择本次登录使用的组织：</legend>
+                <legend className="text-xs text-zinc-600 dark:text-zinc-400 mb-2">选择本次登录使用的组织：</legend>
                 {tenants.map(tenant => (
                   <label
                     key={tenant.tenant_id}
                     className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer text-sm ${
-                      tenantId === tenant.tenant_id ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-zinc-800 bg-zinc-950/60'
+                      tenantId === tenant.tenant_id ? 'border-emerald-600/40 bg-emerald-500/10 dark:border-emerald-500/50 dark:bg-emerald-500/5' : 'border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950/60'
                     }`}
                   >
                     <input
@@ -204,10 +204,10 @@ export const DesktopAuthPage: React.FC = () => {
                       value={tenant.tenant_id}
                       checked={tenantId === tenant.tenant_id}
                       onChange={() => setTenantId(tenant.tenant_id)}
-                      className="accent-emerald-500"
+                      className="accent-emerald-600 dark:accent-emerald-500"
                     />
                     <Building2 className="w-4 h-4 text-zinc-500 shrink-0" />
-                    <span className="flex-1 truncate text-zinc-200">{tenant.name}</span>
+                    <span className="flex-1 truncate text-zinc-800 dark:text-zinc-200">{tenant.name}</span>
                     <span className="text-[10px] text-zinc-500">
                       {tenant.type === 'personal' ? '个人' : tenant.role === 'org_admin' ? '管理员' : '成员'}
                     </span>
@@ -219,7 +219,7 @@ export const DesktopAuthPage: React.FC = () => {
             <button
               disabled={!tenants}
               onClick={() => void handleAuthorize()}
-              className="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20"
+              className="btn-primary w-full"
             >
               <span>立即确认授权</span>
               <ArrowRight className="w-4 h-4" />

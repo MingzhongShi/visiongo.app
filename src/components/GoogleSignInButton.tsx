@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { loadAuthConfig } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../i18n/LanguageContext';
 import { googleSignInButtonText } from '../i18n/text/GoogleSignInButton';
 
@@ -39,6 +40,7 @@ declare global {
 
 export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSuccess, className = '' }) => {
   const { loginWithGoogle } = useAuth();
+  const { theme } = useTheme();
   const { locale } = useLanguage();
   const buttonRef = useRef<HTMLDivElement>(null);
   const [isGisReady, setIsGisReady] = useState(false);
@@ -107,7 +109,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
         buttonRef.current.innerHTML = '';
 
         window.google.accounts.id.renderButton(buttonRef.current, {
-          theme: 'filled_black',
+          theme: theme === 'dark' ? 'filled_black' : 'outline',
           size: 'large',
           text: 'continue_with',
           shape: 'pill',
@@ -117,7 +119,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
         console.warn('[GIS] Error rendering Google button:', err);
       }
     }
-  }, [clientId, isDummyId, isGisReady, loginWithGoogle, locale, onSuccess]);
+  }, [clientId, isDummyId, isGisReady, loginWithGoogle, locale, onSuccess, theme]);
 
   // Fallback direct sign-in for development or when GIS is blocked by local ad-blocker
   const handleSimulatedSignIn = async () => {
@@ -149,7 +151,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
           <button
             onClick={handleSimulatedSignIn}
             disabled={loading}
-            className="w-full max-w-[280px] py-2.5 px-4 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 hover:text-white flex items-center justify-center gap-2.5 transition-colors cursor-pointer"
+            className="w-full max-w-[280px] py-2.5 px-4 rounded-full bg-white hover:bg-zinc-100 border border-zinc-300 text-xs text-zinc-700 hover:text-zinc-950 dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:border-zinc-700 dark:text-zinc-300 dark:hover:text-white flex items-center justify-center gap-2.5 transition-colors cursor-pointer"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
